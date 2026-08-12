@@ -1,26 +1,315 @@
 @import "tailwindcss";
 
+/* ຊຸດສີ ແລະ ພື້ນຜິວດຽວກັນກັບ ODG TMS (tms.odienmall.com) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f9fd;
+  --foreground: #0b2338;
+
+  --glass-bg: #ffffffd1;
+  --glass-bg-heavy: #fffffff0;
+  --glass-border: #0032601a;
+  --glass-border-subtle: #0032601f;
+  --glass-shadow: 0 18px 50px #00326014;
+  --glass-shadow-lg: 0 24px 70px #0032601a;
+
+  --mesh-gradient: linear-gradient(180deg, #f5f9fd 0%, #eaf3fb 54%, #fdf6ec 100%);
+  --glass-glow-primary: #2c6fb624;
+
+  /* Sidebar ເປັນ navy ເຂັ້ມທັງໂໝດແຈ້ງ ແລະ ມືດ (ຄືກັນກັບ TMS) */
+  --sidebar-bg: linear-gradient(180deg, #0a2a49 0%, #06203a 100%);
+  --sidebar-fg: #d7e6f4;
+  --sidebar-muted: #7e9cb8;
+  --sidebar-border: #ffffff14;
+  --sidebar-hover: #ffffff0f;
+
+  /* ໂຕໜັງສືຕາມລະດັບຄວາມສຳຄັນ */
+  --text-body: #1c3a52;
+  --text-muted: #5b7387;
+  --text-faint: #8ba0b1;
+  --surface-hover: #2c6fb60f;
+}
+
+.dark {
+  --background: #04182a;
+  --foreground: #e4eef7;
+
+  --glass-bg: #062338c7;
+  --glass-bg-heavy: #062338f0;
+  --glass-border: #e0f0fa1a;
+  --glass-border-subtle: #e0f0fa1f;
+  --glass-shadow: 0 18px 52px #000c186b;
+  --glass-shadow-lg: 0 28px 80px #000c188a;
+
+  --mesh-gradient: linear-gradient(180deg, #04182a 0%, #062338 58%, #072b45 100%);
+  --glass-glow-primary: #4bc7ef2e;
+
+  --text-body: #cadcea;
+  --text-muted: #8fa8bd;
+  --text-faint: #667f95;
+  --surface-hover: #4bc7ef14;
 }
 
 @theme inline {
+  --color-brand-navy: #003260;
+  --color-brand-blue: #2c6fb6;
+  --color-brand-sky: #4bc7ef;
+  --color-brand-orange: #f6921e;
+  --color-brand-yellow: #ffd071;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-line: var(--glass-border);
+  --color-line-subtle: var(--glass-border-subtle);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-brand-sans), var(--font-lao-sans), system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
+  background: var(--mesh-gradient);
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-brand-sans), var(--font-lao-sans), system-ui, sans-serif;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #4bc7ef4d;
+  color: var(--foreground);
+}
+
+:focus-visible {
+  outline: 2px solid #2c6fb6;
+  outline-offset: 3px;
+}
+
+@keyframes skeleton-pulse { 50% { opacity: .48; } }
+.skeleton {
+  background: linear-gradient(110deg, var(--glass-bg) 8%, var(--surface-hover) 18%, var(--glass-bg) 33%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  border: 1px solid var(--glass-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@layer components {
+  /* ພື້ນຜິວແກ້ວ — ໃຊ້ແທນກາດ/ແຜງທັງໝົດ */
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(1.35);
+    -webkit-backdrop-filter: blur(16px) saturate(1.35);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-heavy {
+    background: var(--glass-bg-heavy);
+    backdrop-filter: blur(18px) saturate(1.35);
+    -webkit-backdrop-filter: blur(18px) saturate(1.35);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-subtle {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border: 1px solid var(--glass-border-subtle);
+  }
+
+  /* ຂອບເຫຼືອງແສງອ່ອນໆ ຮອບແຜງ — ຄືກັນກັບ .glow-primary ຂອງ TMS */
+  .glow-primary {
+    box-shadow:
+      var(--glass-shadow),
+      0 0 0 1px var(--glass-glow-primary),
+      inset 0 1px 0 #ffffff1a;
+  }
+
+  .gradient-mesh-bg {
+    background: var(--mesh-gradient);
+    background-attachment: fixed;
+  }
+
+  /* ---- Sidebar (navy ເຂັ້ມທັງສອງໂໝດ) ---- */
+  .sidebar-shell {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-fg);
+    border-right: 1px solid var(--sidebar-border);
+  }
+  .sidebar-label {
+    color: var(--sidebar-muted);
+  }
+  .sidebar-link {
+    color: var(--sidebar-fg);
+    transition: background 0.15s, color 0.15s;
+  }
+  .sidebar-link:hover {
+    background: var(--sidebar-hover);
+    color: #fff;
+  }
+  .sidebar-link[aria-current='page'],
+  .sidebar-link[data-active='true'] {
+    background: linear-gradient(135deg, #2c6fb6 0%, #1d5a97 100%);
+    color: #fff;
+    font-weight: 500;
+    box-shadow: 0 8px 20px #2c6fb64d;
+  }
+  .sidebar-divider {
+    border-color: var(--sidebar-border);
+  }
+
+  /* Mobile navigation — ໃຫ້ໜ້າທີ່ຫຼັກເຂົ້າເຖິງໄດ້ດ້ວຍນິ້ວດຽວ */
+  .mobile-dock {
+    position: fixed;
+    z-index: 50;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2px;
+    padding: 6px;
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--glass-bg-heavy) 92%, transparent);
+    box-shadow: 0 16px 40px #0032602e;
+    backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  }
+  .mobile-dock-link {
+    display: flex;
+    min-width: 0;
+    min-height: 52px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: 14px;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 600;
+    transition: color .15s, background .15s, transform .15s;
+  }
+  .mobile-dock-link:active { transform: scale(.96); }
+  .mobile-dock-link[data-active='true'] {
+    color: #fff;
+    background: linear-gradient(135deg, #2c6fb6, #003260);
+    box-shadow: 0 8px 18px #2c6fb642;
+  }
+
+  /* ---- Topbar ---- */
+  .user-chip {
+    background: linear-gradient(135deg, #0a2a49 0%, #06203a 100%);
+    color: #eaf3fb;
+    border: 1px solid #ffffff1f;
+  }
+
+  .brand-gradient-cool {
+    background: linear-gradient(135deg, #4bc7ef 0%, #2c6fb6 52%, #003260 100%);
+  }
+
+  .brand-gradient-warm {
+    background: linear-gradient(135deg, #4bc7ef 0%, #ffd071 55%, #f6921e 100%);
+  }
+
+  .brand-gradient-text {
+    color: transparent;
+    background: linear-gradient(135deg, #4bc7ef 0%, #2c6fb6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  /* ປຸ່ມ */
+  .btn-primary {
+    background: linear-gradient(135deg, #2c6fb6 0%, #003260 100%);
+    color: #fff;
+    box-shadow: 0 8px 20px #2c6fb633;
+    transition: filter 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 10px 26px #2c6fb64d;
+  }
+  .btn-primary:disabled {
+    opacity: 0.6;
+    filter: none;
+  }
+
+  .btn-secondary {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-body);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover {
+    background: var(--surface-hover);
+    border-color: #2c6fb659;
+  }
+
+  .btn-danger {
+    border: 1px solid #ef444459;
+    color: #dc2626;
+    transition: background 0.2s;
+  }
+  .btn-danger:hover {
+    background: #ef44441a;
+  }
+  .dark .btn-danger {
+    color: #f87171;
+  }
+
+  /* ຊ່ອງປ້ອນຂໍ້ມູນ */
+  .input {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border-subtle);
+    color: var(--foreground);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input:focus {
+    outline: none;
+    border-color: #2c6fb6;
+    box-shadow: 0 0 0 3px #2c6fb626;
+  }
+
+  /* ສີໂຕໜັງສືຕາມລະດັບ */
+  .text-fg {
+    color: var(--foreground);
+  }
+  .text-body {
+    color: var(--text-body);
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .text-faint {
+    color: var(--text-faint);
+  }
+
+  .border-line {
+    border-color: var(--glass-border);
+  }
+  .divide-line > * + * {
+    border-color: var(--glass-border-subtle);
+  }
+  .hover-surface:hover {
+    background: var(--surface-hover);
+  }
+}
+
+/* ພິມເອກະສານ: ເອົາພື້ນຫຼັງ ແລະ ເງົາອອກ ໃຫ້ອອກກະດາດສະອາດ */
+@media print {
+  body { background: #fff !important; }
+  .glass-card, .glass-heavy, .glass-subtle {
+    background: #fff !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+  aside, header, footer, nav { display: none !important; }
 }

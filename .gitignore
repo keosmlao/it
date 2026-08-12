@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ຮູບແນບທີ່ຜູ້ໃຊ້ອັບໂຫລດ — ບໍ່ຄວນເຂົ້າ git
+/uploads

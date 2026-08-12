@@ -1,0 +1,123 @@
+'use client'
+
+import { useState } from 'react'
+import ActionForm, { SubmitButton } from '@/components/action-form'
+import { saveAssetSpec } from '../actions'
+import type { AssetRow } from '@/lib/assets/model'
+
+const FIELDS = [
+  { name: 'cpu', label: 'CPU', placeholder: 'Intel Core i5-1235U' },
+  { name: 'ram', label: 'RAM', placeholder: '16GB DDR4' },
+  { name: 'storage', label: 'ດິສກ໌', placeholder: 'SSD 512GB' },
+  { name: 'gpu', label: 'ກາດຈໍ', placeholder: 'Intel Iris Xe' },
+  { name: 'os', label: 'ລະບົບປະຕິບັດການ', placeholder: 'Windows 11 Pro' },
+  { name: 'screen', label: 'ໜ້າຈໍ', placeholder: '15.6" FHD' },
+] as const
+
+const inputClass = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+
+/**
+ * ຟອມ spec + ວັນທີຊື້ + ປະກັນ.
+ * ເລີ່ມຕົ້ນເປັນປຸ່ມ — ກົດແລ້ວຈຶ່ງເປີດຟອມ ບໍ່ໃຫ້ໜ້າຮົກ
+ */
+export default function SpecForm({ asset }: { asset: AssetRow }) {
+  const [open, setOpen] = useState(false)
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="btn-secondary mt-3 rounded-lg px-4 py-2 text-sm"
+      >
+        {asset.has_spec ? 'ແກ້ໄຂ spec ແລະ ປະກັນ' : '+ ເພີ່ມ spec ແລະ ປະກັນ'}
+      </button>
+    )
+  }
+
+  return (
+    <ActionForm
+      action={saveAssetSpec}
+      className="mt-4 border-t border-line pt-4"
+    >
+      <input type="hidden" name="asset_code" value={asset.asset_code} />
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {FIELDS.map((field) => (
+          <label key={field.name} className="block text-xs text-muted">
+            {field.label}
+            <input
+              name={field.name}
+              defaultValue={asset[field.name] ?? ''}
+              placeholder={field.placeholder}
+              className={inputClass}
+            />
+          </label>
+        ))}
+
+        <label className="block text-xs text-muted">
+          ວັນທີຊື້
+          <input
+            type="date"
+            name="purchase_date"
+            defaultValue={asset.purchase_date?.slice(0, 10) ?? ''}
+            className={inputClass}
+          />
+        </label>
+
+        <label className="block text-xs text-muted">
+          ລາຄາຊື້
+          <input
+            name="purchase_price"
+            inputMode="decimal"
+            defaultValue={asset.purchase_price ?? ''}
+            className={inputClass}
+          />
+        </label>
+
+        <label className="block text-xs text-muted">
+          ປະກັນເຖິງວັນທີ
+          <input
+            type="date"
+            name="warranty_until"
+            defaultValue={asset.warranty_until?.slice(0, 10) ?? ''}
+            className={inputClass}
+          />
+        </label>
+
+        <label className="block text-xs text-muted lg:col-span-2">
+          ໝາຍເຫດປະກັນ
+          <input
+            name="warranty_note"
+            defaultValue={asset.warranty_note ?? ''}
+            placeholder="ຮ້ານ, ເງື່ອນໄຂ, ເລກໃບຮັບປະກັນ"
+            className={inputClass}
+          />
+        </label>
+
+        <label className="block text-xs text-muted sm:col-span-2 lg:col-span-3">
+          ໝາຍເຫດ spec
+          <textarea
+            name="spec_note"
+            rows={2}
+            defaultValue={asset.spec_note ?? ''}
+            className={inputClass}
+          />
+        </label>
+      </div>
+
+      <div className="mt-4 flex gap-2">
+        <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+          ບັນທຶກ
+        </SubmitButton>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+        >
+          ຍົກເລີກ
+        </button>
+      </div>
+    </ActionForm>
+  )
+}
