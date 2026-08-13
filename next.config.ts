@@ -7,7 +7,15 @@ const nextConfig: NextConfig = {
   // ໃສ່ IP ຂອງ "ເຄື່ອງທີ່ແລ່ນເຊີເວີ" ບໍ່ແມ່ນ IP ຂອງເຄື່ອງທີ່ເປີດເບິ່ງ —
   // Next ທຽບກັບ hostname ໃນ header Origin/Referer ຂອງ browser
   // IP ຂອງເຄື່ອງປ່ຽນຕາມ DHCP/ວົງເນັດ ຈຶ່ງໃສ່ທັງ wildcard ແລະ IP ທີ່ເຄີຍໃຊ້
-  allowedDevOrigins: ['10.0.*.*', '10.0.10.216', '10.0.21.161', '10.0.40.9'],
+  allowedDevOrigins: [
+    '10.0.*.*',
+    '10.0.10.216',
+    '10.0.21.161',
+    '10.0.40.9',
+    // ເປີດຜ່ານໂດເມນ (tunnel/proxy ມາຫາ dev server)
+    'odienmall.com',
+    '*.odienmall.com',
+  ],
 
   experimental: {
     serverActions: {
