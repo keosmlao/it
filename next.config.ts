@@ -12,9 +12,6 @@ const nextConfig: NextConfig = {
     '10.0.10.216',
     '10.0.21.161',
     '10.0.40.9',
-    // ເປີດຜ່ານໂດເມນ (tunnel/proxy ມາຫາ dev server)
-    'odienmall.com',
-    '*.odienmall.com',
   ],
 
   experimental: {
