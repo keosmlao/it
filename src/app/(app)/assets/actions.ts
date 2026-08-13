@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { pool, query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
+import { can } from '@/lib/auth/roles'
 import { logAudit, notify } from '@/lib/activity'
 import { refreshMovements } from '@/lib/assets/cache'
 import type { FormState } from '@/lib/action-state'
@@ -17,6 +18,7 @@ export async function lendAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const empCode = String(formData.get('emp_code') ?? '').trim()
 
@@ -81,6 +83,7 @@ export async function returnAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const returnedAt = String(formData.get('returned_at') ?? '') || null
   const condition = String(formData.get('return_condition') ?? 'good')
@@ -134,6 +137,7 @@ export async function transferAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const toEmpCode = String(formData.get('to_emp_code') ?? '').trim()
   const at = String(formData.get('transferred_at') ?? '') || null
@@ -372,6 +376,7 @@ export async function saveAssetSpec(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   if (!assetCode) return { error: 'ບໍ່ພົບລະຫັດອຸປະກອນ' }
 
@@ -439,6 +444,7 @@ export async function addRepair(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const issue = String(formData.get('issue') ?? '').trim()
 
@@ -476,6 +482,7 @@ export async function deleteRepair(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const id = String(formData.get('repair_id'))
   const assetCode = String(formData.get('asset_code') ?? '')
 

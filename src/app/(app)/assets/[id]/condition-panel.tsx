@@ -48,6 +48,7 @@ export type ConditionProps = {
   /** ຍັງມີຜູ້ຖືເປັນຄົນຢູ່ບໍ — ຖ້າມີ ຈະຕິດຕັ້ງ/ຕັດຈຳໜ່າຍບໍ່ໄດ້ */
   isAssigned: boolean
   canWriteOff: boolean
+  canManage: boolean
   employees: Employee[]
   locations: { code: string; name: string }[]
 }
@@ -125,8 +126,14 @@ export default function ConditionPanel(props: ConditionProps) {
       )}
 
       {/* ---------- ປຸ່ມ ---------- */}
+      {!props.canManage && !props.canWriteOff && (
+        <p className="mt-3 text-xs text-faint">
+          ບໍ່ມີສິດແກ້ສະພາບເຄື່ອງ — ເບິ່ງໄດ້ຢ່າງດຽວ
+        </p>
+      )}
+
       <div className="mt-3 flex flex-wrap gap-2">
-        {!scrapped && (
+        {props.canManage && !scrapped && (
           <button
             type="button"
             onClick={() => toggle('state')}
@@ -136,7 +143,7 @@ export default function ConditionPanel(props: ConditionProps) {
           </button>
         )}
 
-        {!scrapped && !deployed && !props.isAssigned && (
+        {props.canManage && !scrapped && !deployed && !props.isAssigned && (
           <button
             type="button"
             onClick={() => toggle('deploy')}
@@ -146,7 +153,7 @@ export default function ConditionPanel(props: ConditionProps) {
           </button>
         )}
 
-        {deployed && (
+        {props.canManage && deployed && (
           <button
             type="button"
             onClick={() => toggle('undeploy')}

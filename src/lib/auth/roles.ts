@@ -27,6 +27,66 @@ export const ROLE_LABEL_LO: Record<Role, string> = {
   requester: 'ຜູ້ແຈ້ງບັນຫາ',
 }
 
+/**
+ * ລາຍການສິດທີ່ຕັ້ງລາຍຄົນໄດ້.
+ *
+ * ທຸກຂໍ້ໃນນີ້ຖືກບັງຄັບໃຊ້ຈິງໃນ server action ຫຼື ໜ້າເວັບ —
+ * ບໍ່ມີຂໍ້ໃດເປັນພຽງປ້າຍປະດັບ. ຖ້າຈະເພີ່ມຂໍ້ໃໝ່ ຕ້ອງມີບ່ອນກວດຈິງກ່ອນ.
+ */
+export const PERMISSIONS = [
+  'useStaffArea',
+  'viewAllUnits',
+  'assignWork',
+  'approve',
+  'viewReports',
+  'manageAssets',
+  'administer',
+] as const
+
+export type Permission = (typeof PERMISSIONS)[number]
+
+export const PERMISSION_LABEL_LO: Record<Permission, string> = {
+  useStaffArea: 'ເຂົ້າໜ້າພາຍໃນພະແນກ IT',
+  viewAllUnits: 'ເບິ່ງຂໍ້ມູນທຸກໜ່ວຍງານ',
+  assignWork: 'ມອບໝາຍວຽກໃຫ້ຄົນອື່ນ',
+  approve: 'ອະນຸມັດຄຳຮ້ອງ / ຕັດຈຳໜ່າຍ',
+  viewReports: 'ເບິ່ງລາຍງານ KPI',
+  manageAssets: 'ບັນທຶກຢືມ–ຄືນ ແລະ ແກ້ທະບຽນອຸປະກອນ',
+  administer: 'ຕັ້ງຄ່າລະບົບ ແລະ ຈັດການສິດ',
+}
+
+/** ຊື່ສັ້ນສຳລັບຫົວຕາຕະລາງ */
+export const PERMISSION_SHORT_LO: Record<Permission, string> = {
+  useStaffArea: 'ເຂົ້າລະບົບ IT',
+  viewAllUnits: 'ທຸກໜ່ວຍງານ',
+  assignWork: 'ມອບວຽກ',
+  approve: 'ອະນຸມັດ',
+  viewReports: 'ລາຍງານ',
+  manageAssets: 'ອຸປະກອນ',
+  administer: 'ຕັ້ງຄ່າລະບົບ',
+}
+
+export const PERMISSION_HINT_LO: Record<Permission, string> = {
+  useStaffArea: 'ປິດແລ້ວຈະເຫັນສະເພາະໜ້າ /my ຄືພະນັກງານພະແນກອື່ນ',
+  viewAllUnits: 'ປົກກະຕິເຫັນສະເພາະໜ່ວຍງານຕົນເອງ',
+  assignWork: 'ມອບ ticket ຫຼື ວຽກໃຫ້ຄົນອື່ນ ນອກຈາກຕົນເອງ',
+  approve: 'ອະນຸມັດ/ປະຕິເສດຄຳຮ້ອງ ແລະ ຕັດຈຳໜ່າຍອຸປະກອນ',
+  viewReports: 'ໜ້າລາຍງານ ແລະ ແຜນວຽກທັງທີມ',
+  manageAssets: 'ຢືມ, ຄືນ, ໂອນ, ແກ້ spec, ບັນທຶກການສ້ອມ',
+  administer: 'ໃຫ້ດ້ວຍຄວາມລະມັດລະວັງ — ຕັ້ງສິດຄົນອື່ນໄດ້',
+}
+
+/** ສິດຕາມບົດບາດ ເມື່ອຍັງບໍ່ໄດ້ຕັ້ງລາຍຄົນ */
+const ROLE_DEFAULT: Record<Permission, (role: Role) => boolean> = {
+  useStaffArea: (r) => r !== 'requester',
+  viewAllUnits: (r) => r === 'manager',
+  assignWork: (r) => r === 'manager' || r === 'head',
+  approve: (r) => r === 'manager' || r === 'head',
+  viewReports: (r) => r === 'manager' || r === 'head',
+  manageAssets: (r) => r !== 'requester',
+  administer: (r) => r === 'manager',
+}
+
 export type ItStaff = {
   employee_id: number
   employee_code: string
@@ -41,29 +101,54 @@ export type ItStaff = {
   department_code: string | null
   department_name: string | null
   unread_count?: number
+  /** ສິດທີ່ຕັ້ງລາຍຄົນ — ຂໍ້ທີ່ບໍ່ມີໃນນີ້ຈະຄິດຕາມບົດບາດ */
+  permissions?: Partial<Record<Permission, boolean>> | null
+}
+
+/** ສິດຕາມບົດບາດຢ່າງດຽວ — ໃຊ້ໃນໜ້າຈັດການສິດເພື່ອສະແດງຄ່າຕັ້ງຕົ້ນ */
+export function roleAllows(role: Role, permission: Permission): boolean {
+  return ROLE_DEFAULT[permission](role)
+}
+
+/**
+ * ຄ່າທີ່ໃຊ້ຈິງ: ຖ້າມີການຕັ້ງລາຍຄົນໃຫ້ຖືເອົາອັນນັ້ນ (ທັງເປີດ ແລະ ຫ້າມ)
+ * ບໍ່ດັ່ງນັ້ນຈຶ່ງຄິດຕາມບົດບາດ
+ */
+export function allows(u: ItStaff, permission: Permission): boolean {
+  const override = u.permissions?.[permission]
+  return typeof override === 'boolean' ? override : roleAllows(u.role, permission)
 }
 
 /** Every permission decision in the app routes through this one object. */
 export const can = {
   /** ເຂົ້າໜ້າພາຍໃນຂອງພະແນກ IT ໄດ້ບໍ (ບັງຄັບຢູ່ (app)/layout.tsx) */
-  useStaffArea: (u: ItStaff) => u.role !== 'requester',
+  useStaffArea: (u: ItStaff) => allows(u, 'useStaffArea'),
 
   /** ເບິ່ງຂໍ້ມູນທັງພະແນກ (ບໍ່ຈຳກັດໜ່ວຍງານ) */
-  viewAllUnits: (u: ItStaff) => u.role === 'manager',
+  viewAllUnits: (u: ItStaff) => allows(u, 'viewAllUnits'),
 
   /** ເບິ່ງໜ່ວຍງານໃດແດ່ — null ໝາຍເຖິງທັງໝົດ, [] ໝາຍເຖິງບໍ່ເຫັນຜ່ານໜ່ວຍງານ */
   visibleUnits: (u: ItStaff): string[] | null =>
-    u.role === 'manager' ? null : u.role === 'requester' ? [] : u.unit_code ? [u.unit_code] : [],
+    can.viewAllUnits(u)
+      ? null
+      : !can.useStaffArea(u)
+        ? []
+        : u.unit_code
+          ? [u.unit_code]
+          : [],
 
   /** ມອບໝາຍວຽກໃຫ້ຄົນອື່ນ */
-  assignWork: (u: ItStaff) => u.role === 'manager' || u.role === 'head',
+  assignWork: (u: ItStaff) => allows(u, 'assignWork'),
 
   /** ອະນຸມັດຄຳຮ້ອງ */
-  approve: (u: ItStaff) => u.role === 'manager' || u.role === 'head',
+  approve: (u: ItStaff) => allows(u, 'approve'),
 
   /** ຈັດການສິດຜູ້ໃຊ້ ແລະ ຕັ້ງຄ່າລະບົບ */
-  administer: (u: ItStaff) => u.role === 'manager',
+  administer: (u: ItStaff) => allows(u, 'administer'),
 
   /** ເບິ່ງລາຍງານ KPI ຂອງທັງພະແນກ */
-  viewReports: (u: ItStaff) => u.role === 'manager' || u.role === 'head',
+  viewReports: (u: ItStaff) => allows(u, 'viewReports'),
+
+  /** ບັນທຶກຢືມ–ຄືນ, ໂອນຜູ້ຖືຄອງ, ແກ້ spec ແລະ ການສ້ອມ */
+  manageAssets: (u: ItStaff) => allows(u, 'manageAssets'),
 }

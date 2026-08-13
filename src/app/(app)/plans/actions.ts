@@ -4,8 +4,12 @@ import { revalidatePath } from 'next/cache'
 import { query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
 import { logAudit } from '@/lib/activity'
-import { shiftDate } from '@/lib/format'
-import { getPlanById, getOrCreatePlan } from '@/lib/plans/queries'
+import { isoDate, shiftDate } from '@/lib/format'
+import {
+  getPlanById,
+  getOrCreatePlan,
+  getPreviousPlan,
+} from '@/lib/plans/queries'
 import { PLAN_ITEM_STATUSES, type PlanItemStatus } from '@/lib/plans/model'
 import type { FormState } from '@/lib/action-state'
 
@@ -88,6 +92,124 @@ export async function addPlanItem(
   )
 
   await logAudit(user.employee_id, 'daily_plan', plan.id, 'add_item', title)
+  revalidatePath('/plans')
+  return { ok: true }
+}
+
+/**
+ * ໃສ່ວຽກຄ້າງເຂົ້າແຜນດ້ວຍກົດດຽວ — ດຶງຊື່ຈາກ ticket/task ເອງ
+ *
+ * ບໍ່ໃຫ້ພິມຊື່ຄືນ ເພາະການພິມຄືນນັ້ນແຫຼະຄືເຫດຜົນທີ່ຄົນເຊົາວາງແຜນ
+ */
+export async function addPlanItemFromSource(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const user = await requireUser()
+  const planDate = String(formData.get('plan_date') ?? '')
+  const link = String(formData.get('link') ?? '')
+  if (!planDate) return { error: 'ບໍ່ມີວັນທີ' }
+
+  const ticketId = link.startsWith('ticket:') ? link.slice(7) : null
+  const taskId = link.startsWith('task:') ? link.slice(5) : null
+  if (!ticketId && !taskId) return { error: 'ບໍ່ຮູ້ວ່າຈະໃສ່ວຽກໃດ' }
+
+  const source = ticketId
+    ? (
+        await query<{ title: string }>(
+          `select ticket_no || ' · ' || title as title from it.v_tickets
+            where id = $1::bigint and assignee_employee_id = $2::int`,
+          [ticketId, user.employee_id]
+        )
+      )[0]
+    : (
+        await query<{ title: string }>(
+          `select title from it.v_tasks
+            where id = $1::bigint and assignee_employee_id = $2::int`,
+          [taskId, user.employee_id]
+        )
+      )[0]
+
+  if (!source) return { error: 'ບໍ່ພົບວຽກ ຫຼື ວຽກນີ້ບໍ່ແມ່ນຂອງທ່ານ' }
+
+  const plan = await getOrCreatePlan(user.employee_id, planDate)
+
+  const inserted = await query<{ id: string }>(
+    // select ບໍ່ມີ from — ຄືນ 0 ຫຼື 1 ແຖວຕາມ where.
+    // ຢ່າໃຊ້ແບບ "select max(…) from … where not exists" ບ່ອນນີ້:
+    // aggregate ບໍ່ມີ group by ຄືນ 1 ແຖວສະເໝີ ເຖິງ where ຈະກັ່ນອອກໝົດ
+    // ແລ້ວມັນຈະໃສ່ຊໍ້າຢູ່ດີ
+    `insert into it.daily_plan_items
+       (plan_id, sort_order, title, planned_hours, ticket_id, task_id)
+     select $1::bigint,
+            coalesce((select max(sort_order) from it.daily_plan_items
+                       where plan_id = $1::bigint), 0) + 1,
+            $2::varchar, 1, $3::bigint, $4::bigint
+      where not exists (
+              select 1 from it.daily_plan_items i
+               where i.plan_id = $1::bigint
+                 and (($3::bigint is not null and i.ticket_id = $3::bigint)
+                   or ($4::bigint is not null and i.task_id = $4::bigint)))
+     returning id`,
+    [plan.id, source.title.slice(0, 200), ticketId, taskId]
+  )
+
+  if (inserted.length === 0) return { error: 'ວຽກນີ້ຢູ່ໃນແຜນແລ້ວ' }
+
+  await logAudit(user.employee_id, 'daily_plan', plan.id, 'add_item', source.title)
+  revalidatePath('/plans')
+  return { ok: true }
+}
+
+/**
+ * ກັອບປີ້ວຽກຈາກແຜນລ່າສຸດ — ວຽກ IT ສ່ວນຫຼາຍຊໍ້າກັນທຸກມື້
+ *
+ * ຂ້າມວຽກທີ່ເຮັດແລ້ວ ແລະ ອັນທີ່ຢູ່ໃນແຜນມື້ນີ້ຢູ່ແລ້ວ
+ */
+export async function copyPreviousPlan(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const user = await requireUser()
+  const planDate = String(formData.get('plan_date') ?? '')
+  if (!planDate) return { error: 'ບໍ່ມີວັນທີ' }
+
+  const source = await getPreviousPlan(user.employee_id, planDate)
+  if (!source) return { error: 'ບໍ່ພົບແຜນເກົ່າທີ່ມີວຽກ' }
+
+  const plan = await getOrCreatePlan(user.employee_id, planDate)
+  if (plan.status === 'closed') return { error: 'ແຜນນີ້ສະຫຼຸບແລ້ວ' }
+
+  const copied = await query<{ id: string }>(
+    `insert into it.daily_plan_items
+       (plan_id, sort_order, title, detail, planned_hours, ticket_id, task_id)
+     select $1::bigint,
+            coalesce((select max(sort_order) from it.daily_plan_items
+                       where plan_id = $1::bigint), 0)
+              + row_number() over (order by src.sort_order),
+            src.title, src.detail, src.planned_hours, src.ticket_id, src.task_id
+       from it.daily_plan_items src
+      where src.plan_id = $2::bigint
+        and src.status <> 'done'
+        and not exists (
+              select 1 from it.daily_plan_items i
+               where i.plan_id = $1::bigint
+                 and i.title = src.title)
+     returning id`,
+    [plan.id, source.id]
+  )
+
+  if (copied.length === 0) {
+    return { error: 'ບໍ່ມີວຽກໃຫ້ກັອບປີ້ — ວຽກເກົ່າເຮັດແລ້ວ ຫຼື ຢູ່ໃນແຜນແລ້ວ' }
+  }
+
+  await logAudit(
+    user.employee_id,
+    'daily_plan',
+    plan.id,
+    'copy_previous',
+    `${copied.length} ວຽກ ຈາກ ${isoDate(source.plan_date)}`
+  )
   revalidatePath('/plans')
   return { ok: true }
 }

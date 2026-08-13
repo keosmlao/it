@@ -2,11 +2,16 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { requireUser } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
-import { listPlanlessStaff, listTeamPlans } from '@/lib/plans/queries'
+import {
+  listPlanlessStaff,
+  listTeamPlans,
+  listTeamWeek,
+} from '@/lib/plans/queries'
 import { PLAN_STATUS_LABEL_LO } from '@/lib/plans/model'
 import { isoDate, shiftDate, todayISO } from '@/lib/format'
 import { safeDate } from '@/lib/assets/model'
 import ExportMenu from '@/components/export-menu'
+import WeekGrid from './week-grid'
 
 export const metadata = { title: 'ແຜນວຽກທັງທີມ' }
 
@@ -21,9 +26,14 @@ export default async function TeamPlansPage({
   // ຜູ້ຈັດການເຫັນທັງພະແນກ, ຫົວໜ້າເຫັນສະເພາະໜ່ວຍງານຕົນ
   const unitCode = can.viewAllUnits(user) ? null : user.unit_code
 
-  const [plans, planless] = await Promise.all([
+  // ວັນທີເລືອກຢູ່ຂວາສຸດ — ເບິ່ງຫຼັງ 6 ມື້ ເພາະສ່ວນຫຼາຍຢາກຮູ້ວ່າຜ່ານມາເປັນແນວໃດ
+  const weekFrom = shiftDate(date, -6)
+  const days = Array.from({ length: 7 }, (_, i) => shiftDate(weekFrom, i))
+
+  const [plans, planless, week] = await Promise.all([
     listTeamPlans(date, unitCode),
     listPlanlessStaff(date, unitCode),
+    listTeamWeek(weekFrom, date, unitCode),
   ])
 
   const totalPlanned = plans.reduce((sum, p) => sum + Number(p.planned_hours), 0)
@@ -64,6 +74,8 @@ export default async function TeamPlansPage({
           <ExportMenu dataset="plans" query={{ from: date, to: date }} />
         </div>
       </div>
+
+      <WeekGrid cells={week} days={days} selected={date} />
 
       {planless.length > 0 && (
         <p className="mt-4 rounded-lg bg-brand-orange/10 px-4 py-3 text-sm text-body">

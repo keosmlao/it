@@ -1,9 +1,15 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { query } from '@/lib/db'
+import { pool, query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
-import { can } from '@/lib/auth/roles'
+import {
+  can,
+  PERMISSIONS,
+  roleAllows,
+  type Permission,
+  type Role,
+} from '@/lib/auth/roles'
 import { logAudit } from '@/lib/activity'
 import { invalidate } from '@/lib/cache'
 import type { FormState } from '@/lib/action-state'
@@ -241,6 +247,110 @@ export async function sendTestNotification(
   if (result.sent === 0) {
     return { error: 'ສົ່ງບໍ່ສຳເລັດ — ເບິ່ງເຫດຜົນໃນຕາຕະລາງລຸ່ມ' }
   }
+  return { ok: true }
+}
+
+/**
+ * ຕັ້ງສິດລາຍຄົນ — ຮັບຄ່າ 3 ແບບຕໍ່ໜຶ່ງຂໍ້: '' ຕາມບົດບາດ, 'allow', 'deny'
+ *
+ * ບັນທຶກໝົດທຸກຂໍ້ໃນຄັ້ງດຽວ ຈຶ່ງກວດ "ຍັງເຫຼືອຜູ້ດູແລລະບົບ" ໄດ້ຖືກຕ້ອງ
+ */
+export async function setUserPermissions(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const user = await requireManager()
+  const employeeId = Number(formData.get('employee_id'))
+  if (!Number.isInteger(employeeId)) return { error: 'ບໍ່ພົບຜູ້ໃຊ້' }
+
+  const target = (
+    await query<{ role: Role; fullname_lo: string }>(
+      `select v.role, v.fullname_lo from it.v_portal_users v
+        where v.employee_id = $1::int`,
+      [employeeId]
+    )
+  )[0]
+  if (!target) return { error: 'ບໍ່ພົບຜູ້ໃຊ້' }
+
+  const wanted = new Map<Permission, boolean | null>()
+  for (const p of PERMISSIONS) {
+    const raw = String(formData.get(`perm_${p}`) ?? '')
+    wanted.set(p, raw === 'allow' ? true : raw === 'deny' ? false : null)
+  }
+
+  const adminWanted = wanted.get('administer')
+  const adminEffective =
+    adminWanted === null ? roleAllows(target.role, 'administer') : adminWanted
+
+  // ກັນລັອກຕົນເອງອອກ — ຖອດສິດຕົນເອງແລ້ວແກ້ຄືນບໍ່ໄດ້ອີກ
+  if (employeeId === user.employee_id && !adminEffective) {
+    return { error: 'ຖອດສິດຕັ້ງຄ່າລະບົບຂອງຕົນເອງບໍ່ໄດ້ — ໃຫ້ຄົນອື່ນຖອດໃຫ້' }
+  }
+
+  // transaction ຈິງ ຕ້ອງໃຊ້ connection ດຽວ — pool.query ແຈກຄົນລະເສັ້ນ
+  const client = await pool.connect()
+  try {
+    await client.query('begin')
+    await client.query(
+      'delete from it.user_permissions where employee_id = $1::int',
+      [employeeId]
+    )
+
+    for (const [permission, allowed] of wanted) {
+      if (allowed === null) continue
+      // ຄ່າທີ່ກົງກັບບົດບາດຢູ່ແລ້ວ ບໍ່ຕ້ອງເກັບ — ໃຫ້ຕາມບົດບາດຕໍ່ໄປ
+      if (allowed === roleAllows(target.role, permission)) continue
+
+      await client.query(
+        `insert into it.user_permissions
+           (employee_id, permission, allowed, note, updated_by)
+         values ($1::int, $2::varchar, $3::boolean, $4::varchar, $5::int)`,
+        [
+          employeeId,
+          permission,
+          allowed,
+          String(formData.get('note') ?? '').trim() || null,
+          user.employee_id,
+        ]
+      )
+    }
+
+    // ຕ້ອງເຫຼືອຜູ້ດູແລລະບົບຢ່າງໜ້ອຍ 1 ຄົນສະເໝີ
+    const admins = await client.query<{ n: string }>(
+      `select count(*) as n
+         from it.v_portal_users v
+         left join it.user_permissions p
+           on p.employee_id = v.employee_id and p.permission = 'administer'
+        where coalesce(p.allowed, v.role = 'manager')`
+    )
+    if (Number(admins.rows[0]?.n ?? 0) === 0) {
+      await client.query('rollback')
+      return { error: 'ຕ້ອງເຫຼືອຜູ້ດູແລລະບົບຢ່າງໜ້ອຍ 1 ຄົນ' }
+    }
+
+    await client.query('commit')
+  } catch (err) {
+    await client.query('rollback')
+    throw err
+  } finally {
+    client.release()
+  }
+
+  const changed = [...wanted.entries()]
+    .filter(([, v]) => v !== null)
+    .map(([k, v]) => `${k}=${v ? 'allow' : 'deny'}`)
+    .join(', ')
+
+  await logAudit(
+    user.employee_id,
+    'user_permission',
+    employeeId,
+    'set',
+    changed || 'ຕາມບົດບາດທັງໝົດ'
+  )
+  revalidatePath('/admin')
+  revalidatePath('/', 'layout')
+
   return { ok: true }
 }
 

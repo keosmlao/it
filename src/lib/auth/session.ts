@@ -52,7 +52,10 @@ export const getCurrentUser = cache(async (): Promise<ItStaff | null> => {
             v.unit_code, v.unit_name_lo, v.position_code, v.position_name_lo,
             v.role, v.is_it_staff, v.department_code, v.department_name,
             (select count(*)::int from it.notifications n
-              where n.employee_id = s.employee_id and n.is_read = false) as unread_count
+              where n.employee_id = s.employee_id and n.is_read = false) as unread_count,
+            (select json_object_agg(p.permission, p.allowed)
+               from it.user_permissions p
+              where p.employee_id = s.employee_id)                       as permissions
        from it.sessions s
        join it.v_portal_users v on v.employee_id = s.employee_id
       where s.token = $1

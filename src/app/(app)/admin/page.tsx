@@ -3,6 +3,9 @@ import ActionForm, { SubmitButton } from '@/components/action-form'
 import { query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
 import { ROLES, ROLE_LABEL_LO, can, type Role } from '@/lib/auth/roles'
+import PermissionGrid, {
+  type PermissionRow,
+} from './permission-grid'
 import { getPriorities } from '@/lib/tickets/queries'
 import { formatDateTime, formatDuration } from '@/lib/format'
 import { lineConfigured } from '@/lib/notify/line'
@@ -42,6 +45,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
     categories,
     staff,
     overrides,
+    permissionRows,
     audit,
     auditCount,
     outbox,
@@ -65,6 +69,9 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
     }>('select * from it.v_it_staff order by employee_code'),
     query<{ employee_id: number; role: string; note: string | null }>(
       'select employee_id, role, note from it.user_role_override'
+    ),
+    query<PermissionRow>(
+      'select employee_id, permission, allowed from it.user_permissions'
     ),
     query<{
       id: string
@@ -250,6 +257,13 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
             ເພີ່ມ / ອັບເດດ
           </button>
         </ActionForm>
+      </Panel>
+
+      <Panel
+        title="ສິດລາຍຄົນ"
+        hint="ບົດບາດເປັນຄ່າຕັ້ງຕົ້ນ — ຕັ້ງທີ່ນີ້ເມື່ອຢາກເປີດ ຫຼື ຫ້າມສະເພາະບາງຂໍ້ໃຫ້ຄົນໃດຄົນໜຶ່ງ ໂດຍບໍ່ຕ້ອງປ່ຽນບົດບາດ. ເລື່ອນຕາຕະລາງໄປຂວາເພື່ອເບິ່ງໃຫ້ຄົບ"
+      >
+        <PermissionGrid staff={staff} rows={permissionRows} />
       </Panel>
 
       <Panel

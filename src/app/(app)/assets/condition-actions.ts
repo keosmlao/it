@@ -20,6 +20,7 @@ export async function markDamaged(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const state = String(formData.get('stock_state') ?? '') as StockState
   const detail = String(formData.get('damage_detail') ?? '').trim()
@@ -193,6 +194,7 @@ export async function deployAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const place = String(formData.get('place') ?? '').trim()
 
@@ -270,6 +272,7 @@ export async function undeployAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
+  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const note = String(formData.get('remove_note') ?? '').trim()
 

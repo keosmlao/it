@@ -30,6 +30,8 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
   const { id } = await params
   const user = await requireUser()
 
+  const canManage = can.manageAssets(user)
+
   const asset = await getAsset(decodeURIComponent(id))
   if (!asset) notFound()
 
@@ -113,7 +115,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
             </p>
           )}
 
-          <SpecForm asset={asset} />
+          {canManage && <SpecForm asset={asset} />}
 
           <details className="group mt-4 border-t border-line pt-3">
             <summary className="cursor-pointer list-none text-sm text-muted hover:text-fg">
@@ -168,7 +170,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
             </ol>
           )}
 
-          <RepairForm assetCode={asset.asset_code} />
+          {canManage && <RepairForm assetCode={asset.asset_code} />}
         </section>
       </div>
 
@@ -227,11 +229,17 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
             </div>
           )}
 
-          {!asset.is_assigned && (
+          {!canManage && (
+            <p className="mt-3 text-xs text-faint">
+              ບໍ່ມີສິດບັນທຶກຢືມ–ຄືນ — ເບິ່ງໄດ້ຢ່າງດຽວ
+            </p>
+          )}
+
+          {canManage && !asset.is_assigned && (
             <LendForm assetCode={asset.asset_code} employees={employees} />
           )}
 
-          {asset.is_assigned && (
+          {canManage && asset.is_assigned && (
             <>
               <ReturnForm assetCode={asset.asset_code} />
               <TransferForm
@@ -242,7 +250,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
             </>
           )}
 
-          {asset.is_assigned && asset.holder_source === 'erp' && (
+          {canManage && asset.is_assigned && asset.holder_source === 'erp' && (
             <p className="mt-3 rounded-lg bg-brand-blue/5 px-3 py-2 text-xs text-muted">
               ໃບຢືມນີ້ອອກຈາກ ERP — ບັນທຶກການຄືນຢູ່ນີ້ໄດ້
               ລະບົບຈະອອກໃບຄືນຂອງ IT (RTIT…) ໄວ້ທັບ ໂດຍບໍ່ແກ້ຂໍ້ມູນໃນ ERP
@@ -269,6 +277,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
           responsibleName={deployment?.responsible_name ?? null}
           isAssigned={asset.is_assigned}
           canWriteOff={can.approve(user)}
+          canManage={canManage}
           employees={employees}
           locations={locations}
         />

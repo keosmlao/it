@@ -32,7 +32,9 @@
     "seed:kb": "node --env-file=.env.local scripts/seed-kb.mjs",
     "deploy": "npm ci && npm run db:migrate && npm run build",
     "db:smoke-condition": "node --env-file=.env.local scripts/smoke-condition.mjs",
-    "smoke:spec-history": "node --env-file=.env.local scripts/smoke-spec-history.mjs"
+    "smoke:spec-history": "node --env-file=.env.local scripts/smoke-spec-history.mjs",
+    "smoke:permissions": "node --env-file=.env.local scripts/smoke-permissions.mjs",
+    "smoke:plan-quickadd": "node --env-file=.env.local scripts/smoke-plan-quickadd.mjs"
   },
   "dependencies": {
     "@fontsource/noto-sans-lao": "^5.3.0",

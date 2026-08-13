@@ -3,16 +3,25 @@ import { requireUser } from '@/lib/auth/session'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import {
   getPlan,
+  getPlanCandidates,
   getPlanItems,
   getPlanSources,
   getPlanStreak,
+  getPreviousPlan,
 } from '@/lib/plans/queries'
 import { PLAN_STATUS_LABEL_LO } from '@/lib/plans/model'
 import { can } from '@/lib/auth/roles'
 import { isoDate, shiftDate, todayISO } from '@/lib/format'
 import { safeDate } from '@/lib/assets/model'
 import PlanItemRow from './plan-item-row'
-import { addPlanItem, closePlan, savePlanHeader, submitPlan } from './actions'
+import {
+  addPlanItem,
+  addPlanItemFromSource,
+  closePlan,
+  copyPreviousPlan,
+  savePlanHeader,
+  submitPlan,
+} from './actions'
 
 export const metadata = { title: 'ແຜນວຽກປະຈຳວັນ' }
 
@@ -24,10 +33,12 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
   // ບໍ່ສ້າງແຖວຕອນເປີດເບິ່ງ — ແຖວຈະຖືກສ້າງເມື່ອຜູ້ໃຊ້ບັນທຶກຄັ້ງທຳອິດ
   const plan = await getPlan(user.employee_id, date)
 
-  const [items, sources, streak] = await Promise.all([
+  const [items, sources, streak, candidates, previous] = await Promise.all([
     plan ? getPlanItems(plan.id) : [],
     getPlanSources(user.employee_id),
     getPlanStreak(user.employee_id, date),
+    getPlanCandidates(user.employee_id, plan?.id ?? null),
+    getPreviousPlan(user.employee_id, date),
   ])
 
   const editable = plan?.status !== 'closed'
@@ -157,6 +168,60 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
           )}
         </ul>
       </section>
+
+      {/* ---------- ໃສ່ດ້ວຍກົດດຽວ ---------- */}
+      {editable &&
+        (candidates.tickets.length > 0 ||
+          candidates.tasks.length > 0 ||
+          previous) && (
+          <section className="glass-card mt-4 rounded-xl p-4">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="text-sm font-semibold text-fg">ໃສ່ໄວ ໆ</h2>
+              <span className="text-xs text-muted">
+                ບໍ່ຕ້ອງພິມຄືນ — ກົດເອົາຈາກວຽກທີ່ຄ້າງຢູ່
+              </span>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {previous && (
+                <ActionForm action={copyPreviousPlan}>
+                  <input type="hidden" name="plan_date" value={date} />
+                  <SubmitButton className="btn-secondary rounded-lg px-3 py-1.5 text-sm">
+                    ⧉ ກັອບປີ້ແຜນ {isoDate(previous.plan_date)} ({previous.item_count}{' '}
+                    ວຽກ)
+                  </SubmitButton>
+                </ActionForm>
+              )}
+
+              {candidates.tickets.map((t) => (
+                <ActionForm key={`tk-${t.id}`} action={addPlanItemFromSource}>
+                  <input type="hidden" name="plan_date" value={date} />
+                  <input type="hidden" name="link" value={`ticket:${t.id}`} />
+                  <SubmitButton
+                    pendingLabel="…"
+                    className="btn-secondary max-w-xs truncate rounded-lg px-3 py-1.5 text-sm"
+                  >
+                    + {t.ticket_no} · {t.title}
+                  </SubmitButton>
+                </ActionForm>
+              ))}
+
+              {candidates.tasks.map((t) => (
+                <ActionForm key={`ts-${t.id}`} action={addPlanItemFromSource}>
+                  <input type="hidden" name="plan_date" value={date} />
+                  <input type="hidden" name="link" value={`task:${t.id}`} />
+                  <SubmitButton
+                    pendingLabel="…"
+                    className="btn-secondary max-w-xs truncate rounded-lg px-3 py-1.5 text-sm"
+                  >
+                    + {t.title}
+                    {t.project_name && ` (${t.project_name})`}
+                  </SubmitButton>
+                </ActionForm>
+              ))}
+            </div>
+          </section>
+        )}
 
       {/* ---------- ເພີ່ມວຽກ ---------- */}
       {editable && (
