@@ -16,7 +16,12 @@ export async function logAudit(
   )
 }
 
-/** ແຈ້ງເຕືອນຄົນໜຶ່ງ — ຂ້າມຖ້າແຈ້ງຫາຕົນເອງ */
+/**
+ * ແຈ້ງເຕືອນຄົນໜຶ່ງ — ຂ້າມຖ້າແຈ້ງຫາຕົນເອງ.
+ *
+ * ບັນທຶກໃນລະບົບກ່ອນ ແລ້ວເອົາເຂົ້າຄິວສົ່ງ LINE. ຄິວລົ້ມກໍບໍ່ໃຫ້ກະທົບການບັນທຶກ
+ * ເພາະການແຈ້ງເຕືອນໃນລະບົບສຳຄັນກວ່າ ແລະ ຜູ້ໃຊ້ກຳລັງລໍຜົນຂອງການບັນທຶກຢູ່
+ */
 export async function notify(
   employeeId: number | null,
   actorEmployeeId: number,
@@ -26,11 +31,19 @@ export async function notify(
 ) {
   if (!employeeId || employeeId === actorEmployeeId) return
 
-  await query(
+  const rows = await query<{ id: string }>(
     `insert into it.notifications (employee_id, title, body, link)
-     values ($1, $2, $3, $4)`,
+     values ($1, $2, $3, $4)
+     returning id`,
     [employeeId, title, body, link]
   )
+
+  try {
+    const { enqueueNotification } = await import('./notify/outbox')
+    await enqueueNotification(employeeId, rows[0]?.id ?? null, title, body, link)
+  } catch (e) {
+    console.error('ເອົາການແຈ້ງເຕືອນເຂົ້າຄິວບໍ່ສຳເລັດ:', (e as Error).message)
+  }
 }
 
 export async function getUnreadCount(employeeId: number): Promise<number> {

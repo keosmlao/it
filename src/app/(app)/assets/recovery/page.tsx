@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { requireUser } from '@/lib/auth/session'
 import { getRecoveryStats, paginateRecoveries } from '@/lib/assets/stock'
 import Pagination from '@/components/pagination'
+import ExportMenu from '@/components/export-menu'
 import { pageNumber } from '@/lib/pagination'
 import { safeDate } from '@/lib/assets/model'
 import RecoveryRow from './recovery-row'
@@ -35,9 +36,12 @@ export default async function RecoveryPage({
           </span>{' '}
           · ກຳລັງຕິດຕາມ {stats?.in_progress ?? 0}
         </p>
-        <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
-          ← ທະບຽນອຸປະກອນ
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            ← ທະບຽນອຸປະກອນ
+          </Link>
+          <ExportMenu dataset="recovery" label="ດຶງລາຍການທວງ" />
+        </div>
       </div>
 
       <nav className="mt-4 flex flex-wrap gap-1.5">

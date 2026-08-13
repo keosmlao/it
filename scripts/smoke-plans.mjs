@@ -1,6 +1,6 @@
-// Usage: node --env-file=.env.local scripts/smoke-purchase-plans.mjs
-// Walks a purchase request through the full approval flow and a daily plan
-// through plan → progress → close-with-carry, inside one rolled-back transaction.
+// Usage: node --env-file=.env.local scripts/smoke-plans.mjs
+// Walks a daily plan through plan → progress → close-with-carry, inside one
+// rolled-back transaction. (ໃບສະເໜີຊື້ຍ້າຍໄປ scripts/smoke-pr-erp.mjs ແລ້ວ)
 import pg from 'pg'
 
 const c = new pg.Client({ connectionString: process.env.DATABASE_URL })
@@ -22,100 +22,6 @@ try {
   const head = staff.find((s) => s.role === 'head')
   const support = staff.find((s) => s.role === 'support')
   check(!!manager && !!head && !!support, 'ມີຜູ້ຈັດການ, ຫົວໜ້າ ແລະ ພະນັກງານ support')
-
-  // ---------- ໃບສະເໜີຊື້ ----------
-  console.log('\n[1] ໃບສະເໜີຊື້ (PR)')
-  const pr = (
-    await c.query(
-      `insert into it.purchase_requests
-         (title, purpose, requester_employee_id, unit_code, need_date, created_by)
-       values ($1, $2, $3, $4, current_date + 14, $3)
-       returning id, pr_no, status`,
-      ['ຈັດຊື້ໂນດບຸກທົດສອບ', 'ທົດແທນເຄື່ອງເກົ່າ', support.employee_id, support.unit_code]
-    )
-  ).rows[0]
-  check(/^PR-\d{4}-\d{3}$/.test(pr.pr_no), `ເລກໃບສະເໜີຊື້ຮູບແບບຖືກ (${pr.pr_no})`)
-  check(pr.status === 'draft', 'ໃບໃໝ່ເລີ່ມທີ່ສະຖານະຮ່າງ')
-
-  for (const [name, qty, price] of [
-    ['Notebook Lenovo E14', 2, 12_000_000],
-    ['Mouse ໄຮ້ສາຍ', 2, 250_000],
-  ]) {
-    await c.query(
-      `insert into it.purchase_request_lines
-         (pr_id, line_no, item_name, unit, qty, est_price)
-       select $1::bigint, coalesce(max(line_no), 0) + 1, $2, 'ອັນ', $3, $4
-         from it.purchase_request_lines where pr_id = $1::bigint`,
-      [pr.id, name, qty, price]
-    )
-  }
-
-  let prv = (await c.query('select * from it.v_purchase_requests where id = $1', [pr.id]))
-    .rows[0]
-  check(prv.line_count === '2', 'ນັບຈຳນວນລາຍການໃນໃບຖືກ')
-  check(
-    Number(prv.total_est) === 2 * 12_000_000 + 2 * 250_000,
-    `ລວມມູນຄ່າປະມານຖືກ (${Number(prv.total_est).toLocaleString()})`
-  )
-
-  await c.query(`update it.purchase_requests set status = 'submitted' where id = $1`, [
-    pr.id,
-  ])
-  await c.query(
-    `insert into it.pr_approvals (pr_id, level, approver_employee_id, decision)
-     values ($1, 1, $2, 'approved')`,
-    [pr.id, head.employee_id]
-  )
-  await c.query(
-    `update it.purchase_requests set status = 'head_approved', current_level = 2
-      where id = $1`,
-    [pr.id]
-  )
-  await c.query(
-    `insert into it.pr_approvals (pr_id, level, approver_employee_id, decision)
-     values ($1, 2, $2, 'approved')`,
-    [pr.id, manager.employee_id]
-  )
-  await c.query(
-    `update it.purchase_requests
-        set status = 'approved', approved_by = $2, approved_at = now()
-      where id = $1`,
-    [pr.id, manager.employee_id]
-  )
-
-  prv = (await c.query('select * from it.v_purchase_requests where id = $1', [pr.id]))
-    .rows[0]
-  check(prv.approval_count === '2', 'ບັນທຶກການອະນຸມັດຄົບ 2 ຂັ້ນ')
-  check(prv.is_finished === true, 'ໃບທີ່ອະນຸມັດແລ້ວນັບເປັນຈົບ')
-  check(prv.approved_by_name !== null, 'ຊື່ຜູ້ອະນຸມັດ join ໄດ້')
-
-  await c.query(
-    `update it.purchase_requests set po_no = 'PO-TEST-1', status = 'ordered'
-      where id = $1`,
-    [pr.id]
-  )
-  await c.query(
-    `update it.purchase_requests set status = 'received', received_at = current_date
-      where id = $1`,
-    [pr.id]
-  )
-  prv = (await c.query('select status from it.v_purchase_requests where id = $1', [pr.id]))
-    .rows[0]
-  check(prv.status === 'received', 'ປິດໃບເມື່ອຮັບເຄື່ອງແລ້ວ')
-
-  let rejected = false
-  try {
-    await c.query('savepoint sp1')
-    await c.query(
-      `insert into it.purchase_request_lines (pr_id, line_no, item_name, qty)
-       values ($1, 99, 'ຈຳນວນຕິດລົບ', -1)`,
-      [pr.id]
-    )
-  } catch {
-    rejected = true
-    await c.query('rollback to savepoint sp1')
-  }
-  check(rejected, 'ລາຍການທີ່ຈຳນວນ ≤ 0 ຖືກປະຕິເສດ')
 
   // ---------- ແຜນວຽກປະຈຳວັນ ----------
   console.log('\n[2] ແຜນວຽກປະຈຳວັນ')

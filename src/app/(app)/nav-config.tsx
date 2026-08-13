@@ -1,4 +1,5 @@
 import { can, type ItStaff } from '@/lib/auth/roles'
+import type { NavBadges } from '@/lib/nav-badges-model'
 
 export type NavItem = {
   href: string
@@ -6,6 +7,10 @@ export type NavItem = {
   icon: string
   /** undefined = ເຫັນໄດ້ທຸກ role */
   visible?: (user: ItStaff) => boolean
+  /** ຕົວເລກທີ່ສະແດງຂ້າງຊື່ — ບອກວ່າມີເທົ່າໃດລໍຢູ່ */
+  badge?: keyof NavBadges
+  /** ຕົວເລກນີ້ເປັນເລື່ອງດ່ວນ (ສະແດງເປັນສີແດງ) */
+  urgent?: boolean
   children?: NavItem[]
 }
 
@@ -29,21 +34,30 @@ export const ICON = {
   plus: 'M12 5v14M5 12h14',
   list: 'M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01',
   logout: 'M15 17l5-5-5-5M20 12H9M12 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6',
+  swap: 'M7 8h13l-3-3M17 16H4l3 3',
+  warning: 'M12 9v4m0 4h.01M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z',
+  network: 'M12 3v6M5 21v-4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M9 3h6v6H9zM3 21h4M17 21h4',
+  box: 'M3 8.5 12 4l9 4.5v7L12 20l-9-4.5v-7ZM3 8.5 12 13m0 0 9-4.5M12 13v7',
 } as const
 
-/** ໂຄງສ້າງເມນູຂອງລະບົບ — ໃຊ້ຮ່ວມກັນລະຫວ່າງ sidebar ແລະ breadcrumb */
+/**
+ * ໂຄງສ້າງເມນູ — ຈັດຕາມ "ວຽກທີ່ເຮັດ" ບໍ່ແມ່ນຕາມຊື່ໜ້າ
+ *
+ * ອອກແບບໃໝ່ເພາະລາຍການໃຫຍ່ໃນກຸ່ມອຸປະກອນຂຶ້ນເຖິງ 9 ແຖວ ຈົນຫາບໍ່ພົບ.
+ * ດຽວນີ້ຮວມເປັນ 3 ຫົວຂໍ້ (ທະບຽນ / ຢືມ–ຄືນ / ສະພາບ & ຕິດຕາມ)
+ * ແລະ ໃສ່ຕົວເລກໄວ້ຂ້າງອັນທີ່ຕ້ອງເບິ່ງກ່ອນ
+ */
 export const NAV_GROUPS: NavGroup[] = [
   {
     title: 'ສູນຄວບຄຸມ',
     items: [
       { href: '/', label: 'ພາບລວມ', icon: ICON.home },
-      { href: '/tasks', label: 'ວຽກຂອງຂ້ອຍ', icon: ICON.task },
+      { href: '/tasks', label: 'ວຽກຂອງຂ້ອຍ', icon: ICON.task, badge: 'myWork' },
       {
         href: '/plans',
         label: 'ແຜນວຽກປະຈຳວັນ',
         icon: ICON.clock,
         children: [
-          { href: '/plans', label: 'ແຜນຂອງຂ້ອຍ', icon: ICON.list },
           {
             href: '/plans/team',
             label: 'ແຜນທັງທີມ',
@@ -52,7 +66,12 @@ export const NAV_GROUPS: NavGroup[] = [
           },
         ],
       },
-      { href: '/notifications', label: 'ການແຈ້ງເຕືອນ', icon: ICON.bell },
+      {
+        href: '/notifications',
+        label: 'ການແຈ້ງເຕືອນ',
+        icon: ICON.bell,
+        badge: 'notifications',
+      },
     ],
   },
   {
@@ -62,9 +81,10 @@ export const NAV_GROUPS: NavGroup[] = [
         href: '/tickets',
         label: 'Ticket ແຈ້ງບັນຫາ',
         icon: ICON.ticket,
+        badge: 'tickets',
         children: [
-          { href: '/tickets', label: 'ລາຍການທັງໝົດ', icon: ICON.list },
-          { href: '/tickets?status=open&mine=1', label: 'ຂອງຂ້ອຍ', icon: ICON.list },
+          { href: '/tickets?status=open&mine=1', label: 'ຂອງຂ້ອຍ', icon: ICON.task },
+          { href: '/tickets?status=all&overdue=1', label: 'ເກີນ SLA', icon: ICON.warning },
           { href: '/tickets/new', label: 'ແຈ້ງບັນຫາໃໝ່', icon: ICON.plus },
         ],
       },
@@ -72,19 +92,67 @@ export const NAV_GROUPS: NavGroup[] = [
         href: '/requests',
         label: 'ຄຳຮ້ອງ & ອະນຸມັດ',
         icon: ICON.request,
-        children: [
-          { href: '/requests', label: 'ລາຍການຄຳຮ້ອງ', icon: ICON.list },
-          { href: '/requests/new', label: 'ສ້າງຄຳຮ້ອງ', icon: ICON.plus },
-        ],
+        badge: 'requests',
+        children: [{ href: '/requests/new', label: 'ສ້າງຄຳຮ້ອງ', icon: ICON.plus }],
       },
       {
         href: '/purchase',
         label: 'ໃບສະເໜີຊື້ (PR)',
         icon: ICON.request,
+        badge: 'purchase',
         children: [
-          { href: '/purchase', label: 'ລາຍການໃບສະເໜີຊື້', icon: ICON.list },
-          { href: '/purchase?status=all&mine=1', label: 'ຂອງຂ້ອຍ', icon: ICON.list },
+          { href: '/purchase?status=all&mine=1', label: 'ຂອງຂ້ອຍ', icon: ICON.task },
           { href: '/purchase/new', label: 'ສ້າງໃບສະເໜີຊື້', icon: ICON.plus },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'ອຸປະກອນ',
+    items: [
+      {
+        href: '/assets',
+        label: 'ທະບຽນອຸປະກອນ',
+        icon: ICON.asset,
+        children: [
+          { href: '/assets?holding=assigned', label: 'ມີຜູ້ຖືຄອງ', icon: ICON.task },
+          { href: '/assets?holding=spare', label: 'ຢູ່ໃນສາງ', icon: ICON.box },
+          { href: '/assets?holding=it', label: 'ຂອງພະແນກ IT', icon: ICON.settings },
+        ],
+      },
+      {
+        href: '/assets/lend',
+        label: 'ຢືມ–ຄືນ',
+        icon: ICON.swap,
+        children: [
+          { href: '/assets/holders', label: 'ຜູ້ຖືຄອງອຸປະກອນ', icon: ICON.task },
+          { href: '/assets/documents', label: 'ເອກະສານຢືມ–ຄືນ', icon: ICON.request },
+          { href: '/assets/movements', label: 'ປະຫວັດຢືມ–ຄືນ', icon: ICON.clock },
+        ],
+      },
+      {
+        href: '/assets/damaged',
+        label: 'ສະພາບ & ຕິດຕາມ',
+        icon: ICON.warning,
+        badge: 'damaged',
+        urgent: true,
+        children: [
+          {
+            href: '/assets/recovery',
+            label: 'ທວງຄືນອຸປະກອນ',
+            icon: ICON.bell,
+            badge: 'recovery',
+            urgent: true,
+          },
+          {
+            href: '/assets/conflicts',
+            label: 'ໃບຢືມທີ່ຂັດກັນ',
+            icon: ICON.warning,
+            badge: 'conflicts',
+            urgent: true,
+          },
+          { href: '/assets/deployed', label: 'ອຸປະກອນສ່ວນກາງ', icon: ICON.network },
+          { href: '/assets/survey', label: 'ສຳຫຼວດອຸປະກອນ', icon: ICON.search },
         ],
       },
     ],
@@ -97,7 +165,6 @@ export const NAV_GROUPS: NavGroup[] = [
         label: 'ໂປຣເຈັກ',
         icon: ICON.project,
         children: [
-          { href: '/projects', label: 'ລາຍການໂປຣເຈັກ', icon: ICON.list },
           {
             href: '/projects/new',
             label: 'ສ້າງໂປຣເຈັກ',
@@ -110,46 +177,9 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: 'ອຸປະກອນ & ຄວາມຮູ້',
+    title: 'ຄວາມຮູ້ & ບໍລິຫານ',
     items: [
-      {
-        href: '/assets',
-        label: 'ທະບຽນອຸປະກອນ',
-        icon: ICON.asset,
-        children: [
-          { href: '/assets', label: 'ທັງໝົດ', icon: ICON.list },
-          { href: '/assets?holding=assigned', label: 'ມີຜູ້ຖືຄອງ', icon: ICON.task },
-          { href: '/assets?holding=spare', label: 'ຢູ່ໃນສາງ', icon: ICON.asset },
-          { href: '/assets?holding=it', label: 'ຂອງພະແນກ IT', icon: ICON.settings },
-          { href: '/assets/lend', label: 'ອອກໃບຢືມ–ຄືນ', icon: ICON.plus },
-          { href: '/assets/documents', label: 'ເອກະສານຢືມ–ຄືນ', icon: ICON.request },
-          { href: '/assets/holders', label: 'ຜູ້ຖືຄອງ', icon: ICON.request },
-          { href: '/assets/movements', label: 'ປະຫວັດຢືມ–ຄືນ', icon: ICON.clock },
-          { href: '/assets/survey', label: 'ສຳຫຼວດອຸປະກອນ', icon: ICON.search },
-          { href: '/assets/recovery', label: 'ທວງຄືນອຸປະກອນ', icon: ICON.bell },
-        ],
-      },
-      {
-        href: '/assets/holders',
-        label: 'ຜູ້ຖືຄອງອຸປະກອນ',
-        icon: ICON.request,
-      },
-      {
-        href: '/assets/recovery',
-        label: 'ທວງຄືນອຸປະກອນ',
-        icon: ICON.bell,
-      },
-      {
-        href: '/assets/movements',
-        label: 'ປະຫວັດຢືມ–ຄືນ',
-        icon: ICON.clock,
-      },
       { href: '/kb', label: 'ຄັງຄວາມຮູ້', icon: ICON.book },
-    ],
-  },
-  {
-    title: 'ບໍລິຫານ',
-    items: [
       { href: '/reports', label: 'ລາຍງານ', icon: ICON.chart, visible: can.viewReports },
       {
         href: '/admin',
@@ -183,6 +213,9 @@ export const PAGE_TITLES: Record<string, string> = {
   '/assets/holders': 'ຜູ້ຖືຄອງອຸປະກອນ',
   '/assets/survey': 'ສຳຫຼວດອຸປະກອນ',
   '/assets/recovery': 'ທວງຄືນອຸປະກອນ',
+  '/assets/conflicts': 'ໃບຢືມທີ່ຂັດກັນ',
+  '/assets/damaged': 'ອຸປະກອນເພ / ຕັດຈຳໜ່າຍ',
+  '/assets/deployed': 'ອຸປະກອນສ່ວນກາງ',
   '/kb': 'ຄັງຄວາມຮູ້',
   '/kb/new': 'ຂຽນບົດຄວາມ',
   '/reports': 'ລາຍງານ',

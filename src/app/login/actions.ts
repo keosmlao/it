@@ -35,11 +35,16 @@ export async function login(
     )
   }
 
-  // Only active staff of the IT department (801) get an account here — the
-  // view already enforces that, so joining through it is the access check.
-  const rows = await query<{ employee_id: number; password: string | null }>(
-    `select v.employee_id, e.password
-       from it.v_it_staff v
+  // ພະນັກງານທີ່ຍັງເຮັດວຽກຢູ່ເຂົ້າໄດ້ໝົດ — ພະແນກ IT ໄດ້ບົດບາດຕາມຕຳແໜ່ງ,
+  // ພະແນກອື່ນໄດ້ບົດບາດ requester (ແຈ້ງບັນຫາຂອງຕົນເອງເທົ່ານັ້ນ).
+  // view ເປັນຕົວກັ່ນຄົນທີ່ລາອອກແລ້ວອອກ ຈຶ່ງໃຊ້ join ນີ້ເປັນດ່ານກວດສິດ
+  const rows = await query<{
+    employee_id: number
+    role: string
+    password: string | null
+  }>(
+    `select v.employee_id, v.role, e.password
+       from it.v_portal_users v
        join public.odg_employee e on e.employee_id = v.employee_id
       where v.employee_code = $1`,
     [employeeCode]
@@ -47,7 +52,7 @@ export async function login(
 
   const account = rows[0]
   if (!account) {
-    await record(false, 'not_it_staff')
+    await record(false, 'not_active_employee')
     return { error: GENERIC_ERROR }
   }
 
@@ -58,5 +63,5 @@ export async function login(
 
   await record(true)
   await createSession(account.employee_id, headerList.get('user-agent') ?? undefined)
-  redirect('/')
+  redirect(account.role === 'requester' ? '/my' : '/')
 }

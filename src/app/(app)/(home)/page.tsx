@@ -6,8 +6,8 @@ import { getTicketStats, listTickets } from '@/lib/tickets/queries'
 import { getProjectStats } from '@/lib/projects/queries'
 import { OverdueBadge, PriorityBadge, StatusBadge } from '@/components/badge'
 import { formatDeadline } from '@/lib/format'
-import { ICON } from './nav-config'
-import LiveClock from './live-clock'
+import { ICON } from '../nav-config'
+import LiveClock from '../live-clock'
 
 export const metadata = { title: 'ພາບລວມ' }
 

@@ -210,22 +210,37 @@ export type LendableAsset = {
  */
 export async function getLendableAssets() {
   return query<LendableAsset>(
-    `select asset_code, name, category_name, brand, serial_no,
-            location_code, location_name, movement_count
-       from it.v_it_assets
-      where not is_assigned and is_active
-      order by category_name, asset_code desc`
+    `select a.asset_code, a.name, a.category_name, a.brand, a.serial_no,
+            a.location_code, a.location_name, a.movement_count
+       from it.v_it_assets a
+       left join it.asset_stock_status s on s.asset_code = a.asset_code
+       left join it.asset_deployments d
+              on d.asset_code = a.asset_code and d.removed_at is null
+      where not a.is_assigned
+        and a.is_active
+        -- ເພ, ສົ່ງສ້ອມ, ຫາຍ, ຕັດຈຳໜ່າຍ ຫຼື ຕິດຕັ້ງໃຊ້ສ່ວນກາງ = ໃຫ້ຢືມບໍ່ໄດ້
+        and coalesce(s.stock_state, 'in_stock') not in
+            ('repair', 'damaged', 'missing', 'scrapped', 'retired')
+        and d.id is null
+      order by a.category_name, a.asset_code desc`
   )
 }
 
 /** ສະຖານທີ່ຕັ້ງຂອງອຸປະກອນທີ່ຢືມໄດ້ — ສຳລັບຕົວກັ່ນຕອງ */
 export async function getLendableLocations() {
   return query<{ code: string; name: string; total: string }>(
-    `select coalesce(location_code, '') as code,
-            coalesce(location_name, 'ບໍ່ລະບຸສະຖານທີ່') as name,
+    `select coalesce(a.location_code, '') as code,
+            coalesce(a.location_name, 'ບໍ່ລະບຸສະຖານທີ່') as name,
             count(*) as total
-       from it.v_it_assets
-      where not is_assigned and is_active
+       from it.v_it_assets a
+       left join it.asset_stock_status s on s.asset_code = a.asset_code
+       left join it.asset_deployments d
+              on d.asset_code = a.asset_code and d.removed_at is null
+      where not a.is_assigned
+        and a.is_active
+        and coalesce(s.stock_state, 'in_stock') not in
+            ('repair', 'damaged', 'missing', 'scrapped', 'retired')
+        and d.id is null
       group by 1, 2
       order by count(*) desc`
   )
@@ -436,6 +451,29 @@ export async function getAssetRepairs(assetCode: string) {
     `select * from it.v_asset_repairs
       where asset_code = $1
       order by repair_date desc nulls last, created_at desc nulls last`,
+    [assetCode]
+  )
+}
+
+export type SpecChange = {
+  id: string
+  field: string
+  old_value: string | null
+  new_value: string | null
+  changed_by_name: string | null
+  changed_by_nickname: string | null
+  changed_at: string | Date
+}
+
+/** ປະຫວັດການແກ້ໄຂ spec — ໜຶ່ງແຖວຕໍ່ໜຶ່ງຊ່ອງທີ່ປ່ຽນ, ໃໝ່ສຸດກ່ອນ */
+export async function getSpecHistory(assetCode: string) {
+  return query<SpecChange>(
+    `select id, field, old_value, new_value,
+            changed_by_name, changed_by_nickname, changed_at
+       from it.v_asset_spec_history
+      where asset_code = $1::varchar
+      order by changed_at desc, id desc
+      limit 200`,
     [assetCode]
   )
 }

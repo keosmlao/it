@@ -161,7 +161,7 @@ export type AssetMovement = {
  * ວັນທີແບບ dd-MM-yyyy.
  * ວັນທີບາງແຖວໃນຂໍ້ມູນເກົ່າເສຍຮູບແບບ (ເຊັ່ນ ປີ 020236) — ກັນບໍ່ໃຫ້ສະແດງມົ້ວ
  */
-export function safeDate(value: string | null): string {
+export function safeDate(value: string | Date | null | undefined): string {
   if (!value) return '—'
 
   const date = new Date(value)

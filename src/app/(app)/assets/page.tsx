@@ -7,6 +7,7 @@ import {
   paginateAssets,
 } from '@/lib/assets/queries'
 import Pagination from '@/components/pagination'
+import ExportMenu from '@/components/export-menu'
 import { pageNumber } from '@/lib/pagination'
 import {
   WARRANTY_LABEL_LO,
@@ -89,6 +90,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
           >
             ປະຫວັດຢືມ–ຄືນ →
           </Link>
+          <ExportMenu dataset="assets" query={{ q: filters.q }} />
         </div>
       </div>
 

@@ -3,7 +3,8 @@ import { can, type ItStaff, type Role } from './roles'
 
 function user(role: Role, unit_code = '8010'): ItStaff {
   return { employee_id: 1, employee_code: 'E1', fullname_lo: 'Test', nickname: null,
-    unit_code, unit_name_lo: null, position_code: null, position_name_lo: null, role }
+    unit_code, unit_name_lo: null, position_code: null, position_name_lo: null, role,
+    is_it_staff: role !== 'requester', department_code: '801', department_name: null }
 }
 
 describe('RBAC', () => {
@@ -19,5 +20,20 @@ describe('RBAC', () => {
     expect(can.visibleUnits(user('manager'))).toBeNull()
     expect(can.visibleUnits(user('support', '8010'))).toEqual(['8010'])
     expect(can.visibleUnits(user('staff', ''))).toEqual([])
+  })
+  it('keeps requesters out of the IT staff area', () => {
+    expect(can.useStaffArea(user('requester', ''))).toBe(false)
+    for (const role of ['manager', 'head', 'developer', 'support', 'staff'] as Role[])
+      expect(can.useStaffArea(user(role))).toBe(true)
+  })
+  it('grants a requester no permission at all', () => {
+    const r = user('requester', '8010')
+    expect(can.administer(r)).toBe(false)
+    expect(can.viewReports(r)).toBe(false)
+    expect(can.approve(r)).toBe(false)
+    expect(can.assignWork(r)).toBe(false)
+    expect(can.viewAllUnits(r)).toBe(false)
+    // ສຳຄັນ: ບໍ່ໃຫ້ຕົກເປັນ [unit_code] ບໍ່ດັ່ງນັ້ນຈະເຫັນວຽກຂອງໜ່ວຍງານນັ້ນ
+    expect(can.visibleUnits(r)).toEqual([])
   })
 })

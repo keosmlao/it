@@ -9,6 +9,7 @@ import {
 } from '@/lib/assets/queries'
 import OrgFilter from '@/components/org-filter'
 import Pagination from '@/components/pagination'
+import ExportMenu from '@/components/export-menu'
 import { pageNumber } from '@/lib/pagination'
 import { safeDate } from '@/lib/assets/model'
 
@@ -53,9 +54,12 @@ export default async function HoldersPage({
           {filters.department && ` · ${filters.department}`}
           {filters.unit && ` · ${filters.unit}`}
         </p>
-        <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
-          ← ທະບຽນອຸປະກອນ
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            ← ທະບຽນອຸປະກອນ
+          </Link>
+          <ExportMenu dataset="holders" />
+        </div>
       </div>
 
       <nav className="mt-4 flex flex-wrap gap-1.5">

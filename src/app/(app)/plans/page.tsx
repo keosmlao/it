@@ -34,7 +34,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
   const isToday = date === todayISO()
 
   return (
-    <div className="w-full max-w-4xl">
+    <div className="w-full">
       {/* ---------- ແຖບເລືອກວັນ ---------- */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">

@@ -1,7 +1,17 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { requireUser } from '@/lib/auth/session'
-import { getAsset, getAssetHistory, getAssetRepairs } from '@/lib/assets/queries'
+import {
+  getAsset,
+  getAssetHistory,
+  getAssetRepairs,
+  getSpecHistory,
+} from '@/lib/assets/queries'
+import { getAssetConflicts } from '@/lib/assets/conflicts'
+import { getAssetCondition } from '@/lib/assets/damage'
+import { getAssetDeployment, getAssetLocations } from '@/lib/assets/deployment'
+import { can } from '@/lib/auth/roles'
+import ConditionPanel from './condition-panel'
 import {
   DATE_SOURCE_NOTE,
   REPAIR_STATUS_LABEL_LO,
@@ -12,21 +22,36 @@ import {
 } from '@/lib/assets/model'
 import { getAllEmployees } from '@/lib/tickets/queries'
 import SpecForm from './spec-form'
-import { LendForm, ReturnForm } from './loan-form'
+import SpecHistory from './spec-history'
+import { LendForm, ReturnForm, TransferForm } from './loan-form'
 import RepairForm from './repair-form'
 
 export default async function AssetDetailPage({ params }: PageProps<'/assets/[id]'>) {
   const { id } = await params
-  await requireUser()
+  const user = await requireUser()
 
   const asset = await getAsset(decodeURIComponent(id))
   if (!asset) notFound()
 
-  const [history, repairs, employees] = await Promise.all([
-    getAssetHistory(asset.asset_code),
-    getAssetRepairs(asset.asset_code),
-    getAllEmployees(),
-  ])
+  const [
+    history,
+    repairs,
+    employees,
+    conflicts,
+    condition,
+    deployment,
+    locations,
+    specHistory,
+  ] = await Promise.all([
+      getAssetHistory(asset.asset_code),
+      getAssetRepairs(asset.asset_code),
+      getAllEmployees(),
+      getAssetConflicts(asset.asset_code),
+      getAssetCondition(asset.asset_code),
+      getAssetDeployment(asset.asset_code),
+      getAssetLocations(),
+      getSpecHistory(asset.asset_code),
+    ])
 
   const info = [
     ['ປະເພດ', asset.category_name],
@@ -89,6 +114,17 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
           )}
 
           <SpecForm asset={asset} />
+
+          <details className="group mt-4 border-t border-line pt-3">
+            <summary className="cursor-pointer list-none text-sm text-muted hover:text-fg">
+              ປະຫວັດການແກ້ໄຂ spec
+              {specHistory.length > 0 && ` (${specHistory.length})`}
+              <span className="ml-1 inline-block transition group-open:rotate-90">
+                ›
+              </span>
+            </summary>
+            <SpecHistory rows={specHistory} />
+          </details>
         </section>
 
         <section className="glass-card rounded-xl p-5">
@@ -162,20 +198,80 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
             <p className="mt-3 text-sm text-muted">ຫວ່າງ — ບໍ່ມີໃບຢືມຄ້າງ</p>
           )}
 
+          {conflicts.length > 1 && (
+            <div className="mt-3 rounded-lg bg-red-50 px-3 py-2.5 dark:bg-red-950/50">
+              <p className="text-xs font-medium text-red-700 dark:text-red-300">
+                ⚠ ເຄື່ອງນີ້ມີໃບຢືມຄ້າງ {conflicts.length} ໃບພ້ອມກັນ
+              </p>
+              <ul className="mt-1.5 space-y-1">
+                {conflicts.map((conflict) => (
+                  <li
+                    key={`${conflict.borrow_doc_no}-${conflict.emp_code}`}
+                    className="text-xs text-body"
+                  >
+                    {conflict.seq}. {conflict.emp_name ?? conflict.emp_code} ·{' '}
+                    <span className="font-mono">{conflict.borrow_doc_no}</span> ·{' '}
+                    {safeDate(conflict.borrowed_at)}
+                    {!conflict.is_shown_as_holder && (
+                      <span className="ml-1 text-brand-orange">(ຖືກເຊື່ອງ)</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/assets/conflicts"
+                className="mt-2 inline-block text-xs text-brand-blue hover:underline"
+              >
+                ເບິ່ງລາຍການທັງໝົດ →
+              </Link>
+            </div>
+          )}
+
           {!asset.is_assigned && (
             <LendForm assetCode={asset.asset_code} employees={employees} />
           )}
 
-          {asset.is_assigned && asset.holder_source === 'it' && (
-            <ReturnForm assetCode={asset.asset_code} />
+          {asset.is_assigned && (
+            <>
+              <ReturnForm assetCode={asset.asset_code} />
+              <TransferForm
+                assetCode={asset.asset_code}
+                holderName={asset.holder_name ?? asset.holder_code ?? '—'}
+                employees={employees}
+              />
+            </>
           )}
 
           {asset.is_assigned && asset.holder_source === 'erp' && (
             <p className="mt-3 rounded-lg bg-brand-blue/5 px-3 py-2 text-xs text-muted">
-              ໃບຢືມນີ້ອອກຈາກລະບົບ ERP — ການຄືນຕ້ອງເຮັດຢູ່ ERP ຕົ້ນທາງ
+              ໃບຢືມນີ້ອອກຈາກ ERP — ບັນທຶກການຄືນຢູ່ນີ້ໄດ້
+              ລະບົບຈະອອກໃບຄືນຂອງ IT (RTIT…) ໄວ້ທັບ ໂດຍບໍ່ແກ້ຂໍ້ມູນໃນ ERP
             </p>
           )}
         </section>
+
+        <ConditionPanel
+          assetCode={asset.asset_code}
+          stockState={condition?.stock_state ?? null}
+          damageDetail={condition?.damage_detail ?? null}
+          damagedAt={safeDate(condition?.damaged_at)}
+          checkedAt={safeDate(condition?.checked_at)}
+          checkedByName={condition?.checked_by_name ?? null}
+          writeoffReason={condition?.writeoff_reason ?? null}
+          writtenOffAt={safeDate(condition?.written_off_at)}
+          decidedByName={condition?.decided_by_name ?? null}
+          repairCount={Number(condition?.repair_count ?? 0)}
+          repairCost={formatMoney(condition?.repair_cost_total ?? null)}
+          purchasePrice={formatMoney(condition?.purchase_price ?? null)}
+          deployedPlace={deployment?.place ?? null}
+          deployedPurpose={deployment?.purpose ?? null}
+          deployedSince={safeDate(deployment?.installed_at)}
+          responsibleName={deployment?.responsible_name ?? null}
+          isAssigned={asset.is_assigned}
+          canWriteOff={can.approve(user)}
+          employees={employees}
+          locations={locations}
+        />
 
         <section className="glass-card rounded-xl p-5">
           <h2 className="font-semibold text-fg">ການຊື້ ແລະ ປະກັນ</h2>

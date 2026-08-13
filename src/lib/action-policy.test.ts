@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { canAssignTarget, validateSla, validApprovalDecision } from './action-policy'
 import type { ItStaff, Role } from './auth/roles'
 
-function user(role: Role): ItStaff { return { employee_id: 7, employee_code: 'E7', fullname_lo: 'Test', nickname: null, unit_code: '8010', unit_name_lo: null, position_code: null, position_name_lo: null, role } }
+function user(role: Role): ItStaff { return { employee_id: 7, employee_code: 'E7', fullname_lo: 'Test', nickname: null, unit_code: '8010', unit_name_lo: null, position_code: null, position_name_lo: null, role, is_it_staff: role !== 'requester', department_code: '801', department_name: null } }
 
 describe('Server Action policies', () => {
   it('prevents staff assigning work to another person', () => {

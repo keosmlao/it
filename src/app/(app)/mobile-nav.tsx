@@ -5,12 +5,13 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { ICON } from './nav-config'
 import { can, type ItStaff } from '@/lib/auth/roles'
+import { EMPTY_BADGES, type NavBadges } from '@/lib/nav-badges-model'
 
-const items = [
+const items: { href: string; label: string; icon: string; badge?: keyof NavBadges }[] = [
   { href: '/', label: 'ພາບລວມ', icon: ICON.home },
-  { href: '/tickets', label: 'Ticket', icon: ICON.ticket },
-  { href: '/tasks', label: 'ວຽກ', icon: ICON.task },
-  { href: '/projects', label: 'ໂປຣເຈັກ', icon: ICON.project },
+  { href: '/tickets', label: 'Ticket', icon: ICON.ticket, badge: 'tickets' },
+  { href: '/tasks', label: 'ວຽກ', icon: ICON.task, badge: 'myWork' },
+  { href: '/assets', label: 'ອຸປະກອນ', icon: ICON.asset },
 ]
 
 function Icon({ d }: { d: string }) {
@@ -22,7 +23,15 @@ function Icon({ d }: { d: string }) {
   )
 }
 
-export default function MobileNav({ user, logout }: { user: ItStaff; logout: () => Promise<void> }) {
+export default function MobileNav({
+  user,
+  logout,
+  badges = EMPTY_BADGES,
+}: {
+  user: ItStaff
+  logout: () => Promise<void>
+  badges?: NavBadges
+}) {
   const pathname = usePathname()
   const [moreOpen, setMoreOpen] = useState(false)
 
@@ -32,9 +41,14 @@ export default function MobileNav({ user, logout }: { user: ItStaff; logout: () 
         const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)
         return (
           <Link key={item.href} href={item.href} data-active={active || undefined}
-            aria-current={active ? 'page' : undefined} className="mobile-dock-link">
+            aria-current={active ? 'page' : undefined} className="mobile-dock-link relative">
             <Icon d={item.icon} />
             <span>{item.label}</span>
+            {item.badge && badges[item.badge] > 0 && (
+              <span className="absolute top-1 right-1/4 min-w-4 rounded-full bg-brand-orange px-1 text-[10px] leading-4 font-medium text-white tabular-nums">
+                {badges[item.badge] > 999 ? '999+' : badges[item.badge]}
+              </span>
+            )}
           </Link>
         )
       })}
@@ -50,13 +64,25 @@ export default function MobileNav({ user, logout }: { user: ItStaff; logout: () 
             </div>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { href: '/requests', label: 'ຄຳຮ້ອງ', icon: ICON.request, show: true },
-                { href: '/assets', label: 'ອຸປະກອນ', icon: ICON.asset, show: true },
+                { href: '/requests', label: 'ຄຳຮ້ອງ', icon: ICON.request, show: true, badge: badges.requests },
+                { href: '/purchase', label: 'ໃບສະເໜີຊື້', icon: ICON.request, show: true, badge: badges.purchase },
+                { href: '/projects', label: 'ໂປຣເຈັກ', icon: ICON.project, show: true },
+                { href: '/assets/recovery', label: 'ທວງຄືນ', icon: ICON.bell, show: true, badge: badges.recovery },
+                { href: '/assets/damaged', label: 'ອຸປະກອນເພ', icon: ICON.warning, show: true, badge: badges.damaged },
+                { href: '/plans', label: 'ແຜນວຽກ', icon: ICON.clock, show: true },
                 { href: '/kb', label: 'ຄັງຄວາມຮູ້', icon: ICON.book, show: true },
                 { href: '/reports', label: 'ລາຍງານ', icon: ICON.chart, show: can.viewReports(user) },
                 { href: '/admin', label: 'ຕັ້ງຄ່າ', icon: ICON.settings, show: can.administer(user) },
               ].filter((x) => x.show).map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setMoreOpen(false)} className="btn-secondary flex items-center gap-3 rounded-xl p-3 text-sm"><Icon d={item.icon} />{item.label}</Link>
+                <Link key={item.href} href={item.href} onClick={() => setMoreOpen(false)} className="btn-secondary flex items-center gap-3 rounded-xl p-3 text-sm">
+                  <Icon d={item.icon} />
+                  <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                  {'badge' in item && Number(item.badge) > 0 && (
+                    <span className="shrink-0 rounded-full bg-brand-orange px-1.5 py-0.5 text-[11px] font-medium text-white tabular-nums">
+                      {Number(item.badge) > 999 ? '999+' : item.badge}
+                    </span>
+                  )}
+                </Link>
               ))}
             </div>
             <form action={logout} className="mt-2"><button type="submit" className="btn-danger flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm"><Icon d={ICON.logout} />ອອກຈາກລະບົບ</button></form>

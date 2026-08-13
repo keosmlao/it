@@ -3,6 +3,7 @@ import { requireUser } from '@/lib/auth/session'
 import { listPurchaseRequests, getPurchaseStats } from '@/lib/purchase/queries'
 import { PR_STATUSES, PR_STATUS_LABEL_LO } from '@/lib/purchase/model'
 import { PrStatusBadge } from '@/components/pr-badge'
+import ExportMenu from '@/components/export-menu'
 import { formatMoney, safeDate } from '@/lib/assets/model'
 
 export const metadata = { title: 'ໃບສະເໜີຊື້' }
@@ -33,12 +34,15 @@ export default async function PurchasePage({
           {stats?.approved ?? 0} · ຮ່າງ {stats?.draft ?? 0}
         </p>
 
-        <Link
-          href="/purchase/new"
-          className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
-        >
-          + ສ້າງໃບສະເໜີຊື້
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/purchase/new"
+            className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+          >
+            + ສ້າງໃບສະເໜີຊື້
+          </Link>
+          <ExportMenu dataset="purchase" />
+        </div>
       </div>
 
       <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">

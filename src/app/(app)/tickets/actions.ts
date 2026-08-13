@@ -283,7 +283,8 @@ export async function addComment(
   const user = await requireUser()
   const ticketId = String(formData.get('ticket_id'))
   const body = String(formData.get('body') ?? '').trim()
-  const isInternal = formData.get('is_internal') === 'on'
+  // ຜູ້ແຈ້ງຈາກພະແນກອື່ນຂຽນ "ບັນທຶກພາຍໃນ" ບໍ່ໄດ້ ເຖິງແມ່ນສົ່ງ field ມາເອງ
+  const isInternal = user.is_it_staff && formData.get('is_internal') === 'on'
 
   if (!body) return { error: 'ກະລຸນາຂຽນຂໍ້ຄວາມກ່ອນບັນທຶກ' }
 
@@ -296,15 +297,21 @@ export async function addComment(
     [ticketId, body, isInternal, user.employee_id]
   )
 
-  // ຄຳຕອບທຳອິດຈາກທີມ IT = ຈຸດຢຸດເວລາຕອບຂອງ SLA
+  // ຄຳຕອບທຳອິດ**ຈາກທີມ IT** = ຈຸດຢຸດເວລາຕອບຂອງ SLA.
+  // ຂໍ້ຄວາມທີ່ຜູ້ແຈ້ງຂຽນເອງບໍ່ນັບ ບໍ່ດັ່ງນັ້ນ SLA ຈະຢຸດເອງໂດຍທີ່ IT ຍັງບໍ່ທັນຕອບ
+  const isItReply = user.is_it_staff && ticket.requester_employee_id !== user.employee_id
+
   await query(
     `update it.tickets
-        set first_responded_at = coalesce(first_responded_at, now()),
+        set first_responded_at = case when $2::boolean
+                                      then coalesce(first_responded_at, now())
+                                      else first_responded_at end,
             updated_at = now()
-      where id = $1`,
-    [ticketId]
+      where id = $1::bigint`,
+    [ticketId, isItReply]
   )
 
   revalidatePath(`/tickets/${ticketId}`)
+  revalidatePath(`/my/tickets/${ticketId}`)
   return { ok: true }
 }

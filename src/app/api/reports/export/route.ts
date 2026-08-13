@@ -2,8 +2,7 @@ import { getCurrentUser } from '@/lib/auth/session'
 import { can, ROLE_LABEL_LO, type Role } from '@/lib/auth/roles'
 import { ticketSummary, ticketsByCategory, ticketsByStaff } from '@/lib/reports/queries'
 import { summariseHours } from '@/lib/worklogs/queries'
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import { createTextWriter } from '@/lib/export/builders'
 
 export const dynamic = 'force-dynamic'
 
@@ -76,22 +75,25 @@ async function exportXlsx(from: string, to: string, summary: Awaited<ReturnType<
 }
 
 async function exportPdf(from: string, to: string, summary: Awaited<ReturnType<typeof ticketSummary>>, rows: (string | number)[][]) {
-  const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib')
+  const { PDFDocument, rgb } = await import('pdf-lib')
   const fontkit = (await import('@pdf-lib/fontkit')).default
   const pdf = await PDFDocument.create(); pdf.registerFontkit(fontkit)
-  const laoBytes = await readFile(path.join(process.cwd(), 'node_modules', '@fontsource', 'noto-sans-lao', 'files', 'noto-sans-lao-lao-400-normal.woff'))
-  const laoFont = await pdf.embedFont(laoBytes)
-  let page = pdf.addPage([842, 595]); const font = await pdf.embedFont(StandardFonts.Helvetica); const bold = await pdf.embedFont(StandardFonts.HelveticaBold)
-  const draw = (text: string, x: number, y: number, size = 10, strong = false, lao = false) => page.drawText(text, { x, y, size, font: lao ? laoFont : strong ? bold : font, color: rgb(0.04, 0.14, 0.22) })
+  // ຊື່ພະນັກງານເປັນພາສາລາວ ແຕ່ຕົວເລກ/ອັງກິດຢູ່ຄົນລະຊຸດຟອນຕ໌ — ໃຊ້ຕົວຂຽນຮ່ວມ
+  const writer = await createTextWriter(pdf)
+  const ink = rgb(0.04, 0.14, 0.22)
+  let page = pdf.addPage([842, 595])
+  const draw = (text: string, x: number, y: number, size = 10, strong = false) =>
+    writer.draw(page, text, x, y, size, ink, strong)
   draw('ODG IT — KPI REPORT', 42, 548, 20, true); draw(`Period: ${from} to ${to}`, 42, 526, 10)
   draw(`Created: ${summary?.created ?? 0}     Resolved: ${summary?.resolved ?? 0}     SLA met: ${summary?.sla_met ?? 0}`, 42, 496, 12, true)
   const headers = ['Employee', 'Role', 'Assigned', 'Resolved', 'SLA', 'Avg min', 'Hours']; const xs = [42, 240, 390, 455, 520, 580, 670]
+  const widths = [190, 142, 58, 58, 52, 82, 60]
   headers.forEach((h, i) => draw(h, xs[i], 462, 9, true)); let y = 444
   for (const row of rows) {
     if (y < 45) { page = pdf.addPage([842, 595]); y = 548; headers.forEach((h, i) => draw(h, xs[i], y, 9, true)); y -= 18 }
-    row.forEach((v, i) => draw(String(v).slice(0, 34), xs[i], y, 8, false, i < 2)); y -= 17
+    row.forEach((v, i) => draw(writer.fit(String(v), widths[i], 8), xs[i], y, 8)); y -= 17
   }
-  const bytes = await pdf.save()
+  const bytes = await pdf.save({ useObjectStreams: false })
   const body = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
   return download(body, 'application/pdf', `odg-it-kpi-${from}-${to}.pdf`)
 }

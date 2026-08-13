@@ -6,6 +6,7 @@ import { listPlanlessStaff, listTeamPlans } from '@/lib/plans/queries'
 import { PLAN_STATUS_LABEL_LO } from '@/lib/plans/model'
 import { isoDate, shiftDate, todayISO } from '@/lib/format'
 import { safeDate } from '@/lib/assets/model'
+import ExportMenu from '@/components/export-menu'
 
 export const metadata = { title: 'ແຜນວຽກທັງທີມ' }
 
@@ -53,9 +54,15 @@ export default async function TeamPlansPage({
           </Link>
         </div>
 
-        <Link href={`/plans?date=${date}`} className="btn-secondary rounded-lg px-4 py-2 text-sm">
-          ແຜນຂອງຂ້ອຍ →
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/plans?date=${date}`}
+            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          >
+            ແຜນຂອງຂ້ອຍ →
+          </Link>
+          <ExportMenu dataset="plans" query={{ from: date, to: date }} />
+        </div>
       </div>
 
       {planless.length > 0 && (

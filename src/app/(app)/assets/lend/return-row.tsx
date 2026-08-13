@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { safeDate } from '@/lib/assets/model'
+import { todayISO } from '@/lib/format'
 import { returnAsset } from '../actions'
 
 type Loan = {
@@ -102,7 +103,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
                 <input
                   type="date"
                   name="returned_at"
-                  defaultValue={new Date().toISOString().slice(0, 10)}
+                  defaultValue={todayISO()}
                   className="input w-40 rounded-lg px-3 py-1.5 text-sm"
                 />
               </label>

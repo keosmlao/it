@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import ActionForm, { SubmitButton } from '@/components/action-form'
+import { isoDate } from '@/lib/format'
 import { saveAssetSpec } from '../actions'
 import type { AssetRow } from '@/lib/assets/model'
 
@@ -60,7 +61,7 @@ export default function SpecForm({ asset }: { asset: AssetRow }) {
           <input
             type="date"
             name="purchase_date"
-            defaultValue={asset.purchase_date?.slice(0, 10) ?? ''}
+            defaultValue={isoDate(asset.purchase_date)}
             className={inputClass}
           />
         </label>
@@ -80,7 +81,7 @@ export default function SpecForm({ asset }: { asset: AssetRow }) {
           <input
             type="date"
             name="warranty_until"
-            defaultValue={asset.warranty_until?.slice(0, 10) ?? ''}
+            defaultValue={isoDate(asset.warranty_until)}
             className={inputClass}
           />
         </label>

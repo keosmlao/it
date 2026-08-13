@@ -6,10 +6,18 @@ import { PAGE_SIZE, type PageResult } from '@/lib/pagination'
 import { cached } from '@/lib/cache'
 
 /**
- * ຂອບເຂດການເບິ່ງເຫັນ: manager ເຫັນໝົດ; ຄົນອື່ນເຫັນວຽກຂອງໜ່ວຍງານຕົນ,
+ * ຂອບເຂດການເບິ່ງເຫັນ: manager ເຫັນໝົດ; ພະນັກງານ IT ຄົນອື່ນເຫັນວຽກຂອງໜ່ວຍງານຕົນ,
  * ວຽກທີ່ຍັງບໍ່ໄດ້ລະບຸໜ່ວຍງານ ແລະ ວຽກທີ່ມອບໝາຍໃຫ້ຕົນເອງ.
+ *
+ * ຜູ້ແຈ້ງບັນຫາຈາກພະແນກອື່ນ (requester) ເຫັນ**ສະເພາະ ticket ທີ່ຕົນເປັນຜູ້ແຈ້ງ** —
+ * ຕ້ອງກວດກ່ອນເງື່ອນໄຂໜ່ວຍງານ ເພາະ `unit_code is null` ຈະເປີດວຽກຂອງຄົນອື່ນໃຫ້ເຫັນ
  */
 function scopeClause(user: ItStaff, params: unknown[]): string {
+  if (user.role === 'requester') {
+    params.push(user.employee_id)
+    return `requester_employee_id = $${params.length}`
+  }
+
   const units = can.visibleUnits(user)
   if (units === null) return 'true'
 
@@ -106,16 +114,21 @@ export async function getTicket(user: ItStaff, id: string) {
   return rows[0] ?? null
 }
 
-export async function getComments(ticketId: string) {
+/**
+ * ຂໍ້ຄວາມໃນ ticket. `includeInternal = false` ໃຊ້ກັບຜູ້ແຈ້ງຈາກພະແນກອື່ນ —
+ * ບັນທຶກພາຍໃນຂອງທີມ IT ຕ້ອງບໍ່ຫຼຸດອອກໄປໃຫ້ເຂົາເຫັນ
+ */
+export async function getComments(ticketId: string, includeInternal = true) {
   return query<TicketComment>(
     `select c.id, c.kind, c.body, c.is_internal, c.author_employee_id,
             e.fullname_lo as author_name, e.nickname as author_nickname,
             c.created_at
        from it.ticket_comments c
        join public.odg_employee e on e.employee_id = c.author_employee_id
-      where c.ticket_id = $1
+      where c.ticket_id = $1::bigint
+        and ($2::boolean or not c.is_internal)
       order by c.created_at`,
-    [ticketId]
+    [ticketId, includeInternal]
   )
 }
 

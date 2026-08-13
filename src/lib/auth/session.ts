@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 import { query } from '@/lib/db'
-import type { ItStaff } from './roles'
+import { can, type ItStaff } from './roles'
 
 export const SESSION_COOKIE = 'it_session'
 const SESSION_HOURS = 8
@@ -50,11 +50,11 @@ export const getCurrentUser = cache(async (): Promise<ItStaff | null> => {
   const rows = await query<ItStaff>(
     `select s.employee_id, v.employee_code, v.fullname_lo, v.nickname,
             v.unit_code, v.unit_name_lo, v.position_code, v.position_name_lo,
-            v.role,
+            v.role, v.is_it_staff, v.department_code, v.department_name,
             (select count(*)::int from it.notifications n
               where n.employee_id = s.employee_id and n.is_read = false) as unread_count
        from it.sessions s
-       join it.v_it_staff v on v.employee_id = s.employee_id
+       join it.v_portal_users v on v.employee_id = s.employee_id
       where s.token = $1
         and s.revoked_at is null
         and s.expires_at > now()`,
@@ -72,5 +72,15 @@ export const getCurrentUser = cache(async (): Promise<ItStaff | null> => {
 export async function requireUser(): Promise<ItStaff> {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
+  return user
+}
+
+/**
+ * ດ່ານດຽວທີ່ກັນຜູ້ແຈ້ງບັນຫາ (requester) ອອກຈາກໜ້າພາຍໃນຂອງພະແນກ IT.
+ * ເອີ້ນຢູ່ (app)/layout.tsx ຈຶ່ງຄຸມທຸກໜ້າໃນກຸ່ມນັ້ນພ້ອມກັນ
+ */
+export async function requireStaff(): Promise<ItStaff> {
+  const user = await requireUser()
+  if (!can.useStaffArea(user)) redirect('/my')
   return user
 }

@@ -7,6 +7,7 @@ import {
   paginateTickets,
 } from '@/lib/tickets/queries'
 import Pagination from '@/components/pagination'
+import ExportMenu from '@/components/export-menu'
 import { pageNumber } from '@/lib/pagination'
 import { OverdueBadge, PriorityBadge, StatusBadge } from '@/components/badge'
 import { formatDeadline, formatDateTime } from '@/lib/format'
@@ -57,12 +58,15 @@ export default async function TicketsPage({
           </p>
         </div>
 
-        <Link
-          href="/tickets/new"
-          className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
-        >
-          + ແຈ້ງບັນຫາໃໝ່
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/tickets/new"
+            className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+          >
+            + ແຈ້ງບັນຫາໃໝ່
+          </Link>
+          <ExportMenu dataset="tickets" />
+        </div>
       </div>
 
       <nav className="mt-4 flex flex-wrap gap-1.5">

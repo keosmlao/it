@@ -8,6 +8,7 @@ import {
 } from '@/lib/assets/queries'
 import OrgFilter from '@/components/org-filter'
 import Pagination from '@/components/pagination'
+import ExportMenu from '@/components/export-menu'
 import { pageNumber } from '@/lib/pagination'
 import { safeDate } from '@/lib/assets/model'
 
@@ -57,6 +58,7 @@ export default async function MovementsPage({
           <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
             ← ລາຍການອຸປະກອນ
           </Link>
+          <ExportMenu dataset="movements" query={{ state }} />
         </div>
       </div>
 

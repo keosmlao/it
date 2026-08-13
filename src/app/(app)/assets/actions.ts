@@ -1,9 +1,10 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { query } from '@/lib/db'
+import { pool, query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
-import { logAudit } from '@/lib/activity'
+import { logAudit, notify } from '@/lib/activity'
+import { refreshMovements } from '@/lib/assets/cache'
 import type { FormState } from '@/lib/action-state'
 
 /**
@@ -64,10 +65,7 @@ export async function lendAsset(
     `${rows[0].borrow_doc_no} → ${empCode}`
   )
 
-  revalidatePath(`/assets/${assetCode}`)
-  revalidatePath('/assets')
-  revalidatePath('/assets/holders')
-  revalidatePath('/assets/movements')
+  await revalidateAssetViews(assetCode)
   return { ok: true }
 }
 
@@ -120,7 +118,179 @@ export async function returnAsset(
     rows[0].return_doc_no
   )
 
-  revalidateAssetViews(assetCode)
+  await revalidateAssetViews(assetCode)
+  return { ok: true }
+}
+
+/**
+ * ໂອນເຄື່ອງໃຫ້ຄົນອື່ນ ໂດຍບໍ່ຕ້ອງຄືນເຂົ້າສາງກ່ອນ.
+ *
+ * ເຮັດ 2 ຢ່າງໃນ transaction ດຽວ: ປິດໃບຢືມຂອງຜູ້ຖືເກົ່າ ແລ້ວເປີດໃບໃໝ່ໃຫ້ຜູ້ຮັບ
+ * ຖ້າຢ່າງໃດຢ່າງໜຶ່ງລົ້ມ ຈະບໍ່ມີການປ່ຽນແປງເລີຍ — ກັນບໍ່ໃຫ້ເກີດໃບຄ້າງຊ້ອນກັນ
+ * ຫຼື ເຄື່ອງຫາຍໄປຈາກມືທັງສອງຄົນ
+ */
+export async function transferAsset(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const user = await requireUser()
+  const assetCode = String(formData.get('asset_code') ?? '').trim()
+  const toEmpCode = String(formData.get('to_emp_code') ?? '').trim()
+  const at = String(formData.get('transferred_at') ?? '') || null
+  const condition = String(formData.get('condition') ?? 'good')
+  const note = String(formData.get('note') ?? '').trim() || null
+
+  if (!assetCode || !toEmpCode) return { error: 'ກະລຸນາເລືອກຜູ້ຮັບໂອນ' }
+
+  // ຜູ້ຖືປັດຈຸບັນ — ຕ້ອງມີ ບໍ່ດັ່ງນັ້ນໃຫ້ໃຊ້ "ບັນທຶກການຢືມ" ແທນ
+  const current = await query<{
+    source: 'erp' | 'it'
+    borrow_doc_no: string | null
+    emp_code: string
+    emp_name: string | null
+    borrowed_at: string | Date
+  }>(
+    `select source, borrow_doc_no, emp_code, emp_name, borrowed_at
+       from it.v_asset_movements
+      where asset_code = $1::varchar and not is_returned
+      order by borrowed_at desc nulls last, borrow_doc_no desc nulls last
+      limit 1`,
+    [assetCode]
+  )
+
+  const from = current[0]
+  if (!from) {
+    return { error: 'ເຄື່ອງນີ້ບໍ່ມີຜູ້ຖືຄອງ — ໃຫ້ໃຊ້ "ບັນທຶກການຢືມ" ແທນ' }
+  }
+  if (from.emp_code === toEmpCode) {
+    return { error: 'ຜູ້ຮັບໂອນເປັນຄົນດຽວກັບຜູ້ຖືປັດຈຸບັນ' }
+  }
+
+  const receiver = await query<{ fullname_lo: string; employee_id: number }>(
+    `select employee_id, fullname_lo from public.odg_employee
+      where employee_code = $1::varchar and employment_status = 'ACTIVE'`,
+    [toEmpCode]
+  )
+  if (!receiver[0]) return { error: 'ບໍ່ພົບຜູ້ຮັບໂອນ ຫຼື ພະນັກງານຄົນນີ້ອອກແລ້ວ' }
+
+  if (at && new Date(at) < new Date(String(from.borrowed_at).slice(0, 10))) {
+    return { error: 'ວັນທີໂອນຕ້ອງບໍ່ກ່ອນວັນທີຜູ້ຖືເກົ່າຢືມ' }
+  }
+
+  const fromName = from.emp_name ?? from.emp_code
+  const toName = receiver[0].fullname_lo
+
+  const client = await pool.connect()
+  let newDoc: string
+  let returnDoc: string | null = null
+  try {
+    await client.query('begin')
+
+    // ---- 1. ປິດໃບຂອງຜູ້ຖືເກົ່າ ----
+    if (from.source === 'it') {
+      const closed = await client.query<{ return_doc_no: string }>(
+        `update it.asset_loans
+            set returned_at      = coalesce($2::date, current_date),
+                return_doc_no    = it.next_loan_no('RTIT'),
+                return_condition = $3::varchar,
+                return_note      = $4::text,
+                returned_by      = $5::int,
+                updated_at       = now()
+          where asset_code = $1::varchar
+            and returned_at is null and deleted_at is null
+          returning return_doc_no`,
+        [assetCode, at, condition, `ໂອນໃຫ້ ${toName}`, user.employee_id]
+      )
+      returnDoc = closed.rows[0]?.return_doc_no ?? null
+    } else {
+      if (!from.borrow_doc_no) {
+        await client.query('rollback')
+        return { error: 'ໃບຢືມ ERP ໃບນີ້ບໍ່ມີເລກທີ່ ຈຶ່ງໂອນຕໍ່ບໍ່ໄດ້' }
+      }
+      const closed = await client.query<{ return_doc_no: string }>(
+        `insert into it.erp_loan_returns
+           (borrow_doc_no, asset_code, emp_code, returned_at, return_condition,
+            return_note, returned_by)
+         values ($1::varchar, $2::varchar, $3::varchar,
+                 coalesce($4::date, current_date), $5::varchar, $6::text, $7::int)
+         returning return_doc_no`,
+        [
+          from.borrow_doc_no,
+          assetCode,
+          from.emp_code,
+          at,
+          condition,
+          `ໂອນໃຫ້ ${toName}`,
+          user.employee_id,
+        ]
+      )
+      returnDoc = closed.rows[0]?.return_doc_no ?? null
+    }
+
+    // ---- 2. ເປີດໃບໃໝ່ໃຫ້ຜູ້ຮັບ ----
+    const opened = await client.query<{ borrow_doc_no: string }>(
+      `insert into it.asset_loans
+         (asset_code, emp_code, borrowed_at, borrow_note, created_by)
+       values ($1::varchar, $2::varchar, coalesce($3::date, current_date),
+               $4::text, $5::int)
+       returning borrow_doc_no`,
+      [
+        assetCode,
+        toEmpCode,
+        at,
+        note ? `ຮັບໂອນຈາກ ${fromName} — ${note}` : `ຮັບໂອນຈາກ ${fromName}`,
+        user.employee_id,
+      ]
+    )
+    newDoc = opened.rows[0].borrow_doc_no
+
+    // ---- 3. ບັນທຶກວ່ານີ້ຄືການໂອນ ບໍ່ແມ່ນຄືນແລ້ວຢືມໃໝ່ບັງເອີນ ----
+    await client.query(
+      `insert into it.asset_transfers
+         (asset_code, from_emp_code, to_emp_code, transferred_at,
+          from_borrow_doc_no, from_return_doc_no, to_borrow_doc_no,
+          condition, note, created_by)
+       values ($1::varchar, $2::varchar, $3::varchar, coalesce($4::date, current_date),
+               $5::varchar, $6::varchar, $7::varchar, $8::varchar, $9::text, $10::int)`,
+      [
+        assetCode,
+        from.emp_code,
+        toEmpCode,
+        at,
+        from.borrow_doc_no,
+        returnDoc,
+        newDoc,
+        condition,
+        note,
+        user.employee_id,
+      ]
+    )
+
+    await client.query('commit')
+  } catch (e) {
+    await client.query('rollback')
+    return { error: `ໂອນບໍ່ສຳເລັດ: ${(e as Error).message}` }
+  } finally {
+    client.release()
+  }
+
+  await logAudit(
+    user.employee_id,
+    'asset_transfer',
+    assetCode,
+    'transfer',
+    `${fromName} → ${toName} (${newDoc})`
+  )
+
+  await notify(
+    receiver[0].employee_id,
+    user.employee_id,
+    'ທ່ານໄດ້ຮັບໂອນອຸປະກອນ',
+    `${assetCode} ໂອນມາຈາກ ${fromName} · ໃບຢືມ ${newDoc}`,
+    `/assets/${assetCode}`
+  )
+
+  await revalidateAssetViews(assetCode)
   return { ok: true }
 }
 
@@ -175,11 +345,18 @@ async function returnErpLoan(
     `${open[0].borrow_doc_no} → ${rows[0].return_doc_no}`
   )
 
-  revalidateAssetViews(assetCode)
+  await revalidateAssetViews(assetCode)
   return { ok: true }
 }
 
-function revalidateAssetViews(assetCode: string) {
+async function revalidateAssetViews(assetCode: string) {
+  // ປະຫວັດຢືມ–ຄືນເກັບເປັນ cache ໄວ້ (materialized view) ຈຶ່ງຕ້ອງອັບເດດກ່ອນ
+  // ບໍ່ດັ່ງນັ້ນຜູ້ໃຊ້ຈະບໍ່ເຫັນຜົນຂອງສິ່ງທີ່ຫາກໍບັນທຶກ
+  await refreshMovements()
+  revalidateAssetPaths(assetCode)
+}
+
+function revalidateAssetPaths(assetCode: string) {
   revalidatePath(`/assets/${assetCode}`)
   revalidatePath('/assets')
   revalidatePath('/assets/holders')

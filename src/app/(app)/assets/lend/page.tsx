@@ -7,6 +7,7 @@ import {
   getOpenLoans,
 } from '@/lib/assets/queries'
 import { getAllEmployees } from '@/lib/tickets/queries'
+import ExportMenu from '@/components/export-menu'
 import { safeDate } from '@/lib/assets/model'
 import LendPanel from './lend-panel'
 import ReturnRow from './return-row'
@@ -37,9 +38,12 @@ export default async function LendPage({ searchParams }: PageProps<'/assets/lend
           {loanStats?.total ?? 0} ໃບ (ຈາກ ERP {loanStats?.erp ?? 0} · ຈາກລະບົບນີ້{' '}
           {loanStats?.it ?? 0})
         </p>
-        <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
-          ← ທະບຽນອຸປະກອນ
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            ← ທະບຽນອຸປະກອນ
+          </Link>
+          <ExportMenu dataset="loans" label="ດຶງໃບຢືມຄ້າງ" />
+        </div>
       </div>
 
       <nav className="mt-4 flex flex-wrap gap-1.5">

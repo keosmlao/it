@@ -48,6 +48,9 @@ try {
 
   check(/^BRIT\d{8}$/.test(loan.borrow_doc_no), `ເລກໃບຢືມຖືກຮູບແບບ (${loan.borrow_doc_no})`)
 
+  // ປະຫວັດເປັນ cache — action ຂອງແອັບ refresh ໃຫ້ຫຼັງບັນທຶກ ທົດສອບຕ້ອງເຮັດຄືກັນ
+  await c.query('select it.refresh_asset_movements()')
+
   let view = (
     await c.query(
       'select is_assigned, holder_code, holder_source, movement_count from it.v_it_assets where asset_code = $1',
@@ -93,6 +96,8 @@ try {
 
   check(/^RTIT\d{8}$/.test(ret.return_doc_no), `ເລກໃບຄືນຖືກຮູບແບບ (${ret.return_doc_no})`)
 
+  await c.query('select it.refresh_asset_movements()')
+
   view = (
     await c.query(
       'select is_assigned, holder_code from it.v_it_assets where asset_code = $1',
@@ -114,10 +119,19 @@ try {
 
   // ---------- ຂໍ້ມູນ ERP ບໍ່ຖືກແຕະ ----------
   console.log('\n[4] ຂໍ້ມູນ ERP')
+  // ທຽບກັບຕາຕະລາງຕົ້ນທາງໂດຍກົງ ບໍ່ໃຊ້ຕົວເລກຕາຍຕົວ — ຈຳນວນໃບຢືມໃນ ERP
+  // ເພີ່ມຂຶ້ນເລື້ອຍໆຕາມການໃຊ້ງານຈິງ ສິ່ງທີ່ຕ້ອງພິສູດຄືສອງຝ່າຍຍັງກົງກັນ
   const erp = (
-    await c.query("select count(*) from it.v_asset_movements where source = 'erp'")
+    await c.query(
+      `select (select count(*) from it.v_asset_movements where source = 'erp') as view_rows,
+              (select count(*) from public.report_asset_trans_detail
+                where item_code like '200-%')                                 as source_rows`
+    )
   ).rows[0]
-  check(Number(erp.count) === 346, `ລາຍການ ERP ຍັງຄົບ 346 ລາຍການ ບໍ່ຖືກແກ້ໄຂ`)
+  check(
+    erp.view_rows === erp.source_rows,
+    `ລາຍການ ERP ຍັງກົງກັບຕົ້ນທາງ (${erp.view_rows}/${erp.source_rows}) ບໍ່ຖືກແກ້ໄຂ`
+  )
 
   await c.query('rollback')
   console.log(`\nທັງໝົດ ${passed} ການກວດຜ່ານ. ຂໍ້ມູນທົດສອບຖືກ rollback ແລ້ວ.`)

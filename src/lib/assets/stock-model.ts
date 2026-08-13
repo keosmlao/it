@@ -9,7 +9,9 @@ export const STOCK_STATES = [
   'in_stock',
   'with_user',
   'repair',
+  'damaged',
   'missing',
+  'scrapped',
   'retired',
 ] as const
 export type StockState = (typeof STOCK_STATES)[number]
@@ -17,8 +19,10 @@ export type StockState = (typeof STOCK_STATES)[number]
 export const STOCK_LABEL_LO: Record<StockState, string> = {
   in_stock: 'ຢູ່ໃນສາງ',
   with_user: 'ຢູ່ກັບຜູ້ໃຊ້',
-  repair: 'ສົ່ງສ້ອມ',
+  repair: 'ສົ່ງສ້ອມຢູ່',
+  damaged: 'ເພ (ຍັງສ້ອມໄດ້)',
   missing: 'ຫາບໍ່ພົບ',
+  scrapped: 'ຕັດຈຳໜ່າຍແລ້ວ',
   retired: 'ປົດລະວາງ',
 }
 
@@ -26,8 +30,36 @@ export const STOCK_STYLE: Record<StockState, string> = {
   in_stock: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
   with_user: 'bg-brand-sky/20 text-brand-navy dark:text-brand-sky',
   repair: 'bg-brand-orange/20 text-brand-orange',
+  damaged: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
   missing: 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300',
+  scrapped: 'bg-slate-300 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
   retired: 'bg-brand-navy/10 text-muted dark:bg-white/5',
+}
+
+/** ສະຖານະທີ່ຖືວ່າ "ໃຊ້ງານບໍ່ໄດ້" — ບໍ່ຄວນເອົາໄປໃຫ້ຢືມ */
+export const UNUSABLE_STATES: StockState[] = [
+  'repair',
+  'damaged',
+  'missing',
+  'scrapped',
+  'retired',
+]
+
+export const WRITEOFF_REASONS = [
+  'beyond_repair',
+  'too_costly',
+  'obsolete',
+  'lost',
+  'other',
+] as const
+export type WriteoffReason = (typeof WRITEOFF_REASONS)[number]
+
+export const WRITEOFF_REASON_LO: Record<WriteoffReason, string> = {
+  beyond_repair: 'ເພຈົນສ້ອມບໍ່ໄດ້',
+  too_costly: 'ຄ່າສ້ອມແພງກວ່າຊື້ໃໝ່',
+  obsolete: 'ເກົ່າ/ລ້າສະໄໝ ໃຊ້ກັບວຽກບໍ່ໄດ້ແລ້ວ',
+  lost: 'ສູນຫາຍ',
+  other: 'ອື່ນໆ',
 }
 
 export type SurveyRow = {
