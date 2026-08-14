@@ -97,7 +97,11 @@ export async function paginateRecoveries(
   const params: unknown[] = []
   const where: string[] = ['true']
 
-  if (filters.reason === 'former' || filters.reason === 'long_held') {
+  if (
+    filters.reason === 'former' ||
+    filters.reason === 'unknown_employee' ||
+    filters.reason === 'long_held'
+  ) {
     params.push(filters.reason)
     where.push(`reason = $${params.length}`)
   }
@@ -144,12 +148,15 @@ export async function getRecoveryStats() {
   const rows = await query<{
     total: string
     former: string
+    unknown_employee: string
     long_held: string
     pending: string
     in_progress: string
   }>(
     `select count(*)                                            as total,
             count(*) filter (where reason = 'former')           as former,
+            count(*) filter (where reason = 'unknown_employee')
+                                                        as unknown_employee,
             count(*) filter (where reason = 'long_held')        as long_held,
             count(*) filter (where recovery_status is null
                                or recovery_status = 'open')     as pending,

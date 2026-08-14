@@ -34,7 +34,10 @@
     "db:smoke-condition": "node --env-file=.env.local scripts/smoke-condition.mjs",
     "smoke:spec-history": "node --env-file=.env.local scripts/smoke-spec-history.mjs",
     "smoke:permissions": "node --env-file=.env.local scripts/smoke-permissions.mjs",
-    "smoke:plan-quickadd": "node --env-file=.env.local scripts/smoke-plan-quickadd.mjs"
+    "smoke:plan-quickadd": "node --env-file=.env.local scripts/smoke-plan-quickadd.mjs",
+    "audit:employees": "node --env-file=.env.local scripts/audit-employees.mjs",
+    "refresh:cache": "node --env-file=.env.local scripts/refresh-cache.mjs",
+    "smoke:local-assets": "node --env-file=.env.local scripts/smoke-local-assets.mjs"
   },
   "dependencies": {
     "@fontsource/noto-sans-lao": "^5.3.0",

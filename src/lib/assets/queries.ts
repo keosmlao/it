@@ -8,6 +8,8 @@ export type AssetFilters = {
   holding?: string // 'assigned' | 'spare' | 'it' | ອື່ນ = ທັງໝົດ
   category?: string
   brand?: string
+  /** 'local' = ລົງທະບຽນໃນລະບົບນີ້ · 'erp' = ມາຈາກ ERP */
+  source?: string
   q?: string
 }
 
@@ -18,6 +20,10 @@ function assetWhere(filters: AssetFilters) {
   if (filters.holding === 'assigned') where.push('is_assigned')
   else if (filters.holding === 'spare') where.push('not is_assigned')
   else if (filters.holding === 'it') where.push('owned_by_it')
+
+  // ລະຫັດບອກແຫຼ່ງທີ່ມາຢູ່ແລ້ວ — ITA- ອອກໃຫ້ໂດຍລະບົບນີ້, 200- ມາຈາກ ERP
+  if (filters.source === 'local') where.push(`asset_code like 'ITA-%'`)
+  else if (filters.source === 'erp') where.push(`asset_code like '200-%'`)
 
   // ກັ່ນຕອງດ້ວຍຊື່ປະເພດ ບໍ່ແມ່ນລະຫັດ ເພາະເຄື່ອງທີ່ບໍ່ມີລະຫັດ
   // ຖືກຄິດປະເພດຈາກຊື່ໃຫ້ແລ້ວໃນ view

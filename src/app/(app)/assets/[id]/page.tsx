@@ -10,6 +10,12 @@ import {
 import { getAssetConflicts } from '@/lib/assets/conflicts'
 import { getAssetCondition } from '@/lib/assets/damage'
 import { getAssetDeployment, getAssetLocations } from '@/lib/assets/deployment'
+import {
+  getCategoryOptions,
+  getDepartmentOptions,
+  getLocalAsset,
+  getLocationOptions,
+} from '@/lib/assets/local'
 import { can } from '@/lib/auth/roles'
 import ConditionPanel from './condition-panel'
 import {
@@ -22,6 +28,7 @@ import {
 } from '@/lib/assets/model'
 import { getAllEmployees } from '@/lib/tickets/queries'
 import SpecForm from './spec-form'
+import LocalAssetPanel from './local-asset-panel'
 import SpecHistory from './spec-history'
 import { LendForm, ReturnForm, TransferForm } from './loan-form'
 import RepairForm from './repair-form'
@@ -44,6 +51,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
     deployment,
     locations,
     specHistory,
+    local,
   ] = await Promise.all([
       getAssetHistory(asset.asset_code),
       getAssetRepairs(asset.asset_code),
@@ -53,7 +61,17 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
       getAssetDeployment(asset.asset_code),
       getAssetLocations(),
       getSpecHistory(asset.asset_code),
+      getLocalAsset(asset.asset_code),
     ])
+
+  // ຂໍ້ມູນຫຼັກຂອງເຄື່ອງ ERP ແກ້ຢູ່ນີ້ບໍ່ໄດ້ — ຕົວເລືອກຈຶ່ງດຶງມາສະເພາະເມື່ອຈຳເປັນ
+  const localOptions = local
+    ? await Promise.all([
+        getCategoryOptions(),
+        getLocationOptions(),
+        getDepartmentOptions(),
+      ])
+    : null
 
   const info = [
     ['ປະເພດ', asset.category_name],
@@ -91,6 +109,16 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
             ))}
           </dl>
         </section>
+
+        {local && localOptions && (
+          <LocalAssetPanel
+            asset={local}
+            canManage={canManage}
+            categories={localOptions[0]}
+            locations={localOptions[1]}
+            departments={localOptions[2]}
+          />
+        )}
 
         <section className="glass-card rounded-xl p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">

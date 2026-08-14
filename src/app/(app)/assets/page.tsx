@@ -25,6 +25,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
     holding: pick(params.holding),
     category: pick(params.category),
     brand: pick(params.brand),
+    source: pick(params.source),
     q: pick(params.q),
   }
 
@@ -77,6 +78,12 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
             className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
           >
             + ອອກໃບຢືມ
+          </Link>
+          <Link
+            href="/assets/new"
+            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          >
+            + ລົງທະບຽນຊັບສິນ
           </Link>
           <Link
             href="/assets/holders"

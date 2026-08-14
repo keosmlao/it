@@ -118,6 +118,7 @@ export const NAV_GROUPS: NavGroup[] = [
           { href: '/assets?holding=assigned', label: 'ມີຜູ້ຖືຄອງ', icon: ICON.task },
           { href: '/assets?holding=spare', label: 'ຢູ່ໃນສາງ', icon: ICON.box },
           { href: '/assets?holding=it', label: 'ຂອງພະແນກ IT', icon: ICON.settings },
+          { href: '/assets/new', label: 'ລົງທະບຽນຊັບສິນ', icon: ICON.plus },
         ],
       },
       {
@@ -207,6 +208,7 @@ export const PAGE_TITLES: Record<string, string> = {
   '/plans': 'ແຜນວຽກປະຈຳວັນ',
   '/plans/team': 'ແຜນວຽກທັງທີມ',
   '/assets': 'ອຸປະກອນ',
+  '/assets/new': 'ລົງທະບຽນຊັບສິນ',
   '/assets/movements': 'ປະຫວັດຢືມ–ຄືນ',
   '/assets/lend': 'ບັນທຶກການຢືມ–ຄືນ',
   '/assets/documents': 'ເອກະສານຢືມ–ຄືນ',

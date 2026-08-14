@@ -23,6 +23,15 @@ export default function ActionForm({
     <form action={formAction} className={className}>
       {children}
 
+      {state.ok && state.message && (
+        <p
+          role="status"
+          className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+        >
+          {state.message}
+        </p>
+      )}
+
       {state.error && (
         <p
           role="alert"

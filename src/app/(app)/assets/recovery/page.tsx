@@ -61,6 +61,16 @@ export default async function RecoveryPage({
             on: filters.reason === 'former',
           },
           {
+            // ແຍກຈາກ "ອອກໄປແລ້ວ" ເພາະລະບົບບອກບໍ່ໄດ້ວ່າຄົນນີ້ອອກແທ້ບໍ —
+            // ຮູ້ພຽງວ່າລະຫັດນີ້ບໍ່ມີໃນທະບຽນ HR. ອາດເປັນຄົນໃໝ່ທີ່ຍັງບໍ່ຂຶ້ນທະບຽນ
+            // ຈຶ່ງບໍ່ຄວນທວງແບບ "ເຈົ້າອອກໄປແລ້ວ" ໂດຍບໍ່ກວດກ່ອນ
+            label: 'ບໍ່ພົບໃນທະບຽນ HR',
+            href: '/assets/recovery?reason=unknown_employee&status=all',
+            count: stats?.unknown_employee,
+            alert: true,
+            on: filters.reason === 'unknown_employee',
+          },
+          {
             label: 'ຄ້າງເກີນ 1 ປີ',
             href: '/assets/recovery?reason=long_held&status=all',
             count: stats?.long_held,
