@@ -72,3 +72,15 @@ export function formatDeadline(due: string | null): {
     overdue,
   }
 }
+
+/**
+ * ຂະໜາດໄຟລ໌ແບບອ່ານງ່າຍ
+ *
+ * ຢູ່ໃນໄຟລ໌ນີ້ (ບໍ່ແມ່ນ uploads.ts) ເພາະ client component ຕ້ອງໃຊ້ນຳ —
+ * uploads.ts ມີ `import 'server-only'` ຈຶ່ງ import ເຂົ້າ client ບໍ່ໄດ້
+ */
+export function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+}

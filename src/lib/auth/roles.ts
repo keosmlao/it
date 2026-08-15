@@ -40,6 +40,8 @@ export const PERMISSIONS = [
   'approve',
   'viewReports',
   'manageAssets',
+  'manageSubscriptions',
+  'manageAccounts',
   'administer',
 ] as const
 
@@ -52,6 +54,8 @@ export const PERMISSION_LABEL_LO: Record<Permission, string> = {
   approve: 'ອະນຸມັດຄຳຮ້ອງ / ຕັດຈຳໜ່າຍ',
   viewReports: 'ເບິ່ງລາຍງານ KPI',
   manageAssets: 'ບັນທຶກຢືມ–ຄືນ ແລະ ແກ້ທະບຽນອຸປະກອນ',
+  manageSubscriptions: 'ຈັດການສັນຍາເຊົ່າບໍລິການ ແລະ ບັນທຶກການຈ່າຍ',
+  manageAccounts: 'ຈັດການບັນຊີຜູ້ໃຊ້ ແລະ ຂັ້ນຕອນຮັບເຂົ້າ–ອອກ',
   administer: 'ຕັ້ງຄ່າລະບົບ ແລະ ຈັດການສິດ',
 }
 
@@ -63,6 +67,8 @@ export const PERMISSION_SHORT_LO: Record<Permission, string> = {
   approve: 'ອະນຸມັດ',
   viewReports: 'ລາຍງານ',
   manageAssets: 'ອຸປະກອນ',
+  manageSubscriptions: 'ຄ່າເຊົ່າ',
+  manageAccounts: 'ບັນຊີຜູ້ໃຊ້',
   administer: 'ຕັ້ງຄ່າລະບົບ',
 }
 
@@ -73,6 +79,8 @@ export const PERMISSION_HINT_LO: Record<Permission, string> = {
   approve: 'ອະນຸມັດ/ປະຕິເສດຄຳຮ້ອງ ແລະ ຕັດຈຳໜ່າຍອຸປະກອນ',
   viewReports: 'ໜ້າລາຍງານ ແລະ ແຜນວຽກທັງທີມ',
   manageAssets: 'ຢືມ, ຄືນ, ໂອນ, ແກ້ spec, ບັນທຶກການສ້ອມ',
+  manageSubscriptions: 'ລົງທະບຽນ, ແກ້, ຕໍ່ອາຍຸ ແລະ ບັນທຶກການຈ່າຍຄ່າເຊົ່າ',
+  manageAccounts: 'ເປີດ–ປິດບັນຊີ ແລະ ຕິດຕາມຂັ້ນຕອນຮັບພະນັກງານເຂົ້າ/ອອກ',
   administer: 'ໃຫ້ດ້ວຍຄວາມລະມັດລະວັງ — ຕັ້ງສິດຄົນອື່ນໄດ້',
 }
 
@@ -84,6 +92,11 @@ const ROLE_DEFAULT: Record<Permission, (role: Role) => boolean> = {
   approve: (r) => r === 'manager' || r === 'head',
   viewReports: (r) => r === 'manager' || r === 'head',
   manageAssets: (r) => r !== 'requester',
+  // ສັນຍາເຊົ່າຜູກກັບເງິນ ແລະ ບໍລິການທີ່ລົ້ມແລ້ວກະທົບທັງບໍລິສັດ —
+  // ຕັ້ງຕົ້ນໃຫ້ສະເພາະລະດັບບໍລິຫານ ຄົນອື່ນເປີດໃຫ້ລາຍຄົນໄດ້ຢູ່ໜ້າຕັ້ງຄ່າ
+  manageSubscriptions: (r) => r === 'manager' || r === 'head',
+  // ບັນຊີຜູ້ໃຊ້ຄືກະແຈເຂົ້າທຸກລະບົບ — ໃຫ້ຄົນທີ່ຮັບຜິດຊອບແທ້ ບໍ່ແມ່ນທຸກຄົນ
+  manageAccounts: (r) => r === 'manager' || r === 'head',
   administer: (r) => r === 'manager',
 }
 
@@ -151,4 +164,10 @@ export const can = {
 
   /** ບັນທຶກຢືມ–ຄືນ, ໂອນຜູ້ຖືຄອງ, ແກ້ spec ແລະ ການສ້ອມ */
   manageAssets: (u: ItStaff) => allows(u, 'manageAssets'),
+
+  /** ລົງທະບຽນ/ແກ້ສັນຍາເຊົ່າບໍລິການ ແລະ ບັນທຶກການຈ່າຍແຕ່ລະງວດ */
+  manageSubscriptions: (u: ItStaff) => allows(u, 'manageSubscriptions'),
+
+  /** ເປີດ–ປິດບັນຊີຜູ້ໃຊ້ ແລະ ຈັດການຂັ້ນຕອນຮັບພະນັກງານເຂົ້າ/ອອກ */
+  manageAccounts: (u: ItStaff) => allows(u, 'manageAccounts'),
 }

@@ -9,6 +9,11 @@ import {
   ticketsByStaff,
 } from '@/lib/reports/queries'
 import { summariseHours } from '@/lib/worklogs/queries'
+import {
+  getRatingByStaff,
+  getRatingSummary,
+  getRecentComments,
+} from '@/lib/tickets/ratings'
 import { formatDuration } from '@/lib/format'
 import { ROLE_LABEL_LO, type Role } from '@/lib/auth/roles'
 import Link from 'next/link'
@@ -26,13 +31,26 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
   const from = pick(params.from) || start.toISOString().slice(0, 10)
   const to = pick(params.to) || today.toISOString().slice(0, 10)
 
-  const [summary, byCategory, byStaff, byMonth, projects, hours] = await Promise.all([
+  const [
+    summary,
+    byCategory,
+    byStaff,
+    byMonth,
+    projects,
+    hours,
+    csat,
+    csatByStaff,
+    csatComments,
+  ] = await Promise.all([
     ticketSummary(from, to),
     ticketsByCategory(from, to),
     ticketsByStaff(from, to),
     ticketsByMonth(),
     projectSummary(),
     summariseHours(from, to),
+    getRatingSummary(from, to),
+    getRatingByStaff(from, to),
+    getRecentComments(from, to, 6),
   ])
 
   const resolved = Number(summary?.resolved ?? 0)
@@ -238,6 +256,68 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
           danger={Number(projects?.overdue ?? 0) > 0}
         />
       </section>
+
+      {/* ຄວາມພໍໃຈ (CSAT) — ວັດ "ດີບໍ" ບໍ່ແມ່ນພຽງ "ໄວບໍ" ຄື SLA */}
+      <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Stat
+          label="ຄະແນນຄວາມພໍໃຈສະເລ່ຍ"
+          value={csat?.average ? `${csat.average} / 5` : '—'}
+          hint={`ຈາກ ${csat?.total ?? 0} ຄຳຕອບ`}
+        />
+        <Stat label="ພໍໃຈ (4–5 ດາວ)" value={csat?.good ?? '0'} />
+        <Stat
+          label="ບໍ່ພໍໃຈ (1–2 ດາວ)"
+          value={csat?.bad ?? '0'}
+          danger={Number(csat?.bad ?? 0) > 0}
+        />
+        <Stat
+          label="ອັດຕາການໃຫ້ຄະແນນ"
+          value={resolved ? `${Math.round((Number(csat?.total ?? 0) / resolved) * 100)}%` : '—'}
+          hint="ທຽບກັບເລື່ອງທີ່ແກ້ແລ້ວ"
+        />
+      </section>
+
+      {csatByStaff.length > 0 && (
+        <section className="mt-4 grid gap-4 lg:grid-cols-2">
+          <Panel title="ຄະແນນຕໍ່ພະນັກງານ">
+            <ul className="space-y-2">
+              {csatByStaff.map((s) => (
+                <li
+                  key={s.assignee_employee_id ?? 'none'}
+                  className="flex items-center justify-between gap-3 text-sm"
+                >
+                  <span className="min-w-0 flex-1 truncate text-body">
+                    {s.assignee_name ?? 'ບໍ່ໄດ້ມອບໝາຍ'}
+                  </span>
+                  <span className="text-muted">{s.total} ຄຳຕອບ</span>
+                  <span className="font-medium text-fg">{s.average} / 5</span>
+                </li>
+              ))}
+            </ul>
+          </Panel>
+
+          <Panel title="ຄຳຕິຊົມຫຼ້າສຸດ">
+            {csatComments.length === 0 ? (
+              <Empty />
+            ) : (
+              <ul className="space-y-3">
+                {csatComments.map((c) => (
+                  <li key={c.ticket_id} className="text-sm">
+                    <span className="text-brand-yellow">
+                      {'★'.repeat(c.score)}
+                      <span className="text-faint">{'★'.repeat(5 - c.score)}</span>
+                    </span>
+                    <span className="ml-2 text-body">{c.comment}</span>
+                    <span className="block text-xs text-muted">
+                      {c.ticket_no} · {c.requester_name ?? '—'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Panel>
+        </section>
+      )}
     </div>
   )
 }

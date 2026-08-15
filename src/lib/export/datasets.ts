@@ -8,6 +8,30 @@ import { STATUS_LABEL_LO, type TicketStatus } from '@/lib/tickets/model'
 import { PR_STATUS_LABEL_LO, type PrStatus } from '@/lib/purchase/model'
 import { PLAN_ITEM_LABEL_LO, type PlanItemStatus } from '@/lib/plans/model'
 import {
+  BILLING_CYCLE_LABEL_LO,
+  PERIOD_STATUS_LABEL_LO,
+  SUB_CATEGORY_LABEL_LO,
+  SUB_STATUS_LABEL_LO,
+  type BillingCycle,
+  type PeriodStatus,
+  type SubCategory,
+  type SubStatus,
+} from '@/lib/subscriptions/model'
+import {
+  PM_CATEGORY_LABEL_LO,
+  type PmCategory,
+} from '@/lib/maintenance/model'
+import {
+  INCIDENT_SERVICE_LABEL_LO,
+  SEVERITY_SHORT_LO,
+  type IncidentService,
+  type IncidentSeverity,
+} from '@/lib/incidents/model'
+import {
+  CONSUMABLE_CATEGORY_LABEL_LO,
+  type ConsumableCategory,
+} from '@/lib/consumables/model'
+import {
   RECOVERY_LABEL_LO,
   STOCK_LABEL_LO,
   WRITEOFF_REASON_LO,
@@ -32,6 +56,15 @@ export const DATASETS = [
   'tickets',
   'purchase',
   'plans',
+  'subscriptions',
+  'subscription-periods',
+  'vendors',
+  'maintenance',
+  'incidents',
+  'accounts',
+  'consumables',
+  'ip-plan',
+  'replacement',
 ] as const
 
 export type DatasetName = (typeof DATASETS)[number]
@@ -48,6 +81,15 @@ export const DATASET_LABEL_LO: Record<DatasetName, string> = {
   tickets: 'Ticket ແຈ້ງບັນຫາ',
   purchase: 'ໃບສະເໜີຊື້',
   plans: 'ແຜນວຽກປະຈຳວັນ',
+  subscriptions: 'ສັນຍາເຊົ່າບໍລິການ',
+  'subscription-periods': 'ງວດການຈ່າຍຄ່າເຊົ່າ',
+  vendors: 'ທະບຽນຜູ້ຂາຍ',
+  maintenance: 'ແຜນບຳລຸງຮັກສາ',
+  incidents: 'ເຫດຂັດຂ້ອງລະບົບ',
+  accounts: 'ບັນຊີຜູ້ໃຊ້',
+  consumables: 'ອຸປະກອນສິ້ນເປືອງ',
+  'ip-plan': 'ທະບຽນ IP',
+  replacement: 'ແຜນປ່ຽນເຄື່ອງ',
 }
 
 export function isDataset(value: string): value is DatasetName {
@@ -58,6 +100,8 @@ export function isDataset(value: string): value is DatasetName {
 export function canExport(user: ItStaff, name: DatasetName): boolean {
   if (!can.useStaffArea(user)) return false
   if (name === 'plans') return can.viewReports(user)
+  // ລາຍຊື່ບັນຊີຜູ້ໃຊ້ທັງບໍລິສັດເປັນຂໍ້ມູນອ່ອນໄຫວ — ໃຫ້ສະເພາະຄົນທີ່ຮັບຜິດຊອບ
+  if (name === 'accounts') return can.manageAccounts(user)
   return true
 }
 
@@ -94,6 +138,24 @@ export async function buildDataset(
       return { ...base, ...(await purchase(params)) }
     case 'plans':
       return { ...base, ...(await plans(params)) }
+    case 'subscriptions':
+      return { ...base, ...(await subscriptions(params)) }
+    case 'subscription-periods':
+      return { ...base, ...(await subscriptionPeriods(params)) }
+    case 'vendors':
+      return { ...base, ...(await vendors(params)) }
+    case 'maintenance':
+      return { ...base, ...(await maintenance(params)) }
+    case 'incidents':
+      return { ...base, ...(await incidents(params)) }
+    case 'accounts':
+      return { ...base, ...(await accounts(params)) }
+    case 'consumables':
+      return { ...base, ...(await consumables(params)) }
+    case 'ip-plan':
+      return { ...base, ...(await ipPlan()) }
+    case 'replacement':
+      return { ...base, ...(await replacement(params)) }
   }
 }
 
@@ -553,6 +615,435 @@ async function plans(params: Params) {
       item_status_lo: r.item_status
         ? (PLAN_ITEM_LABEL_LO[r.item_status as PlanItemStatus] ?? r.item_status)
         : '',
+    })),
+  }
+}
+
+// --------------------------------------------------------- subscriptions
+
+async function subscriptions(params: Params) {
+  const rows = await query(
+    `select code, service_name, category, vendor, plan_name, account_ref,
+            billing_cycle, amount, currency, monthly_amount, yearly_amount,
+            start_date, end_date, next_due_date, due_status, auto_renew,
+            owner_name, department_name, status, period_count, unpaid_count,
+            paid_total
+       from it.v_subscriptions
+      where ($1::text is null
+             or code ilike $1::text or service_name ilike $1::text
+             or vendor ilike $1::text or account_ref ilike $1::text)
+      order by status, next_due_date nulls last, service_name
+      limit 5000`,
+    [params.q ? `%${params.q}%` : null]
+  )
+
+  const DUE_LO: Record<string, string> = {
+    overdue: 'ເລີຍກຳນົດ',
+    due_soon: 'ໃກ້ຮອດກຳນົດ',
+    ok: 'ຍັງບໍ່ຮອດ',
+    unknown: 'ບໍ່ໄດ້ລະບຸ',
+    inactive: 'ບໍ່ໄດ້ໃຊ້ງານ',
+  }
+
+  return {
+    subtitle: `${rows.length} ສັນຍາ · ດຶງເມື່ອ ${safeDate(new Date().toISOString())}`,
+    columns: [
+      { key: 'code', label: 'ລະຫັດ', width: 14 },
+      { key: 'service_name', label: 'ບໍລິການ', width: 32 },
+      { key: 'category_lo', label: 'ປະເພດ', width: 18 },
+      { key: 'vendor', label: 'ຜູ້ໃຫ້ບໍລິການ', width: 20 },
+      { key: 'plan_name', label: 'ແພັກເກັດ', width: 20 },
+      { key: 'account_ref', label: 'ບັນຊີ/ເລກສັນຍາ', width: 20 },
+      { key: 'cycle_lo', label: 'ຮອບຈ່າຍ', width: 14 },
+      { key: 'amount', label: 'ຄ່າຕໍ່ງວດ', width: 14, numFmt: '#,##0.00', align: 'right' },
+      { key: 'currency', label: 'ສະກຸນ', width: 8 },
+      { key: 'monthly_amount', label: 'ຕໍ່ເດືອນ', width: 14, numFmt: '#,##0.00', align: 'right' },
+      { key: 'yearly_amount', label: 'ຕໍ່ປີ', width: 14, numFmt: '#,##0.00', align: 'right' },
+      { key: 'start_date_lo', label: 'ວັນເລີ່ມ', width: 12 },
+      { key: 'end_date_lo', label: 'ວັນສິ້ນສຸດ', width: 12 },
+      { key: 'next_due_date_lo', label: 'ກຳນົດຕໍ່ໄປ', width: 12 },
+      { key: 'due_status_lo', label: 'ສະຖານະກຳນົດ', width: 14 },
+      { key: 'owner_name', label: 'ຜູ້ຮັບຜິດຊອບ', width: 20 },
+      { key: 'department_name', label: 'ພະແນກທີ່ຮັບພາລະ', width: 22 },
+      { key: 'status_lo', label: 'ສະຖານະສັນຍາ', width: 14 },
+      { key: 'unpaid_count', label: 'ງວດຄ້າງ', width: 10, align: 'right' },
+      { key: 'paid_total', label: 'ຈ່າຍໄປແລ້ວ', width: 16, numFmt: '#,##0.00', align: 'right' },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      category_lo:
+        SUB_CATEGORY_LABEL_LO[r.category as SubCategory] ?? String(r.category),
+      cycle_lo:
+        BILLING_CYCLE_LABEL_LO[r.billing_cycle as BillingCycle] ??
+        String(r.billing_cycle),
+      status_lo: SUB_STATUS_LABEL_LO[r.status as SubStatus] ?? String(r.status),
+      due_status_lo: DUE_LO[String(r.due_status)] ?? String(r.due_status),
+      start_date_lo: safeDate(r.start_date as string),
+      end_date_lo: safeDate(r.end_date as string),
+      next_due_date_lo: safeDate(r.next_due_date as string),
+    })),
+  }
+}
+
+async function subscriptionPeriods(params: Params) {
+  const rows = await query(
+    `select subscription_code, service_name, category, vendor, period_start,
+            period_end, due_date, amount, currency, status, paid_at,
+            invoice_no, note, created_by_name
+       from it.v_subscription_periods
+      where ($1::date is null or period_start >= $1::date)
+        and ($2::date is null or period_start <= $2::date)
+      order by period_start desc, subscription_code
+      limit 5000`,
+    [params.from ?? null, params.to ?? null]
+  )
+
+  return {
+    subtitle: rangeLabel(params, `${rows.length} ງວດ`),
+    columns: [
+      { key: 'subscription_code', label: 'ລະຫັດສັນຍາ', width: 14 },
+      { key: 'service_name', label: 'ບໍລິການ', width: 32 },
+      { key: 'category_lo', label: 'ປະເພດ', width: 18 },
+      { key: 'vendor', label: 'ຜູ້ໃຫ້ບໍລິການ', width: 20 },
+      { key: 'period_start_lo', label: 'ງວດເລີ່ມ', width: 12 },
+      { key: 'period_end_lo', label: 'ງວດຮອດ', width: 12 },
+      { key: 'due_date_lo', label: 'ກຳນົດຈ່າຍ', width: 12 },
+      { key: 'amount', label: 'ຈຳນວນເງິນ', width: 16, numFmt: '#,##0.00', align: 'right' },
+      { key: 'currency', label: 'ສະກຸນ', width: 8 },
+      { key: 'status_lo', label: 'ສະຖານະ', width: 14 },
+      { key: 'paid_at_lo', label: 'ວັນທີຈ່າຍ', width: 12 },
+      { key: 'invoice_no', label: 'ເລກໃບບິນ', width: 16 },
+      { key: 'created_by_name', label: 'ຜູ້ບັນທຶກ', width: 20 },
+      { key: 'note', label: 'ໝາຍເຫດ', width: 30 },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      category_lo:
+        SUB_CATEGORY_LABEL_LO[r.category as SubCategory] ?? String(r.category),
+      status_lo:
+        PERIOD_STATUS_LABEL_LO[r.status as PeriodStatus] ?? String(r.status),
+      period_start_lo: safeDate(r.period_start as string),
+      period_end_lo: safeDate(r.period_end as string),
+      due_date_lo: safeDate(r.due_date as string),
+      paid_at_lo: safeDate(r.paid_at as string),
+    })),
+  }
+}
+
+// ------------------------------------------------------- ໂມດູນໂຄງລ່າງ IT
+
+async function vendors(params: Params) {
+  const rows = await query(
+    `select name, short_name, contact_name, phone, email, support_phone,
+            support_email, support_hours, sla_note, subscription_count,
+            repair_count, repair_cost, is_active
+       from it.v_vendors
+      where ($1::text is null or name ilike $1::text or contact_name ilike $1::text)
+      order by name
+      limit 5000`,
+    [params.q ? `%${params.q}%` : null]
+  )
+
+  return {
+    subtitle: `${rows.length} ລາຍ`,
+    columns: [
+      { key: 'name', label: 'ຜູ້ຂາຍ', width: 30 },
+      { key: 'short_name', label: 'ຊື່ຫຍໍ້', width: 12 },
+      { key: 'contact_name', label: 'ຜູ້ຕິດຕໍ່', width: 20 },
+      { key: 'phone', label: 'ເບີໂທ', width: 16 },
+      { key: 'email', label: 'ອີເມວ', width: 24 },
+      { key: 'support_phone', label: 'ເບີແຈ້ງບັນຫາ', width: 16 },
+      { key: 'support_hours', label: 'ເວລາບໍລິການ', width: 18 },
+      { key: 'sla_note', label: 'ເງື່ອນໄຂຮັບປະກັນ', width: 30 },
+      { key: 'subscription_count', label: 'ສັນຍາເຊົ່າ', width: 10, align: 'right' },
+      { key: 'repair_count', label: 'ໃບສ້ອມ', width: 10, align: 'right' },
+      { key: 'repair_cost', label: 'ຄ່າສ້ອມລວມ', width: 14, numFmt: '#,##0', align: 'right' },
+      { key: 'active_lo', label: 'ສະຖານະ', width: 12 },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({ ...r, active_lo: r.is_active ? 'ໃຊ້ຢູ່' : 'ປິດໄວ້' })),
+  }
+}
+
+async function maintenance(params: Params) {
+  const rows = await query(
+    `select code, title, category, asset_code, asset_name, location_name,
+            interval_days, next_due_date, last_done_at, owner_name, due_status,
+            log_count, issue_count, is_active
+       from it.v_maintenance_plans
+      where ($1::text is null or title ilike $1::text or code ilike $1::text)
+      order by next_due_date
+      limit 5000`,
+    [params.q ? `%${params.q}%` : null]
+  )
+
+  const DUE_LO: Record<string, string> = {
+    overdue: 'ເລີຍກຳນົດ',
+    due_soon: 'ຮອດກຳນົດໄວໆນີ້',
+    ok: 'ຍັງບໍ່ຮອດ',
+    inactive: 'ປິດໄວ້',
+  }
+
+  return {
+    subtitle: `${rows.length} ແຜນ`,
+    columns: [
+      { key: 'code', label: 'ລະຫັດ', width: 14 },
+      { key: 'title', label: 'ຊື່ວຽກ', width: 34 },
+      { key: 'category_lo', label: 'ປະເພດ', width: 16 },
+      { key: 'interval_days', label: 'ຮອບ (ວັນ)', width: 10, align: 'right' },
+      { key: 'next_due_date_lo', label: 'ກຳນົດຕໍ່ໄປ', width: 12 },
+      { key: 'last_done_at_lo', label: 'ເຮັດຫຼ້າສຸດ', width: 12 },
+      { key: 'due_status_lo', label: 'ສະຖານະ', width: 16 },
+      { key: 'owner_name', label: 'ຜູ້ຮັບຜິດຊອບ', width: 20 },
+      { key: 'asset_name', label: 'ອຸປະກອນ', width: 24 },
+      { key: 'location_name', label: 'ສະຖານທີ່', width: 18 },
+      { key: 'log_count', label: 'ບັນທຶກ', width: 10, align: 'right' },
+      { key: 'issue_count', label: 'ພົບບັນຫາ', width: 10, align: 'right' },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      category_lo:
+        PM_CATEGORY_LABEL_LO[r.category as PmCategory] ?? String(r.category),
+      due_status_lo: DUE_LO[String(r.due_status)] ?? String(r.due_status),
+      next_due_date_lo: safeDate(r.next_due_date as string),
+      last_done_at_lo: safeDate(r.last_done_at as string),
+    })),
+  }
+}
+
+async function incidents(params: Params) {
+  const rows = await query(
+    `select code, title, service, severity, impact, started_at, resolved_at,
+            minutes, status, cause, action, prevention, subscription_name,
+            asset_code, reported_by
+       from it.v_incidents
+      where ($1::date is null or started_at >= $1::date)
+        and ($2::date is null or started_at < $2::date + 1)
+      order by started_at desc
+      limit 5000`,
+    [params.from ?? null, params.to ?? null]
+  )
+
+  return {
+    subtitle: rangeLabel(params, `${rows.length} ຄັ້ງ`),
+    columns: [
+      { key: 'code', label: 'ລະຫັດ', width: 14 },
+      { key: 'title', label: 'ເກີດຫຍັງ', width: 34 },
+      { key: 'service_lo', label: 'ບໍລິການ', width: 16 },
+      { key: 'severity_lo', label: 'ຄວາມຮ້າຍແຮງ', width: 12 },
+      { key: 'started_at_lo', label: 'ເລີ່ມລົ້ມ', width: 12 },
+      { key: 'resolved_at_lo', label: 'ກັບມາໃຊ້ໄດ້', width: 12 },
+      { key: 'minutes', label: 'ນາທີທີ່ລົ້ມ', width: 12, align: 'right' },
+      { key: 'status_lo', label: 'ສະຖານະ', width: 12 },
+      { key: 'impact', label: 'ຜົນກະທົບ', width: 30 },
+      { key: 'cause', label: 'ສາເຫດ', width: 30 },
+      { key: 'action', label: 'ການແກ້ໄຂ', width: 30 },
+      { key: 'prevention', label: 'ກັນເກີດຄືນ', width: 30 },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      service_lo:
+        INCIDENT_SERVICE_LABEL_LO[r.service as IncidentService] ?? String(r.service),
+      severity_lo:
+        SEVERITY_SHORT_LO[r.severity as IncidentSeverity] ?? String(r.severity),
+      status_lo: r.status === 'open' ? 'ຍັງບໍ່ຈົບ' : 'ແກ້ໄຂແລ້ວ',
+      started_at_lo: safeDate(r.started_at as string),
+      resolved_at_lo: safeDate(r.resolved_at as string),
+    })),
+  }
+}
+
+async function accounts(params: Params) {
+  const rows = await query(
+    `select system_name, kind, username, employee_code, employee_name,
+            department_name, status, granted_at, closed_at, hr_state,
+            should_close, note
+       from it.v_system_accounts
+      where ($1::text is null or username ilike $1::text
+             or employee_name ilike $1::text or system_name ilike $1::text)
+      order by should_close desc, system_name, employee_name
+      limit 5000`,
+    [params.q ? `%${params.q}%` : null]
+  )
+
+  const HR_LO: Record<string, string> = {
+    active: 'ຍັງເຮັດວຽກຢູ່',
+    resigned: 'ລາອອກແລ້ວ',
+    not_in_hr: 'ບໍ່ພົບໃນ HR',
+  }
+  const STATUS_LO: Record<string, string> = {
+    active: 'ໃຊ້ງານຢູ່',
+    suspended: 'ພັກໄວ້',
+    closed: 'ປິດແລ້ວ',
+  }
+
+  return {
+    subtitle: `${rows.length} ບັນຊີ`,
+    columns: [
+      { key: 'system_name', label: 'ລະບົບ', width: 22 },
+      { key: 'username', label: 'ຊື່ບັນຊີ', width: 28 },
+      { key: 'employee_code', label: 'ລະຫັດພະນັກງານ', width: 14 },
+      { key: 'employee_name', label: 'ພະນັກງານ', width: 24 },
+      { key: 'department_name', label: 'ພະແນກ', width: 22 },
+      { key: 'status_lo', label: 'ສະຖານະບັນຊີ', width: 14 },
+      { key: 'hr_state_lo', label: 'ສະຖານະຄົນ', width: 16 },
+      { key: 'should_close_lo', label: 'ຄວນປິດ', width: 10 },
+      { key: 'granted_at_lo', label: 'ເປີດເມື່ອ', width: 12 },
+      { key: 'closed_at_lo', label: 'ປິດເມື່ອ', width: 12 },
+      { key: 'note', label: 'ໝາຍເຫດ', width: 26 },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      status_lo: STATUS_LO[String(r.status)] ?? String(r.status),
+      hr_state_lo: HR_LO[String(r.hr_state)] ?? String(r.hr_state),
+      should_close_lo: r.should_close ? 'ແມ່ນ' : '',
+      granted_at_lo: safeDate(r.granted_at as string),
+      closed_at_lo: safeDate(r.closed_at as string),
+    })),
+  }
+}
+
+async function consumables(params: Params) {
+  const rows = await query(
+    `select code, name, category, unit, on_hand, min_qty, location, vendor_name,
+            unit_price, stock_value, stock_state, in_qty, out_qty, last_move_at
+       from it.v_consumables
+      where ($1::text is null or name ilike $1::text or code ilike $1::text)
+      order by name
+      limit 5000`,
+    [params.q ? `%${params.q}%` : null]
+  )
+
+  const STATE_LO: Record<string, string> = {
+    ok: 'ພຽງພໍ',
+    low: 'ໃກ້ໝົດ',
+    empty: 'ໝົດແລ້ວ',
+    inactive: 'ບໍ່ໃຊ້ແລ້ວ',
+  }
+
+  return {
+    subtitle: `${rows.length} ລາຍການ`,
+    columns: [
+      { key: 'code', label: 'ລະຫັດ', width: 14 },
+      { key: 'name', label: 'ຊື່ລາຍການ', width: 32 },
+      { key: 'category_lo', label: 'ໝວດ', width: 16 },
+      { key: 'on_hand', label: 'ຄົງເຫຼືອ', width: 12, numFmt: '#,##0.##', align: 'right' },
+      { key: 'unit', label: 'ຫົວໜ່ວຍ', width: 10 },
+      { key: 'min_qty', label: 'ຈຸດສັ່ງຊື້', width: 10, numFmt: '#,##0.##', align: 'right' },
+      { key: 'state_lo', label: 'ສະຖານະ', width: 12 },
+      { key: 'location', label: 'ບ່ອນເກັບ', width: 20 },
+      { key: 'vendor_name', label: 'ຜູ້ຂາຍ', width: 22 },
+      { key: 'unit_price', label: 'ລາຄາ/ຫົວໜ່ວຍ', width: 14, numFmt: '#,##0', align: 'right' },
+      { key: 'stock_value', label: 'ມູນຄ່າໃນສາງ', width: 14, numFmt: '#,##0', align: 'right' },
+      { key: 'last_move_at_lo', label: 'ເຄື່ອນໄຫວຫຼ້າສຸດ', width: 14 },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      category_lo:
+        CONSUMABLE_CATEGORY_LABEL_LO[r.category as ConsumableCategory] ??
+        String(r.category),
+      state_lo: STATE_LO[String(r.stock_state)] ?? String(r.stock_state),
+      last_move_at_lo: safeDate(r.last_move_at as string),
+    })),
+  }
+}
+
+async function ipPlan() {
+  const rows = await query(
+    `select segment_name, vlan_id, cidr, host(ip_address) as ip, hostname,
+            asset_code, asset_name, mac_address, employee_name, kind, status, note
+       from it.v_ip_assignments
+      order by segment_name, ip_address
+      limit 5000`
+  )
+
+  const KIND_LO: Record<string, string> = {
+    static: 'ຕັ້ງຄົງທີ່',
+    reservation: 'ຈອງໃນ DHCP',
+    reserved: 'ກັນໄວ້',
+    dhcp: 'ແຈກຈາກ DHCP',
+  }
+  const STATUS_LO: Record<string, string> = {
+    in_use: 'ໃຊ້ຢູ່',
+    free: 'ຫວ່າງ',
+    blocked: 'ຫ້າມໃຊ້',
+  }
+
+  return {
+    subtitle: `${rows.length} IP · ດຶງເມື່ອ ${safeDate(new Date().toISOString())}`,
+    columns: [
+      { key: 'segment_name', label: 'ວົງເນັດ', width: 24 },
+      { key: 'vlan_id', label: 'VLAN', width: 8, align: 'right' },
+      { key: 'cidr', label: 'CIDR', width: 18 },
+      { key: 'ip', label: 'IP', width: 16 },
+      { key: 'hostname', label: 'Hostname', width: 22 },
+      { key: 'asset_code', label: 'ລະຫັດເຄື່ອງ', width: 16 },
+      { key: 'asset_name', label: 'ຊື່ເຄື່ອງ', width: 26 },
+      { key: 'mac_address', label: 'MAC', width: 20 },
+      { key: 'employee_name', label: 'ຜູ້ໃຊ້', width: 22 },
+      { key: 'kind_lo', label: 'ປະເພດ', width: 14 },
+      { key: 'status_lo', label: 'ສະຖານະ', width: 12 },
+      { key: 'note', label: 'ໝາຍເຫດ', width: 26 },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      kind_lo: KIND_LO[String(r.kind)] ?? String(r.kind),
+      status_lo: STATUS_LO[String(r.status)] ?? String(r.status),
+    })),
+  }
+}
+
+async function replacement(params: Params) {
+  const rows = await query(
+    `select asset_code, name, category_name, brand, model, location_name,
+            department_name, holder_name, purchase_date, purchase_price,
+            age_years, warranty_until, repair_count, repair_cost, stock_state,
+            reason_count, priority, estimated_cost, reason_age, reason_warranty,
+            reason_cost, reason_repairs, reason_condition
+       from it.v_replacement_candidates
+      where ($1::text is null or asset_code ilike $1::text or name ilike $1::text)
+      order by case priority when 'high' then 0 when 'medium' then 1 else 2 end,
+               reason_count desc, age_years desc nulls last
+      limit 5000`,
+    [params.q ? `%${params.q}%` : null]
+  )
+
+  const PRIORITY_LO: Record<string, string> = {
+    high: 'ດ່ວນ',
+    medium: 'ຄວນວາງແຜນ',
+    low: 'ເຝົ້າເບິ່ງ',
+  }
+
+  return {
+    subtitle: `${rows.length} ເຄື່ອງ · ດຶງເມື່ອ ${safeDate(new Date().toISOString())}`,
+    columns: [
+      { key: 'asset_code', label: 'ລະຫັດ', width: 16 },
+      { key: 'name', label: 'ຊື່ອຸປະກອນ', width: 30 },
+      { key: 'category_name', label: 'ປະເພດ', width: 14 },
+      { key: 'priority_lo', label: 'ຄວາມດ່ວນ', width: 14 },
+      { key: 'reason_lo', label: 'ເຫດຜົນ', width: 40 },
+      { key: 'age_years', label: 'ອາຍຸ (ປີ)', width: 10, align: 'right' },
+      { key: 'purchase_date_lo', label: 'ວັນທີຊື້', width: 12 },
+      { key: 'purchase_price', label: 'ລາຄາຊື້', width: 14, numFmt: '#,##0', align: 'right' },
+      { key: 'repair_count', label: 'ຄັ້ງທີ່ສ້ອມ', width: 10, align: 'right' },
+      { key: 'repair_cost', label: 'ຄ່າສ້ອມລວມ', width: 14, numFmt: '#,##0', align: 'right' },
+      { key: 'estimated_cost', label: 'ງົບປະມານ', width: 14, numFmt: '#,##0', align: 'right' },
+      { key: 'holder_name', label: 'ຜູ້ຖືຄອງ', width: 20 },
+      { key: 'department_name', label: 'ພະແນກ', width: 20 },
+      { key: 'location_name', label: 'ສະຖານທີ່', width: 18 },
+    ] satisfies Column[],
+    rows: rows.map((r) => ({
+      ...r,
+      priority_lo: PRIORITY_LO[String(r.priority)] ?? String(r.priority),
+      purchase_date_lo: safeDate(r.purchase_date as string),
+      reason_lo: [
+        r.reason_condition ? 'ສະພາບເພ' : null,
+        r.reason_age ? 'ອາຍຸເກີນ 5 ປີ' : null,
+        r.reason_repairs ? 'ສ້ອມຫຼາຍຄັ້ງ' : null,
+        r.reason_cost ? 'ຄ່າສ້ອມສູງ' : null,
+        r.reason_warranty ? 'ໝົດປະກັນ' : null,
+      ]
+        .filter(Boolean)
+        .join(' · '),
     })),
   }
 }

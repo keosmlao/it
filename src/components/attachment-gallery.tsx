@@ -1,5 +1,4 @@
-import { formatDateTime } from '@/lib/format'
-import { formatBytes } from '@/lib/uploads'
+import { formatBytes, formatDateTime } from '@/lib/format'
 import type { Attachment } from '@/lib/tickets/attachments'
 
 /**

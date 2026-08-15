@@ -114,3 +114,54 @@ export async function reportIssue(
   revalidatePath('/tickets')
   redirect(`/my/tickets/${ticketId}`)
 }
+
+/**
+ * ໃຫ້ຄະແນນຄວາມພໍໃຈຫຼັງ ticket ຖືກແກ້ (CSAT)
+ *
+ * ໃຫ້ໄດ້ສະເພາະຜູ້ແຈ້ງເອງ ແລະ ສະເພາະເມື່ອເລື່ອງຖືກແກ້ ຫຼື ປິດແລ້ວ —
+ * ບໍ່ດັ່ງນັ້ນຈະກາຍເປັນຄະແນນທີ່ໃຫ້ຕອນວຽກຍັງບໍ່ທັນຈົບ
+ *
+ * ແກ້ຄະແນນຄືນໄດ້ (upsert) ແຕ່ຄົນອື່ນມາໃຫ້ແທນບໍ່ໄດ້
+ */
+export async function rateTicket(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const user = await requireUser()
+
+  const ticketId = String(formData.get('ticket_id') ?? '').trim()
+  const score = Number(String(formData.get('score') ?? '').trim())
+  if (!Number.isInteger(score) || score < 1 || score > 5) {
+    return { error: 'ກະລຸນາເລືອກຄະແນນ 1 ຫາ 5 ດາວ' }
+  }
+
+  const rows = await query<{ requester_employee_id: number; status: string }>(
+    'select requester_employee_id, status from it.tickets where id = $1::bigint',
+    [ticketId]
+  )
+  const ticket = rows[0]
+  if (!ticket) return { error: 'ບໍ່ພົບ ticket ນີ້' }
+  if (ticket.requester_employee_id !== user.employee_id) {
+    return { error: 'ໃຫ້ຄະແນນໄດ້ສະເພາະຜູ້ແຈ້ງເອງ' }
+  }
+  if (ticket.status !== 'resolved' && ticket.status !== 'closed') {
+    return { error: 'ໃຫ້ຄະແນນໄດ້ຫຼັງເລື່ອງຖືກແກ້ແລ້ວເທົ່ານັ້ນ' }
+  }
+
+  await query(
+    `insert into it.ticket_ratings (ticket_id, score, comment, rated_by)
+     values ($1::bigint, $2::int, $3::varchar, $4::int)
+     on conflict (ticket_id) do update
+        set score = $2::int, comment = $3::varchar, rated_by = $4::int,
+            rated_at = now()`,
+    [
+      ticketId,
+      score,
+      String(formData.get('comment') ?? '').trim().slice(0, 300) || null,
+      user.employee_id,
+    ]
+  )
+
+  revalidatePath(`/my/tickets/${ticketId}`)
+  return { ok: true, message: 'ຂອບໃຈສຳລັບຄະແນນ' }
+}

@@ -3,10 +3,12 @@ import { notFound } from 'next/navigation'
 import { requireUser } from '@/lib/auth/session'
 import { getComments, getTicket } from '@/lib/tickets/queries'
 import { listAttachments } from '@/lib/tickets/attachments'
+import { getTicketRating } from '@/lib/tickets/ratings'
 import { STATUS_LABEL_LO, STATUS_STYLE } from '@/lib/tickets/model'
 import { formatDateTime } from '@/lib/format'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { addComment } from '@/app/(app)/tickets/actions'
+import RatingForm from './rating-form'
 
 export default async function MyTicketPage({ params }: PageProps<'/my/tickets/[id]'>) {
   const { id } = await params
@@ -16,10 +18,16 @@ export default async function MyTicketPage({ params }: PageProps<'/my/tickets/[i
   const ticket = await getTicket(user, id)
   if (!ticket) notFound()
 
-  const [comments, attachments] = await Promise.all([
+  const [comments, attachments, rating] = await Promise.all([
     getComments(id, user.is_it_staff),
     listAttachments(id),
+    getTicketRating(id),
   ])
+
+  // ໃຫ້ຄະແນນໄດ້ຫຼັງເລື່ອງຈົບ ແລະ ສະເພາະຜູ້ແຈ້ງເອງ (server action ກວດຊໍ້າອີກ)
+  const canRate =
+    (ticket.status === 'resolved' || ticket.status === 'closed') &&
+    ticket.requester_employee_id === user.employee_id
 
   const evidence = attachments.filter((a) => a.kind === 'evidence')
   const reportImages = attachments.filter((a) => a.kind !== 'evidence')
@@ -80,6 +88,8 @@ export default async function MyTicketPage({ params }: PageProps<'/my/tickets/[i
           )}
         </section>
       )}
+
+      {canRate && <RatingForm ticketId={ticket.id} current={rating} />}
 
       <section className="glass-card mt-4 rounded-xl">
         <h2 className="border-b border-line px-4 py-3 text-sm font-semibold text-fg">

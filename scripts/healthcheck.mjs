@@ -73,6 +73,45 @@ try {
   check(Number(counts.kb) > 0, 'ບົດຄວາມຄັງຄວາມຮູ້', `${counts.kb} ບົດ`)
   if (Number(counts.recovery) > 0) warn(`ມີ ${counts.recovery} ລາຍການທີ່ຕ້ອງທວງຄືນ`)
 
+  // ຄ່າເຊົ່າບໍລິການ — ເລີຍກຳນົດແລ້ວໝາຍວ່າບໍລິການໃກ້ຈະຖືກຕັດ ຈຶ່ງຂຶ້ນເປັນຄຳເຕືອນ
+  const subs = (
+    await c.query(
+      `select count(*) filter (where status = 'active')       as active,
+              count(*) filter (where due_status = 'overdue')  as overdue,
+              count(*) filter (where due_status = 'due_soon') as due_soon
+         from it.v_subscriptions`
+    )
+  ).rows[0]
+  check(true, 'ສັນຍາເຊົ່າບໍລິການ', `${subs.active} ສັນຍາທີ່ໃຊ້ງານຢູ່`)
+  if (Number(subs.overdue) > 0) warn(`ຄ່າເຊົ່າເລີຍກຳນົດຈ່າຍ ${subs.overdue} ລາຍການ`)
+  if (Number(subs.due_soon) > 0) warn(`ຄ່າເຊົ່າໃກ້ຮອດກຳນົດ ${subs.due_soon} ລາຍການ`)
+
+  // ໂມດູນໂຄງລ່າງ IT — ອັນທີ່ຄ້າງໄວ້ດົນຄືຄວາມສ່ຽງ ຈຶ່ງຂຶ້ນເປັນຄຳເຕືອນ
+  const ops = (
+    await c.query(
+      `select (select count(*) from it.v_maintenance_plans
+                where due_status = 'overdue')                as pm_overdue,
+              (select count(*) from it.v_incidents
+                where status = 'open')                       as inc_open,
+              (select count(*) from it.v_system_accounts
+                where should_close)                          as acc_closable,
+              (select count(*) from it.v_consumables
+                where stock_state in ('low','empty'))        as low_stock,
+              (select count(*) from it.v_employee_checklists
+                where is_late)                               as late_lists,
+              (select count(*) from it.v_budget_lines
+                where budget_state = 'over')                 as over_budget`
+    )
+  ).rows[0]
+  check(true, 'ໂມດູນໂຄງລ່າງ IT ອ່ານໄດ້')
+  if (Number(ops.pm_overdue) > 0) warn(`ວຽກບຳລຸງຮັກສາເລີຍກຳນົດ ${ops.pm_overdue} ແຜນ`)
+  if (Number(ops.inc_open) > 0) warn(`ເຫດຂັດຂ້ອງທີ່ຍັງບໍ່ຈົບ ${ops.inc_open} ລາຍການ`)
+  if (Number(ops.acc_closable) > 0)
+    warn(`ບັນຊີຜູ້ໃຊ້ທີ່ຄວນປິດ ${ops.acc_closable} ບັນຊີ (ເຈົ້າຂອງບໍ່ຢູ່ໃນ HR ແລ້ວ)`)
+  if (Number(ops.low_stock) > 0) warn(`ຂອງສິ້ນເປືອງໃກ້ໝົດ/ໝົດ ${ops.low_stock} ລາຍການ`)
+  if (Number(ops.late_lists) > 0) warn(`ຂັ້ນຕອນເຂົ້າ/ອອກເກີນກຳນົດ ${ops.late_lists} ລາຍການ`)
+  if (Number(ops.over_budget) > 0) warn(`ເສັ້ນງົບປະມານທີ່ໃຊ້ເກີນ ${ops.over_budget} ເສັ້ນ`)
+
   // cache ປະຫວັດຢືມ–ຄືນຕ້ອງກົງກັບຂໍ້ມູນຈິງ ບໍ່ດັ່ງນັ້ນໜ້າຈໍຈະສະແດງຂໍ້ມູນເກົ່າ
   const cache = (
     await c.query(

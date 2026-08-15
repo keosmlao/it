@@ -17,6 +17,15 @@ const DATASETS = [
   'tickets',
   'purchase',
   'plans',
+  'subscriptions',
+  'subscription-periods',
+  'vendors',
+  'maintenance',
+  'incidents',
+  'accounts',
+  'consumables',
+  'ip-plan',
+  'replacement',
 ]
 
 const c = new pg.Client({ connectionString: process.env.DATABASE_URL })
@@ -71,8 +80,12 @@ try {
         headers: { cookie: `it_session=${mToken}` },
       })
       const buf = Buffer.from(await res.arrayBuffer())
+      // xlsx/pdf ມີໂຄງໄຟລ໌ຢູ່ແລ້ວຈຶ່ງໃຫຍ່ກວ່າ 200 ໄບຕ໌ສະເໝີ ແຕ່ CSV ຂອງຊຸດທີ່ຍັງ
+      // ບໍ່ມີຂໍ້ມູນມີແຕ່ແຖວຫົວຕາຕະລາງ — ຊຸດທີ່ຫົວເປັນອັກສອນລາຕິນສັ້ນໆ (ip-plan)
+      // ຈຶ່ງບໍ່ຮອດ 200 ໄບຕ໌ ທັງທີ່ໄຟລ໌ຖືກຕ້ອງ
+      const floor = format === 'csv' ? 60 : 200
       check(
-        res.status === 200 && buf.length > 200 && looksRight(format, buf),
+        res.status === 200 && buf.length > floor && looksRight(format, buf),
         `${format.padEnd(4)} → ${res.status} ${String(buf.length).padStart(7)} bytes` +
           ` ${res.headers.get('content-disposition')?.slice(0, 60) ?? ''}`
       )

@@ -46,6 +46,21 @@ try {
     '/plans',
     '/plans/team',
     '/purchase',
+    '/subscriptions',
+    '/subscriptions/cost',
+    '/maintenance',
+    '/incidents',
+    '/network',
+    '/network/ports',
+    '/vendors',
+    '/consumables',
+    '/accounts',
+    '/accounts/systems',
+    '/onboarding',
+    '/budget',
+    '/assets/replacement',
+    // ບໍ່ໃສ່ '/search' — ໜ້ານັ້ນເຂົ້າຈາກຊ່ອງຄົ້ນຫາເທິງຫົວ ບໍ່ແມ່ນເມນູຂ້າງ
+    // ຈຶ່ງບໍ່ມີແຖວໃດຄວນຖືກເນັ້ນ
     '/kb',
   ]
 

@@ -28,6 +28,18 @@ export async function getNavBadges(user: ItStaff): Promise<NavBadges> {
        (select count(*) from it.v_requests
          where status in ('submitted','head_approved'))         as requests,
        (select count(*) from it.v_pr where status = 'submitted') as purchase,
+       (select count(*) from it.v_subscriptions
+         where due_status in ('overdue', 'due_soon'))           as subscriptions,
+       (select count(*) from it.v_maintenance_plans
+         where due_status in ('overdue', 'due_soon'))           as maintenance,
+       (select count(*) from it.v_incidents
+         where status = 'open')                                 as incidents,
+       (select count(*) from it.v_system_accounts
+         where should_close)                                    as accounts,
+       (select count(*) from it.v_employee_checklists
+         where status = 'open')                                 as checklists,
+       (select count(*) from it.v_consumables
+         where stock_state in ('low', 'empty'))                 as consumables,
        (select count(*) from it.v_recovery_targets
          where recovery_status is null or recovery_status = 'open')
                                                                 as recovery,
@@ -46,6 +58,12 @@ export async function getNavBadges(user: ItStaff): Promise<NavBadges> {
     myWork: Number(row?.myWork ?? 0),
     requests: Number(row?.requests ?? 0),
     purchase: Number(row?.purchase ?? 0),
+    subscriptions: Number(row?.subscriptions ?? 0),
+    maintenance: Number(row?.maintenance ?? 0),
+    incidents: Number(row?.incidents ?? 0),
+    accounts: Number(row?.accounts ?? 0),
+    checklists: Number(row?.checklists ?? 0),
+    consumables: Number(row?.consumables ?? 0),
     recovery: Number(row?.recovery ?? 0),
     conflicts: Number(row?.conflicts ?? 0),
     damaged: Number(row?.damaged ?? 0),

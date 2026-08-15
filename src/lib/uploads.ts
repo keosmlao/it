@@ -12,7 +12,19 @@ export const ALLOWED_IMAGE_TYPES = [
   'image/heic',
 ] as const
 
+/**
+ * ເອກະສານແນບ (ສັນຍາ, ໃບບິນ, ໃບຮັບປະກັນ) — ຮັບ PDF ນຳ
+ *
+ * ບໍ່ຮັບ Word/Excel ໂດຍເຈດຕະນາ: ໄຟລ໌ Office ພາ macro ໄດ້ ແລະ ຄົນມັກເປີດເລີຍ
+ * ໂດຍບໍ່ທັນຄິດ — ໃຫ້ພິມເປັນ PDF ກ່ອນແນບ
+ */
+export const ALLOWED_DOC_TYPES = [
+  'application/pdf',
+  ...ALLOWED_IMAGE_TYPES,
+] as const
+
 export const MAX_FILE_BYTES = 8 * 1024 * 1024 // 8MB ຕໍ່ຮູບ
+export const MAX_DOC_BYTES = 20 * 1024 * 1024 // 20MB ຕໍ່ເອກະສານ (ສັນຍາສະແກນມາໃຫຍ່ກວ່າຮູບ)
 export const MAX_FILES_PER_UPLOAD = 5
 
 const EXTENSIONS: Record<string, string> = {
@@ -21,6 +33,7 @@ const EXTENSIONS: Record<string, string> = {
   'image/webp': 'webp',
   'image/gif': 'gif',
   'image/heic': 'heic',
+  'application/pdf': 'pdf',
 }
 
 /** ໂຟນເດີເກັບໄຟລ໌ — ຢູ່ນອກ public/ ຈຶ່ງເປີດກົງໆຈາກ browser ບໍ່ໄດ້ */
@@ -103,6 +116,55 @@ export async function saveImages(
   return { ok: true, files: saved }
 }
 
+/** ກວດເອກະສານແນບ (PDF ຫຼື ຮູບ) ກ່ອນຂຽນລົງ disk */
+export function validateDocs(files: File[]): { error?: string } {
+  if (files.length === 0) return {}
+
+  if (files.length > MAX_FILES_PER_UPLOAD) {
+    return { error: `ແນບໄດ້ສູງສຸດ ${MAX_FILES_PER_UPLOAD} ໄຟລ໌ຕໍ່ຄັ້ງ` }
+  }
+
+  for (const file of files) {
+    if (!ALLOWED_DOC_TYPES.includes(file.type as never)) {
+      return { error: `"${file.name}" ຮັບສະເພາະ PDF ແລະ ຮູບ` }
+    }
+    if (file.size > MAX_DOC_BYTES) {
+      return {
+        error: `"${file.name}" ໃຫຍ່ເກີນ ${MAX_DOC_BYTES / 1024 / 1024}MB`,
+      }
+    }
+  }
+
+  return {}
+}
+
+/** ບັນທຶກເອກະສານແນບລົງ disk — ຮູບແບບດຽວກັບ saveImages ແຕ່ຮັບ PDF ນຳ */
+export async function saveDocs(files: File[], folder: string): Promise<SaveResult> {
+  const real = files.filter((f) => f && f.size > 0)
+  if (real.length === 0) return { ok: true, files: [] }
+
+  const invalid = validateDocs(real)
+  if (invalid.error) return { ok: false, error: invalid.error }
+
+  const dir = path.join(uploadRoot(), folder)
+  await mkdir(dir, { recursive: true })
+
+  const saved: SavedFile[] = []
+  for (const file of real) {
+    const storedName = `${randomBytes(16).toString('hex')}.${EXTENSIONS[file.type] ?? 'bin'}`
+    await writeFile(path.join(dir, storedName), Buffer.from(await file.arrayBuffer()))
+
+    saved.push({
+      fileName: file.name.slice(0, 255),
+      storedName,
+      mimeType: file.type,
+      sizeBytes: file.size,
+    })
+  }
+
+  return { ok: true, files: saved }
+}
+
 /** ອ່ານໄຟລ໌ຄືນເພື່ອສົ່ງໃຫ້ browser ຜ່ານ route ທີ່ກວດສິດແລ້ວ */
 export async function readStoredFile(folder: string, storedName: string) {
   // ກັນ path traversal — ຊື່ໄຟລ໌ຕ້ອງເປັນ hex + ນາມສະກຸນເທົ່ານັ້ນ
@@ -114,10 +176,4 @@ export async function readStoredFile(folder: string, storedName: string) {
   } catch {
     return null
   }
-}
-
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }

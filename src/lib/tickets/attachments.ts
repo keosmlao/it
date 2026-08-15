@@ -6,8 +6,11 @@ export type AttachmentKind = 'report' | 'evidence'
 
 export type Attachment = {
   id: string
-  ticket_id: string
-  kind: AttachmentKind
+  /** null ສຳລັບເອກະສານຂອງໂມດູນອື່ນ — ເບິ່ງ lib/attachments/documents.ts */
+  ticket_id: string | null
+  entity_type: string
+  entity_id: string
+  kind: string
   file_name: string
   stored_name: string
   mime_type: string

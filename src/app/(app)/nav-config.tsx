@@ -38,6 +38,13 @@ export const ICON = {
   warning: 'M12 9v4m0 4h.01M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z',
   network: 'M12 3v6M5 21v-4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M9 3h6v6H9zM3 21h4M17 21h4',
   box: 'M3 8.5 12 4l9 4.5v7L12 20l-9-4.5v-7ZM3 8.5 12 13m0 0 9-4.5M12 13v7',
+  cloud: 'M7 18h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 9.2 3.5 3.5 0 0 0 7 18Z',
+  wrench:
+    'M14.7 6.3a4 4 0 0 0 5 5l-8.4 8.4a2.1 2.1 0 0 1-3-3l8.4-8.4a4 4 0 0 0-2-2Z',
+  key: 'M14 7a4 4 0 1 1-3.9 5H8v2H6v2H3v-3l7.1-7.1A4 4 0 0 1 14 7Zm2.5 2.5h.01',
+  people:
+    'M16 20v-2a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v2M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM21 20v-2a3 3 0 0 0-2.2-2.9M15.5 4.2a3.5 3.5 0 0 1 0 6.6',
+  wallet: 'M3 7h15a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 0V6a2 2 0 0 1 2-2h11m0 9h2',
 } as const
 
 /**
@@ -108,6 +115,67 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    title: 'ໂຄງລ່າງ & ບໍລິການ',
+    items: [
+      {
+        href: '/subscriptions',
+        label: 'ຄ່າເຊົ່າບໍລິການ',
+        icon: ICON.cloud,
+        // ຂາດຕໍ່ອາຍຸ = ບໍລິການລົ້ມ ຈຶ່ງໃຫ້ຕົວເລກເປັນສີແດງຄືກັບເລື່ອງດ່ວນອື່ນ
+        badge: 'subscriptions',
+        urgent: true,
+        children: [
+          { href: '/subscriptions?due=soon', label: 'ໃກ້ຮອດກຳນົດ', icon: ICON.bell },
+          { href: '/subscriptions/cost', label: 'ຄ່າໃຊ້ຈ່າຍ', icon: ICON.chart },
+          {
+            href: '/subscriptions/new',
+            label: 'ລົງທະບຽນການເຊົ່າ',
+            icon: ICON.plus,
+            visible: can.manageSubscriptions,
+          },
+        ],
+      },
+      {
+        href: '/maintenance',
+        label: 'ບຳລຸງຮັກສາຕາມແຜນ',
+        icon: ICON.wrench,
+        badge: 'maintenance',
+        urgent: true,
+        children: [
+          { href: '/maintenance?due=soon', label: 'ຮອດກຳນົດ', icon: ICON.bell },
+          {
+            href: '/maintenance/new',
+            label: 'ຕັ້ງແຜນ',
+            icon: ICON.plus,
+            visible: can.manageAssets,
+          },
+        ],
+      },
+      {
+        href: '/incidents',
+        label: 'ເຫດຂັດຂ້ອງລະບົບ',
+        icon: ICON.warning,
+        badge: 'incidents',
+        urgent: true,
+        children: [
+          {
+            href: '/incidents/new',
+            label: 'ບັນທຶກເຫດຂັດຂ້ອງ',
+            icon: ICON.plus,
+            visible: can.manageAssets,
+          },
+        ],
+      },
+      {
+        href: '/network',
+        label: 'ເຄືອຂ່າຍ & IP',
+        icon: ICON.network,
+        children: [{ href: '/network/ports', label: 'ຜັງພອດສະວິດ', icon: ICON.swap }],
+      },
+      { href: '/vendors', label: 'ທະບຽນຜູ້ຂາຍ', icon: ICON.box },
+    ],
+  },
+  {
     title: 'ອຸປະກອນ',
     items: [
       {
@@ -154,6 +222,26 @@ export const NAV_GROUPS: NavGroup[] = [
           },
           { href: '/assets/deployed', label: 'ອຸປະກອນສ່ວນກາງ', icon: ICON.network },
           { href: '/assets/survey', label: 'ສຳຫຼວດອຸປະກອນ', icon: ICON.search },
+          {
+            href: '/assets/replacement',
+            label: 'ແຜນປ່ຽນເຄື່ອງ',
+            icon: ICON.swap,
+          },
+        ],
+      },
+      {
+        href: '/consumables',
+        label: 'ອຸປະກອນສິ້ນເປືອງ',
+        icon: ICON.box,
+        badge: 'consumables',
+        children: [
+          { href: '/consumables?state=low', label: 'ໃກ້ໝົດ / ໝົດ', icon: ICON.warning },
+          {
+            href: '/consumables/new',
+            label: 'ເພີ່ມລາຍການ',
+            icon: ICON.plus,
+            visible: can.manageAssets,
+          },
         ],
       },
     ],
@@ -181,12 +269,67 @@ export const NAV_GROUPS: NavGroup[] = [
     title: 'ຄວາມຮູ້ & ບໍລິຫານ',
     items: [
       { href: '/kb', label: 'ຄັງຄວາມຮູ້', icon: ICON.book },
+      {
+        href: '/accounts',
+        label: 'ບັນຊີຜູ້ໃຊ້',
+        icon: ICON.key,
+        // ບັນຊີຄ້າງເປີດຂອງຄົນທີ່ອອກໄປແລ້ວ = ຮູຮົ່ວຄວາມປອດໄພ + ຈ່າຍ seat ລົມ
+        badge: 'accounts',
+        urgent: true,
+        children: [
+          {
+            href: '/accounts?state=closable&status=all',
+            label: 'ບັນຊີທີ່ຄວນປິດ',
+            icon: ICON.warning,
+          },
+          {
+            href: '/accounts/systems',
+            label: 'ລະບົບທີ່ມີບັນຊີ',
+            icon: ICON.settings,
+            visible: can.manageAccounts,
+          },
+        ],
+      },
+      {
+        href: '/onboarding',
+        label: 'ຮັບພະນັກງານເຂົ້າ / ອອກ',
+        icon: ICON.people,
+        badge: 'checklists',
+        children: [
+          {
+            href: '/onboarding/new',
+            label: 'ເລີ່ມຂັ້ນຕອນ',
+            icon: ICON.plus,
+            visible: can.manageAccounts,
+          },
+        ],
+      },
+      {
+        href: '/budget',
+        label: 'ງົບປະມານ',
+        icon: ICON.wallet,
+        visible: can.viewReports,
+      },
       { href: '/reports', label: 'ລາຍງານ', icon: ICON.chart, visible: can.viewReports },
       {
         href: '/admin',
         label: 'ຕັ້ງຄ່າລະບົບ',
         icon: ICON.settings,
         visible: can.administer,
+        children: [
+          {
+            href: '/admin/security',
+            label: 'ກວດຄວາມປອດໄພ',
+            icon: ICON.warning,
+            visible: can.administer,
+          },
+          {
+            href: '/admin/emails',
+            label: 'ອີເມວແຈ້ງເຕືອນ',
+            icon: ICON.bell,
+            visible: can.administer,
+          },
+        ],
       },
     ],
   },
@@ -205,6 +348,29 @@ export const PAGE_TITLES: Record<string, string> = {
   '/requests/new': 'ສ້າງຄຳຮ້ອງ',
   '/purchase': 'ໃບສະເໜີຊື້ (PR)',
   '/purchase/new': 'ສ້າງໃບສະເໜີຊື້',
+  '/subscriptions': 'ຄ່າເຊົ່າບໍລິການ',
+  '/subscriptions/new': 'ລົງທະບຽນການເຊົ່າ',
+  '/subscriptions/cost': 'ຄ່າໃຊ້ຈ່າຍການເຊົ່າ',
+  '/maintenance': 'ບຳລຸງຮັກສາຕາມແຜນ',
+  '/maintenance/new': 'ຕັ້ງແຜນບຳລຸງຮັກສາ',
+  '/incidents': 'ເຫດຂັດຂ້ອງລະບົບ',
+  '/incidents/new': 'ບັນທຶກເຫດຂັດຂ້ອງ',
+  '/network': 'ເຄືອຂ່າຍ & IP',
+  '/network/ports': 'ຜັງພອດສະວິດ',
+  '/vendors': 'ທະບຽນຜູ້ຂາຍ',
+  '/vendors/new': 'ເພີ່ມຜູ້ຂາຍ',
+  '/consumables': 'ອຸປະກອນສິ້ນເປືອງ',
+  '/consumables/new': 'ເພີ່ມອຸປະກອນສິ້ນເປືອງ',
+  '/accounts': 'ບັນຊີຜູ້ໃຊ້',
+  '/accounts/new': 'ເປີດບັນຊີຜູ້ໃຊ້',
+  '/accounts/systems': 'ລະບົບທີ່ມີບັນຊີ',
+  '/onboarding': 'ຮັບພະນັກງານເຂົ້າ / ອອກ',
+  '/onboarding/new': 'ເລີ່ມຂັ້ນຕອນ',
+  '/budget': 'ງົບປະມານ',
+  '/search': 'ຄົ້ນຫາ',
+  '/assets/replacement': 'ແຜນປ່ຽນເຄື່ອງ',
+  '/admin/security': 'ກວດຄວາມປອດໄພ',
+  '/admin/emails': 'ອີເມວແຈ້ງເຕືອນ',
   '/plans': 'ແຜນວຽກປະຈຳວັນ',
   '/plans/team': 'ແຜນວຽກທັງທີມ',
   '/assets': 'ອຸປະກອນ',

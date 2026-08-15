@@ -32,6 +32,8 @@ import LocalAssetPanel from './local-asset-panel'
 import SpecHistory from './spec-history'
 import { LendForm, ReturnForm, TransferForm } from './loan-form'
 import RepairForm from './repair-form'
+import DocumentPanel from '@/components/document-panel'
+import { listDocuments } from '@/lib/attachments/documents'
 
 export default async function AssetDetailPage({ params }: PageProps<'/assets/[id]'>) {
   const { id } = await params
@@ -52,6 +54,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
     locations,
     specHistory,
     local,
+    documents,
   ] = await Promise.all([
       getAssetHistory(asset.asset_code),
       getAssetRepairs(asset.asset_code),
@@ -62,6 +65,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
       getAssetLocations(),
       getSpecHistory(asset.asset_code),
       getLocalAsset(asset.asset_code),
+      listDocuments('asset', asset.asset_code),
     ])
 
   // ຂໍ້ມູນຫຼັກຂອງເຄື່ອງ ERP ແກ້ຢູ່ນີ້ບໍ່ໄດ້ — ຕົວເລືອກຈຶ່ງດຶງມາສະເພາະເມື່ອຈຳເປັນ
@@ -400,6 +404,14 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
             </ol>
           )}
         </section>
+
+        <DocumentPanel
+          entityType="asset"
+          entityId={asset.asset_code}
+          documents={documents}
+          editable={canManage}
+          hint="ໃບຮັບປະກັນ · ໃບຊື້ · ຄູ່ມື"
+        />
       </div>
     </div>
   )

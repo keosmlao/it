@@ -27,13 +27,13 @@ export type StaffRow = {
 }
 
 // ຄວາມກ້ວາງຖັນຕ້ອງກົງກັນລະຫວ່າງຫົວຕາຕະລາງ ແລະ ທຸກແຖວ.
-// ຂຽນເລກ 7 ຕາຍຕົວເພາະ Tailwind ອ່ານ class ຈາກຂໍ້ຄວາມໃນໄຟລ໌ —
+// ຂຽນເລກ 9 ຕາຍຕົວເພາະ Tailwind ອ່ານ class ຈາກຂໍ້ຄວາມໃນໄຟລ໌ —
 // ຖ້າສ້າງດ້ວຍ template literal ມັນຈະຫາ class ນີ້ບໍ່ພົບ ແລ້ວບໍ່ອອກ CSS ໃຫ້
 const COLS =
-  'grid grid-cols-[minmax(190px,1.4fr)_repeat(7,minmax(104px,1fr))_minmax(80px,auto)] items-center gap-x-2'
+  'grid grid-cols-[minmax(190px,1.4fr)_repeat(9,minmax(104px,1fr))_minmax(80px,auto)] items-center gap-x-2'
 
 // ຖ້າເພີ່ມສິດໃໝ່ ຕ້ອງແກ້ເລກຂ້າງເທິງນຳ — ບັນທັດນີ້ຈະຟ້ອງຕອນ build
-const _COLUMN_COUNT_MATCHES: 7 = PERMISSIONS.length
+const _COLUMN_COUNT_MATCHES: 9 = PERMISSIONS.length
 
 /**
  * ຕາຕະລາງສິດ — ແຖວ = ຄົນ, ຖັນ = ສິດ

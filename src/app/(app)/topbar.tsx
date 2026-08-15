@@ -74,15 +74,15 @@ export default function Topbar({
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        <form action="/tickets" className="relative hidden sm:block">
+        <form action="/search" className="relative hidden sm:block">
           <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-faint">
             <Icon d={ICON.search} className="size-4" />
           </span>
           <input
             name="q"
             type="search"
-            placeholder="ຄົ້ນຫາ ticket…"
-            aria-label="ຄົ້ນຫາ ticket"
+            placeholder="ຄົ້ນຫາທົ່ວລະບົບ…"
+            aria-label="ຄົ້ນຫາທົ່ວລະບົບ"
             className="input w-56 rounded-full py-2 pr-3 pl-9 text-sm"
           />
         </form>
