@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { pool, query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
+import { logAudit } from '@/lib/activity'
 import { getTicket } from '@/lib/tickets/queries'
 import {
   ALLOWED_TRANSITIONS,
@@ -187,8 +188,12 @@ export async function assignTicket(
   await query(
     `update it.tickets
         set assignee_employee_id = $2::int,
-            status = case when status = 'new' and $2::int is not null
-                          then 'assigned' else status end,
+            -- ສະຖານະຕາມການມອບໝາຍສະເໝີ: ມີຄົນຮັບ = ມອບໝາຍແລ້ວ,
+            -- ຖອນຄົນອອກກໍຕ້ອງກັບເປັນລົງທະບຽນໃໝ່ ບໍ່ດັ່ງນັ້ນສະຖານະຈະຄາ
+            status = case
+                       when status = 'new' and $2::int is not null then 'assigned'
+                       when status = 'assigned' and $2::int is null then 'new'
+                       else status end,
             updated_at = now()
       where id = $1::bigint`,
     [ticketId, assigneeId]
@@ -228,8 +233,22 @@ export async function changeStatus(
     }
   }
 
+  // "ມອບໝາຍແລ້ວ" ມາຈາກການເລືອກຜູ້ຮັບຜິດຊອບ ບໍ່ແມ່ນຈາກການປ່ຽນສະຖານະ —
+  // ບໍ່ດັ່ງນັ້ນຈະໄດ້ ticket ທີ່ບອກວ່າມອບໝາຍແລ້ວ ແຕ່ບໍ່ມີໃຜຮັບຜິດຊອບ
+  if (next === 'assigned' && !ticket.assignee_employee_id) {
+    return {
+      error: 'ເລືອກຜູ້ຮັບຜິດຊອບກ່ອນ — ສະຖານະຈະປ່ຽນເປັນ "ມອບໝາຍແລ້ວ" ໃຫ້ເອງ',
+    }
+  }
+
   if (next === 'resolved' && !resolution && !ticket.resolution) {
     return { error: 'ກະລຸນາບັນທຶກວິທີແກ້ໄຂກ່ອນປິດວຽກ' }
+  }
+
+  // ສ້ອມບໍ່ໄດ້ຕ້ອງມີເຫດຜົນສະເໝີ — ບໍ່ດັ່ງນັ້ນເປີດເບິ່ງພາຍຫຼັງກໍບໍ່ຮູ້ວ່າຍ້ອນຫຍັງ
+  // ຈະຊື້ໃໝ່ ຫຼື ຕັດຈຳໜ່າຍກໍອ້າງອີງບໍ່ໄດ້
+  if (next === 'unrepairable' && !resolution) {
+    return { error: 'ກະລຸນາບອກເຫດຜົນວ່າສ້ອມບໍ່ໄດ້ຍ້ອນຫຍັງ' }
   }
 
   // ຮູບຫຼັກຖານທີ່ແນບມາພ້ອມກັບການປ່ຽນສະຖານະ
@@ -257,7 +276,7 @@ export async function changeStatus(
         set status = $2::varchar,
             resolution = coalesce(nullif($3::text, ''), resolution),
             first_responded_at = coalesce(first_responded_at, now()),
-            resolved_at = case when $2::varchar in ('resolved','closed')
+            resolved_at = case when $2::varchar in ('resolved','unrepairable','closed')
                                then coalesce(resolved_at, now()) else null end,
             closed_at = case when $2::varchar = 'closed' then now() else closed_at end,
             updated_at = now()
@@ -314,4 +333,39 @@ export async function addComment(
   revalidatePath(`/tickets/${ticketId}`)
   revalidatePath(`/my/tickets/${ticketId}`)
   return { ok: true }
+}
+
+/**
+ * ລຶບ ticket — ລຶບແບບ soft (ຕັ້ງ deleted_at) ຈຶ່ງກູ້ຄືນໄດ້ຖ້າລຶບຜິດ
+ *
+ * ໃຫ້ສະເພາະຜູ້ຈັດການ ເພາະ ticket ຄືປະຫວັດວຽກ — ຄວນລຶບແຕ່ອັນທີ່ພິມຜິດ
+ * ຫຼື ຊໍ້າ. ວຽກທີ່ບໍ່ຕ້ອງເຮັດແລ້ວໃຫ້ໃຊ້ສະຖານະ "ຍົກເລີກ" ຈຶ່ງຍັງນັບໃນລາຍງານໄດ້
+ *
+ * ຮູບແນບ ແລະ ຂໍ້ຄວາມຄົງໄວ້ຄືເກົ່າ — v_tickets ກອງ deleted_at ອອກໃຫ້ແລ້ວ
+ * ຈຶ່ງບໍ່ໂຜ່ຢູ່ບ່ອນໃດ ແຕ່ຂໍ້ມູນຍັງຢູ່ຖ້າຕ້ອງກວດຄືນ
+ */
+export async function deleteTicket(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const user = await requireUser()
+  if (!can.administer(user)) return { error: 'ມີແຕ່ຜູ້ຈັດການລຶບ ticket ໄດ້' }
+
+  const ticketId = String(formData.get('ticket_id'))
+
+  const ticket = await getTicket(user, ticketId)
+  if (!ticket) return { error: 'ບໍ່ພົບ ticket' }
+
+  await query(
+    `update it.tickets set deleted_at = now(), updated_at = now()
+      where id = $1::bigint and deleted_at is null`,
+    [ticketId]
+  )
+
+  await logAudit(user.employee_id, 'ticket', ticketId, 'delete', ticket.ticket_no)
+
+  revalidatePath('/tickets')
+  revalidatePath('/my/tickets')
+  // ພາກັບໄປລາຍການ — ລຶບຈາກໜ້າ ticket ແລ້ວຄ້າງຢູ່ໜ້າທີ່ບໍ່ມີແລ້ວບໍ່ໄດ້
+  redirect('/tickets')
 }

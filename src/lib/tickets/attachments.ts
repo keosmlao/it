@@ -34,11 +34,17 @@ export async function recordAttachments(
 ) {
   for (const file of files) {
     await query(
+      // entity_type/entity_id ບັງຄັບຕັ້ງແຕ່ 049 — ຮູບຂອງ ticket ຕ້ອງໃສ່ນຳ
+      // ບໍ່ດັ່ງນັ້ນຕິດ not-null ແລະ constraint attachments_ticket_link.
+      // ສົ່ງລະຫັດ ticket ສອງຄັ້ງ ເພາະຄໍລຳໜຶ່ງເປັນ bigint ອີກອັນເປັນ varchar —
+      // PG11 ອ່ານ $ ອັນດຽວກັນເປັນສອງຊະນິດບໍ່ໄດ້
       `insert into it.attachments
-         (ticket_id, kind, file_name, stored_name, mime_type, size_bytes, uploaded_by)
-       values ($1, $2, $3, $4, $5, $6, $7)`,
+         (ticket_id, entity_type, entity_id, kind, file_name, stored_name,
+          mime_type, size_bytes, uploaded_by)
+       values ($1::bigint, 'ticket', $2::varchar, $3, $4, $5, $6, $7, $8)`,
       [
         ticketId,
+        String(ticketId),
         kind,
         file.fileName,
         file.storedName,

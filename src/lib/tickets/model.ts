@@ -6,6 +6,7 @@ export const TICKET_STATUSES = [
   'in_progress',
   'pending',
   'resolved',
+  'unrepairable',
   'closed',
   'cancelled',
 ] as const
@@ -13,11 +14,12 @@ export const TICKET_STATUSES = [
 export type TicketStatus = (typeof TICKET_STATUSES)[number]
 
 export const STATUS_LABEL_LO: Record<TicketStatus, string> = {
-  new: 'ໃໝ່',
+  new: 'ລົງທະບຽນໃໝ່',
   assigned: 'ມອບໝາຍແລ້ວ',
   in_progress: 'ກຳລັງດຳເນີນການ',
   pending: 'ລໍຂໍ້ມູນ',
-  resolved: 'ແກ້ໄຂແລ້ວ',
+  resolved: 'ສຳເລັດ ລໍຖ້າສົ່ງຄືນ',
+  unrepairable: 'ສ້ອມບໍ່ໄດ້',
   closed: 'ປິດແລ້ວ',
   cancelled: 'ຍົກເລີກ',
 }
@@ -29,6 +31,7 @@ export const STATUS_STYLE: Record<TicketStatus, string> = {
   in_progress: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
   pending: 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300',
   resolved: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
+  unrepairable: 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300',
   closed: 'bg-slate-200 text-body dark:bg-slate-800',
   cancelled: 'bg-slate-100 text-muted',
 }
@@ -57,12 +60,67 @@ export const OPEN_STATUSES: TicketStatus[] = [
 /** ການປ່ຽນສະຖານະທີ່ອະນຸຍາດ — ກັນການຂ້າມຂັ້ນທີ່ບໍ່ມີຄວາມໝາຍ */
 export const ALLOWED_TRANSITIONS: Record<TicketStatus, TicketStatus[]> = {
   new: ['assigned', 'in_progress', 'cancelled'],
-  assigned: ['in_progress', 'pending', 'resolved', 'cancelled'],
-  in_progress: ['pending', 'resolved', 'cancelled'],
-  pending: ['in_progress', 'resolved', 'cancelled'],
+  assigned: ['in_progress', 'pending', 'resolved', 'unrepairable', 'cancelled'],
+  in_progress: ['pending', 'resolved', 'unrepairable', 'cancelled'],
+  pending: ['in_progress', 'resolved', 'unrepairable', 'cancelled'],
   resolved: ['closed', 'in_progress'],
+  // ສ້ອມບໍ່ໄດ້ ຍັງກັບໄປເຮັດຕໍ່ໄດ້ ຖ້າຫາອາໄຫຼ່ໄດ້ ຫຼື ຕັດສິນໃຈໃໝ່
+  unrepairable: ['closed', 'in_progress'],
   closed: [],
   cancelled: [],
+}
+
+/**
+ * 5 ຂັ້ນຂອງການໄຫຼວຽກປົກກະຕິ — ໃຊ້ເປັນແຖບຂັ້ນຕອນຢູ່ໜ້າ ticket
+ *
+ * ຂັ້ນທີ 4 ຄື "ຜົນ" ເຊິ່ງອອກໄດ້ 2 ທາງ: ສຳເລັດ ຫຼື ສ້ອມບໍ່ໄດ້ — ແຖບຂັ້ນຕອນ
+ * ຈະສະຫຼັບຊື່ຂັ້ນນັ້ນຕາມຜົນຈິງ ສ່ວນສອງທາງນີ້ໄປລວມກັນທີ່ "ປິດແລ້ວ"
+ */
+export const TICKET_FLOW: TicketStatus[] = [
+  'new',
+  'assigned',
+  'in_progress',
+  'resolved',
+  'closed',
+]
+
+/**
+ * ຖັນຂອງກະດານ — ຄືການໄຫຼວຽກ ບວກທາງອອກ "ສ້ອມບໍ່ໄດ້"
+ *
+ * 'pending' ກັບ 'cancelled' ບໍ່ຢູ່ໃນນີ້ ເພາະບໍ່ແມ່ນຂັ້ນທີ່ວຽກຕ້ອງຜ່ານ —
+ * ກະດານຈະຕໍ່ຖັນເຫຼົ່ານັ້ນໃສ່ທ້າຍເອງສະເພາະເມື່ອມີວຽກຄ້າງຢູ່ຈິງ
+ * ຈຶ່ງບໍ່ມີວຽກໃດຫາຍໄປຈາກສາຍຕາ
+ */
+export const TICKET_BOARD_COLUMNS: TicketStatus[] = [
+  'new',
+  'assigned',
+  'in_progress',
+  'resolved',
+  'unrepairable',
+  'closed',
+]
+
+/**
+ * ສະຖານະທີ່ຍ້າຍໄດ້ໄວໆຈາກກະດານ — ຍ້າຍແລ້ວສະຖານະຕ້ອງເປັນຄວາມຈິງທັນທີ
+ *
+ * ສາມອັນນີ້ຍ້າຍໄວບໍ່ໄດ້ ເພາະແຕ່ລະອັນຕ້ອງມີຂໍ້ມູນປະກອບທີ່ກາດໃບນ້ອຍໃສ່ບໍ່ໄດ້:
+ *   • assigned     — ມາຈາກການເລືອກຜູ້ຮັບຜິດຊອບ (assignTicket ຕັ້ງໃຫ້ເອງ)
+ *                    ຍ້າຍກາດເສີຍໆຈະໄດ້ "ມອບໝາຍແລ້ວ" ທີ່ບໍ່ມີໃຜຮັບຜິດຊອບ
+ *   • resolved     — ຕ້ອງມີວິທີແກ້ໄຂ ແລະ ຮູບຫຼັກຖານ
+ *   • unrepairable — ຕ້ອງບອກເຫດຜົນວ່າສ້ອມບໍ່ໄດ້ຍ້ອນຫຍັງ
+ *   • cancelled    — ເປັນການຕັດສິນໃຈ ຄວນຢູ່ໜ້າ ticket ບ່ອນທີ່ບັນທຶກເຫດຜົນໄດ້
+ */
+const NEEDS_MORE_INFO: TicketStatus[] = [
+  'assigned',
+  'resolved',
+  'unrepairable',
+  'cancelled',
+]
+
+export function quickMoves(status: TicketStatus): TicketStatus[] {
+  return (ALLOWED_TRANSITIONS[status] ?? []).filter(
+    (s) => !NEEDS_MORE_INFO.includes(s)
+  )
 }
 
 export type TicketRow = {

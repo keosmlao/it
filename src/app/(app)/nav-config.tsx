@@ -291,20 +291,6 @@ export const NAV_GROUPS: NavGroup[] = [
         ],
       },
       {
-        href: '/onboarding',
-        label: 'ຮັບພະນັກງານເຂົ້າ / ອອກ',
-        icon: ICON.people,
-        badge: 'checklists',
-        children: [
-          {
-            href: '/onboarding/new',
-            label: 'ເລີ່ມຂັ້ນຕອນ',
-            icon: ICON.plus,
-            visible: can.manageAccounts,
-          },
-        ],
-      },
-      {
         href: '/budget',
         label: 'ງົບປະມານ',
         icon: ICON.wallet,
@@ -364,8 +350,6 @@ export const PAGE_TITLES: Record<string, string> = {
   '/accounts': 'ບັນຊີຜູ້ໃຊ້',
   '/accounts/new': 'ເປີດບັນຊີຜູ້ໃຊ້',
   '/accounts/systems': 'ລະບົບທີ່ມີບັນຊີ',
-  '/onboarding': 'ຮັບພະນັກງານເຂົ້າ / ອອກ',
-  '/onboarding/new': 'ເລີ່ມຂັ້ນຕອນ',
   '/budget': 'ງົບປະມານ',
   '/search': 'ຄົ້ນຫາ',
   '/assets/replacement': 'ແຜນປ່ຽນເຄື່ອງ',

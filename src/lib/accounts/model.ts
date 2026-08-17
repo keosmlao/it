@@ -1,5 +1,5 @@
 /**
- * ທະບຽນບັນຊີຜູ້ໃຊ້ + ຂັ້ນຕອນຮັບພະນັກງານເຂົ້າ/ອອກ
+ * ທະບຽນບັນຊີຜູ້ໃຊ້
  * ຄ່າຄົງທີ່ໃຊ້ໄດ້ທັງ server ແລະ client — ຕ້ອງກົງກັບ 044_accounts_onboarding.sql
  */
 
@@ -47,28 +47,6 @@ export const HR_STATE_LABEL_LO: Record<string, string> = {
   not_in_hr: 'ບໍ່ພົບໃນທະບຽນ HR',
 }
 
-export const CHECKLIST_KINDS = ['onboard', 'offboard'] as const
-export type ChecklistKind = (typeof CHECKLIST_KINDS)[number]
-
-export const CHECKLIST_KIND_LABEL_LO: Record<ChecklistKind, string> = {
-  onboard: 'ຮັບພະນັກງານເຂົ້າ',
-  offboard: 'ພະນັກງານອອກ',
-}
-
-export const CHECKLIST_KIND_STYLE: Record<ChecklistKind, string> = {
-  onboard: 'bg-brand-sky/20 text-brand-navy dark:text-brand-sky',
-  offboard: 'bg-brand-orange/20 text-brand-orange',
-}
-
-export const CHECKLIST_STATUSES = ['open', 'done', 'cancelled'] as const
-export type ChecklistStatus = (typeof CHECKLIST_STATUSES)[number]
-
-export const CHECKLIST_STATUS_LABEL_LO: Record<ChecklistStatus, string> = {
-  open: 'ກຳລັງເຮັດ',
-  done: 'ຄົບແລ້ວ',
-  cancelled: 'ຍົກເລີກ',
-}
-
 export type AccountSystem = {
   code: string
   name: string
@@ -111,50 +89,10 @@ export type SystemAccount = {
   hr_state: 'active' | 'resigned' | 'not_in_hr'
 }
 
-export type EmployeeChecklist = {
-  id: string
-  employee_id: number
-  employee_code: string | null
-  employee_name: string | null
-  department_code: string | null
-  department_name: string | null
-  employment_status: string | null
-  kind: ChecklistKind
-  status: ChecklistStatus
-  started_at: string | Date
-  target_date: string | Date | null
-  completed_at: string | Date | null
-  note: string | null
-  created_by: number
-  created_by_name: string | null
-  created_at: string
-  updated_at: string
-  item_count: string
-  done_count: string
-  percent_done: number
-  is_late: boolean
-}
-
-export type ChecklistItem = {
-  id: string
-  checklist_id: string
-  sort_order: number
-  title: string
-  hint: string | null
-  is_done: boolean
-  done_by: number | null
-  done_at: string | null
-  note: string | null
-}
-
 export function isSystemKind(value: string): value is SystemKind {
   return (SYSTEM_KINDS as readonly string[]).includes(value)
 }
 
 export function isAccountStatus(value: string): value is AccountStatus {
   return (ACCOUNT_STATUSES as readonly string[]).includes(value)
-}
-
-export function isChecklistKind(value: string): value is ChecklistKind {
-  return (CHECKLIST_KINDS as readonly string[]).includes(value)
 }

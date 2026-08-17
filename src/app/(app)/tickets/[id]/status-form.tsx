@@ -30,7 +30,9 @@ export default function StatusForm({
   const [next, setNext] = useState<TicketStatus>(transitions[0])
 
   const resolving = next === 'resolved'
-  const needsResolution = resolving && !currentResolution
+  const unrepairable = next === 'unrepairable'
+  // ສ້ອມບໍ່ໄດ້ບັງຄັບເຫດຜົນສະເໝີ ເຖິງເຄີຍຂຽນວິທີແກ້ໄວ້ແລ້ວ — ຄົນລະເລື່ອງກັນ
+  const needsResolution = (resolving && !currentResolution) || unrepairable
   const needsEvidence =
     resolving && REQUIRE_EVIDENCE_ON_RESOLVE && evidenceCount === 0
 
@@ -55,22 +57,28 @@ export default function StatusForm({
         name="resolution"
         rows={3}
         required={needsResolution}
-        defaultValue={currentResolution ?? ''}
+        defaultValue={unrepairable ? '' : (currentResolution ?? '')}
         placeholder={
-          needsResolution ? 'ວິທີແກ້ໄຂ (ຕ້ອງໃສ່)' : 'ວິທີແກ້ໄຂ (ບໍ່ບັງຄັບ)'
+          unrepairable
+            ? 'ສ້ອມບໍ່ໄດ້ຍ້ອນຫຍັງ — ເຊັ່ນ ອາໄຫຼ່ບໍ່ມີແລ້ວ, ຄ່າສ້ອມແພງກວ່າຊື້ໃໝ່ (ຕ້ອງໃສ່)'
+            : needsResolution
+              ? 'ວິທີແກ້ໄຂ (ຕ້ອງໃສ່)'
+              : 'ວິທີແກ້ໄຂ (ບໍ່ບັງຄັບ)'
         }
         className="input w-full rounded-lg px-3 py-1.5 text-sm"
       />
 
-      {resolving && (
+      {(resolving || unrepairable) && (
         <div className="pt-1">
           <ImagePicker
-            label="ຮູບຫຼັກຖານການແກ້ໄຂ"
+            label={unrepairable ? 'ຮູບສະພາບເຄື່ອງ' : 'ຮູບຫຼັກຖານການແກ້ໄຂ'}
             required={needsEvidence}
             hint={
-              evidenceCount > 0
-                ? `ມີຫຼັກຖານແລ້ວ ${evidenceCount} ຮູບ — ຈະເພີ່ມອີກກໍໄດ້`
-                : 'ຮູບຜົນລັບຫຼັງແກ້ໄຂ ເຊັ່ນ ໜ້າຈໍທີ່ໃຊ້ງານໄດ້ແລ້ວ'
+              unrepairable
+                ? 'ຮູບຄວາມເສຍຫາຍ — ໃຊ້ອ້າງອີງຕອນຕັດຈຳໜ່າຍ ຫຼື ຂໍຊື້ໃໝ່ (ບໍ່ບັງຄັບ)'
+                : evidenceCount > 0
+                  ? `ມີຫຼັກຖານແລ້ວ ${evidenceCount} ຮູບ — ຈະເພີ່ມອີກກໍໄດ້`
+                  : 'ຮູບຜົນລັບຫຼັງແກ້ໄຂ ເຊັ່ນ ໜ້າຈໍທີ່ໃຊ້ງານໄດ້ແລ້ວ'
             }
           />
         </div>

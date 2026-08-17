@@ -128,7 +128,7 @@ export async function getPlanSources(employeeId: number) {
       `select id, ticket_no, title
          from it.v_tickets
         where assignee_employee_id = $1::int
-          and status not in ('resolved','closed','cancelled')
+          and status not in ('resolved','unrepairable','closed','cancelled')
         order by created_at desc
         limit 30`,
       [employeeId]
@@ -162,7 +162,7 @@ export async function getPlanCandidates(
       `select t.id, t.ticket_no, t.title, t.priority
          from it.v_tickets t
         where t.assignee_employee_id = $1::int
-          and t.status not in ('resolved','closed','cancelled')
+          and t.status not in ('resolved','unrepairable','closed','cancelled')
           and not exists (
                 select 1 from it.daily_plan_items i
                  where i.plan_id = $2::bigint and i.ticket_id = t.id)

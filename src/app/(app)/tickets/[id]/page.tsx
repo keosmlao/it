@@ -5,6 +5,7 @@ import { can } from '@/lib/auth/roles'
 import { getAssignableStaff, getComments, getTicket } from '@/lib/tickets/queries'
 import {
   ALLOWED_TRANSITIONS,
+  STATUS_LABEL_LO,
   canClaimTicket,
   canEditTicket,
 } from '@/lib/tickets/model'
@@ -16,6 +17,8 @@ import AttachmentGallery from '@/components/attachment-gallery'
 import { listAttachments } from '@/lib/tickets/attachments'
 import { addAttachments, addComment, assignTicket } from '../actions'
 import StatusForm from './status-form'
+import TicketSteps from './steps'
+import DeleteTicketButton from '../delete-button'
 
 export default async function TicketDetailPage({
   params,
@@ -36,7 +39,12 @@ export default async function TicketDetailPage({
   const evidenceImages = attachments.filter((a) => a.kind === 'evidence')
 
   const editable = canEditTicket(user, ticket)
-  const transitions = ALLOWED_TRANSITIONS[ticket.status] ?? []
+  const showAssignee =
+    !ticket.is_finished && (can.assignWork(user) || canClaimTicket(user, ticket))
+  // "ມອບໝາຍແລ້ວ" ຕັ້ງເອງບໍ່ໄດ້ — ມາຈາກການເລືອກຜູ້ຮັບຜິດຊອບເທົ່ານັ້ນ
+  const transitions = (ALLOWED_TRANSITIONS[ticket.status] ?? []).filter(
+    (s) => s !== 'assigned' || ticket.assignee_employee_id !== null
+  )
   const respond = formatDeadline(
     ticket.first_responded_at ? null : ticket.sla_respond_due_at
   )
@@ -74,6 +82,8 @@ export default async function TicketDetailPage({
         </div>
       </header>
 
+      <TicketSteps status={ticket.status} showHint={editable} />
+
       <div className="mt-6 grid gap-6 md:grid-cols-[1fr_18rem]">
         <div className="min-w-0">
           <Card title="ລາຍລະອຽດ">
@@ -104,38 +114,34 @@ export default async function TicketDetailPage({
             </ActionForm>
           </Card>
 
+          {/*
+            ຫຼັກຖານແນບຢູ່ບ່ອນດຽວ — ໃນຂັ້ນຕອນປິດວຽກຂ້າງຂວາ
+            ເມື່ອກ່ອນມີຟອມອັບໂຫລດຢູ່ນີ້ອີກອັນ ເຮັດວຽກຢ່າງດຽວກັນກັບຢູ່ນັ້ນ
+            ຄົນຈຶ່ງບໍ່ຮູ້ວ່າຄວນໃຊ້ອັນໃດ ແລະ ມັກອັບສອງເທື່ອ
+          */}
           <Card
             title={`ຮູບຫຼັກຖານການແກ້ໄຂ (${evidenceImages.length})`}
             className="mt-4"
           >
             <AttachmentGallery
               attachments={evidenceImages}
-              emptyText="ຍັງບໍ່ມີຫຼັກຖານ — ຕ້ອງແນບກ່ອນປ່ຽນເປັນ “ແກ້ໄຂແລ້ວ”"
+              emptyText={
+                editable
+                  ? `ຍັງບໍ່ມີຫຼັກຖານ — ແນບຕອນກົດ “${STATUS_LABEL_LO.resolved}” ຢູ່ກ່ອງຂັ້ນຕອນຂ້າງຂວາ`
+                  : 'ຍັງບໍ່ມີຫຼັກຖານ'
+              }
             />
-
-            {editable && (
-              <ActionForm
-                action={addAttachments}
-                className="mt-4 border-t border-line pt-4"
-              >
-                <input type="hidden" name="ticket_id" value={ticket.id} />
-                <input type="hidden" name="kind" value="evidence" />
-                <ImagePicker
-                  label="ເພີ່ມຮູບຫຼັກຖານ"
-                  hint="ຮູບຜົນລັບຫຼັງແກ້ໄຂແລ້ວ"
-                />
-                <SubmitButton
-                  pendingLabel="ກຳລັງອັບໂຫລດ…"
-                  className="btn-secondary mt-3 rounded-lg px-4 py-2 text-sm"
-                >
-                  ອັບໂຫລດ
-                </SubmitButton>
-              </ActionForm>
-            )}
           </Card>
 
           {ticket.resolution && (
-            <Card title="ວິທີແກ້ໄຂ" className="mt-4">
+            <Card
+              title={
+                ticket.status === 'unrepairable'
+                  ? 'ເຫດຜົນທີ່ສ້ອມບໍ່ໄດ້'
+                  : 'ວິທີແກ້ໄຂ'
+              }
+              className="mt-4"
+            >
               <p className="whitespace-pre-wrap text-body">
                 {ticket.resolution}
               </p>
@@ -202,7 +208,67 @@ export default async function TicketDetailPage({
           </Card>
         </div>
 
+        {/*
+          ຮຽງກ່ອງຂ້າງຕາມລຳດັບການລົງມື: ເຮັດຫຍັງຕໍ່ → ໃຜເຮັດ → ຕ້ອງແລ້ວເມື່ອໃດ
+          → ຂໍ້ມູນປະກອບ. ເມື່ອກ່ອນປຸ່ມປ່ຽນສະຖານະຢູ່ລຸ່ມສຸດ ຕ້ອງເລື່ອນຫາທຸກເທື່ອ
+        */}
         <aside className="space-y-4">
+          {editable && transitions.length > 0 && (
+            <Card title="ຂັ້ນຕອນຕໍ່ໄປ">
+              <StatusForm
+                ticketId={ticket.id}
+                transitions={transitions}
+                currentResolution={ticket.resolution}
+                evidenceCount={evidenceImages.length}
+              />
+            </Card>
+          )}
+
+          {showAssignee && (
+            <Card title="ຜູ້ຮັບຜິດຊອບ">
+              {/*
+                ມີເຈົ້າພາບແລ້ວ = ບອກຊື່ພໍ ບໍ່ຕ້ອງໃຫ້ມອບໝາຍຊໍ້າອີກ.
+                ການປ່ຽນຜູ້ຮັບຜິດຊອບເປັນເລື່ອງນານໆເທື່ອ ຈຶ່ງພັບໄວ້ໃຫ້ກົດເປີດເອົາ
+              */}
+              {ticket.assignee_employee_id ? (
+                <>
+                  <p className="text-sm font-medium text-fg">
+                    {ticket.assignee_name}
+                  </p>
+
+                  {can.assignWork(user) && (
+                    <details className="mt-2">
+                      <summary className="cursor-pointer text-sm text-brand-blue underline-offset-2 hover:underline">
+                        ປ່ຽນຜູ້ຮັບຜິດຊອບ
+                      </summary>
+                      <div className="mt-2">
+                        <AssignForm
+                          ticketId={ticket.id}
+                          staff={staff}
+                          current={ticket.assignee_employee_id}
+                          label="ບັນທຶກການປ່ຽນ"
+                        />
+                      </div>
+                    </details>
+                  )}
+
+                  {canClaimTicket(user, ticket) && !can.assignWork(user) && (
+                    <ClaimForm ticketId={ticket.id} employeeId={user.employee_id} />
+                  )}
+                </>
+              ) : can.assignWork(user) ? (
+                <AssignForm
+                  ticketId={ticket.id}
+                  staff={staff}
+                  current={null}
+                  label="ມອບໝາຍ"
+                />
+              ) : (
+                <ClaimForm ticketId={ticket.id} employeeId={user.employee_id} />
+              )}
+            </Card>
+          )}
+
           <Card title="SLA">
             <Row
               label="ຕອບກັບ"
@@ -227,62 +293,90 @@ export default async function TicketDetailPage({
           <Card title="ຂໍ້ມູນ">
             <Row label="ຜູ້ແຈ້ງ" value={ticket.requester_name} />
             <Row label="ພະແນກ" value={ticket.requester_department_name ?? '—'} />
-            <Row label="ຜູ້ຮັບຜິດຊອບ" value={ticket.assignee_name ?? 'ຍັງບໍ່ມອບໝາຍ'} />
+            {/* ກ່ອງ "ຜູ້ຮັບຜິດຊອບ" ຂ້າງເທິງບອກຢູ່ແລ້ວ — ບອກຢູ່ນີ້ອີກກໍຊໍ້າ */}
+            {!showAssignee && (
+              <Row
+                label="ຜູ້ຮັບຜິດຊອບ"
+                value={ticket.assignee_name ?? 'ຍັງບໍ່ມອບໝາຍ'}
+              />
+            )}
             <Row label="ໜ່ວຍງານ" value={ticket.unit_name_lo ?? '—'} />
             <Row label="ແຈ້ງເມື່ອ" value={formatDateTime(ticket.created_at)} />
           </Card>
 
-          {canClaimTicket(user, ticket) && !can.assignWork(user) && (
-            <ActionForm action={assignTicket}>
-              <input type="hidden" name="ticket_id" value={ticket.id} />
-              <input
-                type="hidden"
-                name="assignee_employee_id"
-                value={user.employee_id}
-              />
-              <SubmitButton className="btn-secondary w-full rounded-lg px-4 py-2 text-sm font-medium">
-                ຮັບວຽກນີ້ມາເຮັດ
-              </SubmitButton>
-            </ActionForm>
-          )}
-
-          {can.assignWork(user) && !ticket.is_finished && (
-            <Card title="ມອບໝາຍ">
-              <ActionForm action={assignTicket} className="space-y-2">
-                <input type="hidden" name="ticket_id" value={ticket.id} />
-                <select
-                  name="assignee_employee_id"
-                  defaultValue={ticket.assignee_employee_id ?? ''}
-                  className="input w-full rounded-lg px-3 py-1.5 text-sm"
-                >
-                  <option value="">— ຍັງບໍ່ມອບໝາຍ —</option>
-                  {staff.map((s) => (
-                    <option key={s.employee_id} value={s.employee_id}>
-                      {s.fullname_lo}
-                      {s.nickname ? ` (${s.nickname})` : ''}
-                    </option>
-                  ))}
-                </select>
-                <SubmitButton className="btn-secondary w-full rounded-lg px-4 py-1.5 text-sm">
-                  ບັນທຶກການມອບໝາຍ
-                </SubmitButton>
-              </ActionForm>
-            </Card>
-          )}
-
-          {editable && transitions.length > 0 && (
-            <Card title="ປ່ຽນສະຖານະ">
-              <StatusForm
+          {/*
+            ລຶບໄວ້ລຸ່ມສຸດ ແລະ ໃຫ້ສະເພາະຜູ້ຈັດການ — ໃຊ້ກັບອັນທີ່ພິມຜິດ ຫຼື ຊໍ້າ.
+            ວຽກທີ່ບໍ່ຕ້ອງເຮັດແລ້ວໃຫ້ໃຊ້ສະຖານະ "ຍົກເລີກ" ຈຶ່ງຍັງນັບໃນລາຍງານໄດ້
+          */}
+          {can.administer(user) && (
+            <div className="flex justify-end">
+              <DeleteTicketButton
                 ticketId={ticket.id}
-                transitions={transitions}
-                currentResolution={ticket.resolution}
-                evidenceCount={evidenceImages.length}
+                ticketNo={ticket.ticket_no}
               />
-            </Card>
+            </div>
           )}
         </aside>
       </div>
     </div>
+  )
+}
+
+type AssignableStaff = {
+  employee_id: number
+  fullname_lo: string
+  nickname: string | null
+}
+
+function AssignForm({
+  ticketId,
+  staff,
+  current,
+  label,
+}: {
+  ticketId: string
+  staff: AssignableStaff[]
+  current: number | null
+  label: string
+}) {
+  return (
+    <ActionForm action={assignTicket} className="space-y-2">
+      <input type="hidden" name="ticket_id" value={ticketId} />
+      <select
+        name="assignee_employee_id"
+        defaultValue={current ?? ''}
+        className="input w-full rounded-lg px-3 py-1.5 text-sm"
+      >
+        <option value="">— ຍັງບໍ່ມອບໝາຍ —</option>
+        {staff.map((s) => (
+          <option key={s.employee_id} value={s.employee_id}>
+            {s.fullname_lo}
+            {s.nickname ? ` (${s.nickname})` : ''}
+          </option>
+        ))}
+      </select>
+      <SubmitButton className="btn-secondary w-full rounded-lg px-4 py-1.5 text-sm">
+        {label}
+      </SubmitButton>
+    </ActionForm>
+  )
+}
+
+function ClaimForm({
+  ticketId,
+  employeeId,
+}: {
+  ticketId: string
+  employeeId: number
+}) {
+  return (
+    <ActionForm action={assignTicket} className="mt-2">
+      <input type="hidden" name="ticket_id" value={ticketId} />
+      <input type="hidden" name="assignee_employee_id" value={employeeId} />
+      <SubmitButton className="btn-secondary w-full rounded-lg px-4 py-2 text-sm font-medium">
+        ຮັບວຽກນີ້ມາເຮັດ
+      </SubmitButton>
+    </ActionForm>
   )
 }
 

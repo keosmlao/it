@@ -13,7 +13,6 @@ export type NavBadges = {
   maintenance: number
   incidents: number
   accounts: number
-  checklists: number
   consumables: number
   recovery: number
   conflicts: number
@@ -30,7 +29,6 @@ export const EMPTY_BADGES: NavBadges = {
   maintenance: 0,
   incidents: 0,
   accounts: 0,
-  checklists: 0,
   consumables: 0,
   recovery: 0,
   conflicts: 0,

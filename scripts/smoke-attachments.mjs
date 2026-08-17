@@ -69,9 +69,18 @@ try {
   for (const kind of ['report', 'evidence']) {
     await c.query(
       `insert into it.attachments
-         (ticket_id, kind, file_name, stored_name, mime_type, size_bytes, uploaded_by)
-       values ($1, $2, $3, $4, 'image/png', $5, $6)`,
-      [ticket.id, kind, `${kind}.png`, storedName, PNG.length, manager.employee_id]
+         (ticket_id, entity_type, entity_id, kind, file_name, stored_name,
+          mime_type, size_bytes, uploaded_by)
+       values ($1::bigint, 'ticket', $2::varchar, $3, $4, $5, 'image/png', $6, $7)`,
+      [
+        ticket.id,
+        String(ticket.id),
+        kind,
+        `${kind}.png`,
+        storedName,
+        PNG.length,
+        manager.employee_id,
+      ]
     )
   }
 

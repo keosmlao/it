@@ -56,9 +56,7 @@ const OFF_MENU: Record<Permission, string[]> = {
   manageSubscriptions: [
     'ປຸ່ມລົງທະບຽນ · ແກ້ໄຂ · ບັນທຶກການຈ່າຍ · ຕໍ່ອາຍຸ · ຍົກເລີກສັນຍາເຊົ່າ',
   ],
-  manageAccounts: [
-    'ປຸ່ມເປີດ–ປິດບັນຊີ · ສ້າງ ແລະ ຕິດຂັ້ນຕອນຮັບພະນັກງານເຂົ້າ/ອອກ',
-  ],
+  manageAccounts: ['ປຸ່ມເປີດ–ປິດບັນຊີ · ຈັດການລະບົບທີ່ມີບັນຊີ'],
   administer: [],
 }
 

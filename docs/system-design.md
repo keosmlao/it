@@ -16,7 +16,7 @@
 | ຄ່າເຊົ່າບໍລິການ (ອິນເຕີເນັດ/cloud/mail/AI) | `/subscriptions` | ✅ |
 | ບຳລຸງຮັກສາຕາມແຜນ | `/maintenance` | ✅ |
 | ເຫດຂັດຂ້ອງລະບົບ (downtime) | `/incidents` | ✅ |
-| ບັນຊີຜູ້ໃຊ້ + ຮັບພະນັກງານເຂົ້າ/ອອກ | `/accounts` · `/onboarding` | ✅ |
+| ບັນຊີຜູ້ໃຊ້ | `/accounts` | ✅ |
 | ອຸປະກອນສິ້ນເປືອງ | `/consumables` | ✅ |
 | ເຄືອຂ່າຍ & IP | `/network` | ✅ |
 | ທະບຽນຜູ້ຂາຍ | `/vendors` | ✅ |

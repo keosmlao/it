@@ -36,8 +36,6 @@ export async function getNavBadges(user: ItStaff): Promise<NavBadges> {
          where status = 'open')                                 as incidents,
        (select count(*) from it.v_system_accounts
          where should_close)                                    as accounts,
-       (select count(*) from it.v_employee_checklists
-         where status = 'open')                                 as checklists,
        (select count(*) from it.v_consumables
          where stock_state in ('low', 'empty'))                 as consumables,
        (select count(*) from it.v_recovery_targets
@@ -62,7 +60,6 @@ export async function getNavBadges(user: ItStaff): Promise<NavBadges> {
     maintenance: Number(row?.maintenance ?? 0),
     incidents: Number(row?.incidents ?? 0),
     accounts: Number(row?.accounts ?? 0),
-    checklists: Number(row?.checklists ?? 0),
     consumables: Number(row?.consumables ?? 0),
     recovery: Number(row?.recovery ?? 0),
     conflicts: Number(row?.conflicts ?? 0),

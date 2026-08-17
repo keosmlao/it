@@ -80,7 +80,7 @@ export const PERMISSION_HINT_LO: Record<Permission, string> = {
   viewReports: 'ໜ້າລາຍງານ ແລະ ແຜນວຽກທັງທີມ',
   manageAssets: 'ຢືມ, ຄືນ, ໂອນ, ແກ້ spec, ບັນທຶກການສ້ອມ',
   manageSubscriptions: 'ລົງທະບຽນ, ແກ້, ຕໍ່ອາຍຸ ແລະ ບັນທຶກການຈ່າຍຄ່າເຊົ່າ',
-  manageAccounts: 'ເປີດ–ປິດບັນຊີ ແລະ ຕິດຕາມຂັ້ນຕອນຮັບພະນັກງານເຂົ້າ/ອອກ',
+  manageAccounts: 'ເປີດ–ປິດບັນຊີ ແລະ ຈັດການລະບົບທີ່ມີບັນຊີ',
   administer: 'ໃຫ້ດ້ວຍຄວາມລະມັດລະວັງ — ຕັ້ງສິດຄົນອື່ນໄດ້',
 }
 
@@ -168,6 +168,6 @@ export const can = {
   /** ລົງທະບຽນ/ແກ້ສັນຍາເຊົ່າບໍລິການ ແລະ ບັນທຶກການຈ່າຍແຕ່ລະງວດ */
   manageSubscriptions: (u: ItStaff) => allows(u, 'manageSubscriptions'),
 
-  /** ເປີດ–ປິດບັນຊີຜູ້ໃຊ້ ແລະ ຈັດການຂັ້ນຕອນຮັບພະນັກງານເຂົ້າ/ອອກ */
+  /** ເປີດ–ປິດບັນຊີຜູ້ໃຊ້ ແລະ ຈັດການລະບົບທີ່ມີບັນຊີ */
   manageAccounts: (u: ItStaff) => allows(u, 'manageAccounts'),
 }

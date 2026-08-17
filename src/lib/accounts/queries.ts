@@ -1,11 +1,6 @@
 import 'server-only'
 import { query } from '@/lib/db'
-import type {
-  AccountSystem,
-  ChecklistItem,
-  EmployeeChecklist,
-  SystemAccount,
-} from './model'
+import type { AccountSystem, SystemAccount } from './model'
 
 // ------------------------------------------------------------- ລະບົບ
 
@@ -75,16 +70,6 @@ export async function getSystemAccount(id: string) {
   return rows[0] ?? null
 }
 
-/** ບັນຊີຂອງພະນັກງານຄົນໜຶ່ງ — ໃຊ້ໃນໜ້າຂັ້ນຕອນພະນັກງານອອກ */
-export async function getAccountsForEmployee(employeeId: number) {
-  return query<SystemAccount>(
-    `select * from it.v_system_accounts
-      where employee_id = $1::int
-      order by status, system_name`,
-    [employeeId]
-  )
-}
-
 export async function getAccountStats() {
   const rows = await query<{
     total: string
@@ -101,75 +86,10 @@ export async function getAccountStats() {
   return rows[0]
 }
 
-// ------------------------------------------------------- ຂັ້ນຕອນເຂົ້າ/ອອກ
-
-export async function listChecklists(
-  filters: { kind?: string; status?: string; q?: string } = {}
-) {
-  const params: unknown[] = []
-  const where: string[] = ['true']
-
-  if (filters.kind && filters.kind !== 'all') {
-    params.push(filters.kind)
-    where.push(`kind = $${params.length}`)
-  }
-
-  if (filters.status && filters.status !== 'all') {
-    params.push(filters.status)
-    where.push(`status = $${params.length}`)
-  } else if (!filters.status) {
-    where.push(`status = 'open'`)
-  }
-
-  if (filters.q) {
-    params.push(`%${filters.q}%`)
-    const i = params.length
-    where.push(`(employee_name ilike $${i} or employee_code ilike $${i})`)
-  }
-
-  return query<EmployeeChecklist>(
-    `select * from it.v_employee_checklists
-      where ${where.join(' and ')}
-      order by status, is_late desc, started_at desc
-      limit 200`,
-    params
-  )
-}
-
-export async function getChecklist(id: string) {
-  const rows = await query<EmployeeChecklist>(
-    'select * from it.v_employee_checklists where id = $1::bigint',
-    [id]
-  )
-  return rows[0] ?? null
-}
-
-export async function getChecklistItems(checklistId: string) {
-  return query<ChecklistItem>(
-    `select id, checklist_id, sort_order, title, hint, is_done, done_by, done_at, note
-       from it.checklist_items
-      where checklist_id = $1::bigint
-      order by sort_order, id`,
-    [checklistId]
-  )
-}
-
-export async function getChecklistStats() {
-  const rows = await query<{ open: string; late: string; onboard: string; offboard: string }>(
-    `select count(*) filter (where status = 'open')                  as open,
-            count(*) filter (where is_late)                          as late,
-            count(*) filter (where status = 'open' and kind = 'onboard')  as onboard,
-            count(*) filter (where status = 'open' and kind = 'offboard') as offboard
-       from it.v_employee_checklists`
-  )
-  return rows[0]
-}
-
 // ------------------------------------------------------------ ຕົວເລືອກ
 
 /**
- * ພະນັກງານທັງບໍລິສັດ — ບໍ່ແມ່ນສະເພາະ IT ເພາະບັນຊີ ແລະ ຂັ້ນຕອນເຂົ້າ/ອອກ
- * ເປັນຂອງທຸກພະແນກ
+ * ພະນັກງານທັງບໍລິສັດ — ບໍ່ແມ່ນສະເພາະ IT ເພາະບັນຊີເປັນຂອງທຸກພະແນກ
  */
 export async function getEmployeeOptions(includeInactive = false) {
   return query<{
@@ -188,15 +108,5 @@ export async function getEmployeeOptions(includeInactive = false) {
       order by e.fullname_lo
       limit 1000`,
     [includeInactive]
-  )
-}
-
-export async function getChecklistTemplates(kind: string) {
-  return query<{ sort_order: number; title: string; hint: string | null }>(
-    `select sort_order, title, hint
-       from it.checklist_templates
-      where kind = $1::varchar and is_active
-      order by sort_order`,
-    [kind]
   )
 }
