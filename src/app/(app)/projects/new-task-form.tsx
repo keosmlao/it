@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import { useFormStatus } from 'react-dom'
+import { useModalClose } from '@/components/modal'
 import { createTask, type ActionState } from './actions'
 import { TASK_STATUS_LABEL_LO, BOARD_COLUMNS } from '@/lib/projects/model'
 
@@ -10,6 +11,9 @@ type Priority = { priority: string; name_lo: string }
 
 const inputClass =
   'input w-full rounded-lg px-3 py-2 text-sm'
+
+/** ຢູ່ຊັ້ນ module ຈຶ່ງຄົງ identity — ໃຊ້ຈຳແນກ "ຍັງບໍ່ທັນສົ່ງ" ຈາກ "ສົ່ງແລ້ວ" */
+const NOT_SUBMITTED: ActionState = {}
 
 export default function NewTaskForm({
   projectId,
@@ -24,26 +28,30 @@ export default function NewTaskForm({
   canAssign: boolean
   currentUserId: number
 }) {
-  const [state, formAction] = useActionState(createTask, {} as ActionState)
+  const [state, formAction] = useActionState(createTask, NOT_SUBMITTED)
   const ref = useRef<HTMLFormElement>(null)
-  const firstRender = useRef(true)
 
-  // ລ້າງຟອມຫຼັງບັນທຶກສຳເລັດ ເພື່ອໃຫ້ເພີ່ມວຽກຕໍ່ໆກັນໄດ້ໄວ.
-  // ທຸກຄັ້ງທີ່ action ຈົບ state ຈະເປັນ object ໃໝ່ ຈຶ່ງໃຊ້ເປັນສັນຍານໄດ້.
+  // ຢູ່ນອກ modal ຄ່ານີ້ບໍ່ເຮັດຫຍັງ — ຟອມຈຶ່ງໃຊ້ໄດ້ທັງສອງແບບ
+  const close = useModalClose()
+
+  /**
+   * ລ້າງຟອມຫຼັງບັນທຶກສຳເລັດ ເພື່ອໃຫ້ເພີ່ມວຽກຕໍ່ໆກັນໄດ້ໄວ
+   *
+   * ທຸກຄັ້ງທີ່ action ຈົບ state ຈະເປັນ object ໃໝ່ ຈຶ່ງໃຊ້ identity ເປັນສັນຍານ —
+   * ຢ່າໃຊ້ ref ແບບ "ຂ້າມຮອບທຳອິດ" ເພາະ Strict Mode ຕອນ dev ແລ່ນ effect
+   * ຂອງການ mount ສອງເທື່ອ ແລ້ວຮອບທີສອງຈະລ້າງຟອມ/ປິດໜ້າຕ່າງໃສ່ທັນທີທີ່ເປີດ
+   */
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false
-      return
+    if (state === NOT_SUBMITTED) return
+    if (!state.error) {
+      ref.current?.reset()
+      close()
     }
-    if (!state.error) ref.current?.reset()
-  }, [state])
+  }, [state, close])
 
   return (
-    <form
-      ref={ref}
-      action={formAction}
-      className="glass-card rounded-xl p-4"
-    >
+    // ບໍ່ມີຂອບກາດ — ຜູ້ເອີ້ນເປັນຄົນໃຫ້ພື້ນຜິວ (ຕອນນີ້ຄືໜ້າຕ່າງລອຍ)
+    <form ref={ref} action={formAction}>
       {projectId && <input type="hidden" name="project_id" value={projectId} />}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

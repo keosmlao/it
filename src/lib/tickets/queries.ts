@@ -44,7 +44,7 @@ function ticketWhere(user: ItStaff, filters: TicketFilters) {
 
   // 'open' = ຍັງບໍ່ຈົບ, 'all' = ບໍ່ກັ່ນຕອງ, ນອກນັ້ນຄືສະຖານະໃດໜຶ່ງ
   if (filters.status === 'open') {
-    where.push(`status in ('new','assigned','in_progress','pending')`)
+    where.push(`status in ('new','assigned','in_progress')`)
   } else if (filters.status && filters.status !== 'all') {
     params.push(filters.status)
     where.push(`status = $${params.length}`)

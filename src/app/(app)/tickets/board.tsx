@@ -1,19 +1,22 @@
 'use client'
 
 import Link from 'next/link'
-import { useOptimistic, useState, useTransition } from 'react'
+import { useActionState, useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import ActionForm from '@/components/action-form'
+import { SubmitButton } from '@/components/action-form'
+import Modal, { useModalClose } from '@/components/modal'
+import { blockNativeDrag, dropColumn, usePointerDrag } from '@/components/pointer-drag'
+import ImagePicker from '@/components/image-picker'
 import { OverdueBadge, PriorityBadge } from '@/components/badge'
 import { formatDeadline } from '@/lib/format'
 import { EMPTY_STATE } from '@/lib/action-state'
 import type { ItStaff } from '@/lib/auth/roles'
 import {
   ALLOWED_TRANSITIONS,
+  REQUIRE_EVIDENCE_ON_RESOLVE,
   STATUS_LABEL_LO,
   TICKET_BOARD_COLUMNS,
   canEditTicket,
-  quickMoves,
   type TicketRow,
   type TicketStatus,
 } from '@/lib/tickets/model'
@@ -27,20 +30,23 @@ import { changeStatus } from './actions'
  *   • dropdown + ປຸ່ມ "ຍ້າຍ" — ມືຖື, ຄີບອດ ແລະ ຕອນ JS ບໍ່ແລ່ນ
  *     (HTML5 drag & drop ບໍ່ເຮັດວຽກເທິງໜ້າຈໍສຳຜັດ ຈຶ່ງຕັດອອກບໍ່ໄດ້)
  *
- * ຖັນທີ່ຢ່ອນລົງບໍ່ໄດ້ຈະຈາງລົງຂະນະລາກ — ອີງ ALLOWED_TRANSITIONS ອັນດຽວກັບ
- * ທີ່ເຊີບເວີກວດ ຈຶ່ງບໍ່ມີກໍລະນີລາກໄດ້ແຕ່ບັນທຶກບໍ່ຜ່ານ
+ * ຖັນທີ່ຕ້ອງມີຂໍ້ມູນເພີ່ມ (ສຳເລັດ / ສ້ອມບໍ່ໄດ້) ຢ່ອນລົງໄດ້ຄືກັນ ແຕ່ຈະເປີດ
+ * ໜ້າຕ່າງຖາມວິທີແກ້ໄຂ ແລະ ຮູບຫຼັກຖານກ່ອນບັນທຶກ — ເມື່ອກ່ອນຕັດຖັນເຫຼົ່ານີ້
+ * ອອກຈາກເປົ້າໝາຍ ຜົນຄື ticket ທີ່ "ກຳລັງດຳເນີນການ" ລາກໄປໃສບໍ່ໄດ້ເລີຍ
  */
 
-/**
- * ຖັນ "ປິດແລ້ວ" ເອົາແຕ່ 10 ລ້າສຸດ — ວຽກທີ່ຈົບແລ້ວບໍ່ຕ້ອງລົງມືຫຍັງອີກ
- * ມີໄວ້ພຽງໃຫ້ເຫັນວ່າຫາກໍປິດອັນໃດໄປ. ຢາກເບິ່ງໃຫ້ຄົບໃຫ້ໄປຕາຕະລາງ
- */
-const CLOSED_LIMIT = 10
+/** ຕັ້ງເອງບໍ່ໄດ້ — ມາຈາກການເລືອກຜູ້ຮັບຜິດຊອບ (assignTicket ຕັ້ງໃຫ້) */
+const NOT_A_DROP_TARGET: TicketStatus[] = ['assigned', 'cancelled']
 
-/** ອັນທີ່ຫາກໍລາກມາປິດຍັງບໍ່ທັນມີເວລາປິດຈາກເຊີບເວີ — ໃຫ້ຂຶ້ນເທິງສຸດໄວ້ກ່ອນ */
-function closedAtKey(ticket: TicketRow) {
-  return String(ticket.closed_at ?? ticket.resolved_at ?? '9999-12-31')
+/** ຢ່ອນລົງໄດ້ ແຕ່ຕ້ອງຕອບຄຳຖາມກ່ອນ */
+const NEEDS_FORM: TicketStatus[] = ['resolved', 'unrepairable']
+
+function dropTargets(status: TicketStatus): TicketStatus[] {
+  return (ALLOWED_TRANSITIONS[status] ?? []).filter(
+    (s) => !NOT_A_DROP_TARGET.includes(s)
+  )
 }
+
 export default function TicketBoard({
   tickets,
   user,
@@ -48,88 +54,93 @@ export default function TicketBoard({
   tickets: TicketRow[]
   user: ItStaff
 }) {
-  const router = useRouter()
-  const [pending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
-  const [dragging, setDragging] = useState<TicketRow | null>(null)
-  const [overColumn, setOverColumn] = useState<TicketStatus | null>(null)
+  const [asking, setAsking] = useState<{
+    ticket: TicketRow
+    to: TicketStatus
+  } | null>(null)
+  const stopAsking = useCallback(() => setAsking(null), [])
 
-  // ຍ້າຍໃຫ້ເຫັນທັນທີ ບໍ່ຕ້ອງລໍເຊີບເວີ — ຖ້າບັນທຶກບໍ່ຜ່ານ React ຈະດຶງກັບຄືນເອງ
-  const [board, applyMove] = useOptimistic(
-    tickets,
-    (state: TicketRow[], move: { id: string; status: TicketStatus }) =>
-      state.map((t) => (t.id === move.id ? { ...t, status: move.status } : t))
-  )
+  /**
+   * ຍ້າຍຜ່ານ <form> ຈິງ ບໍ່ແມ່ນເອີ້ນ action ຈາກ JS ໂດຍກົງ
+   *
+   * ເສັ້ນທາງນີ້ Next ຈັດການ revalidatePath ແລະ render ໃໝ່ໃຫ້ເອງ —
+   * ຕອນເອີ້ນເອງ optimistic state ດີດກັບເປັນຂອງເກົ່າທັນທີທີ່ transition ຈົບ
+   * ໂດຍທີ່ຂໍ້ມູນໃໝ່ຍັງບໍ່ມາຮອດ ຈຶ່ງເຫັນເປັນ "ລາກແລ້ວບໍ່ໄປ"
+   */
+  const [state, formAction, pending] = useActionState(changeStatus, EMPTY_STATE)
+  const moveForm = useRef<HTMLFormElement>(null)
+  const moveId = useRef<HTMLInputElement>(null)
+  const moveTo = useRef<HTMLInputElement>(null)
 
-  // ສະຖານະນອກສາຍຫຼັກ (ລໍຂໍ້ມູນ, ຍົກເລີກ) ຕໍ່ທ້າຍໃຫ້ສະເພາະຕອນມີວຽກຄ້າງຢູ່
-  const extra = board
+  const { item: dragging, over, begin, ghost } = usePointerDrag<TicketRow>({
+    // ບໍ່ຕ້ອງ memo — hook ເກັບ callback ໄວ້ໃນ ref ຂອງມັນເອງ ຈຶ່ງບໍ່ຄ້າງເກົ່າ
+    canDrop: (ticket: TicketRow, column: string) => dropTargets(ticket.status).includes(column as TicketStatus),
+    onDrop: (ticket: TicketRow, column: string) => drop(ticket, column as TicketStatus),
+    label: (ticket: TicketRow) => ticket.title,
+  })
+
+  // ສະຖານະນອກສາຍຫຼັກ (ຍົກເລີກ) ຕໍ່ທ້າຍໃຫ້ສະເພາະຕອນມີວຽກຄ້າງຢູ່
+  const extra = tickets
     .map((t) => t.status)
     .filter((s) => !TICKET_BOARD_COLUMNS.includes(s))
   const columns = [...TICKET_BOARD_COLUMNS, ...new Set(extra)]
 
-  function move(ticket: TicketRow, to: TicketStatus) {
+  function drop(ticket: TicketRow, to: TicketStatus) {
     if (to === ticket.status) return
-    setError(null)
 
-    startTransition(async () => {
-      applyMove({ id: ticket.id, status: to })
+    // ຕ້ອງມີວິທີແກ້ໄຂ / ເຫດຜົນ / ຮູບ — ຖາມກ່ອນ ຢ່າຍ້າຍລອຍໆ
+    if (NEEDS_FORM.includes(to)) {
+      setAsking({ ticket, to })
+      return
+    }
 
-      const form = new FormData()
-      form.set('ticket_id', ticket.id)
-      form.set('status', to)
-
-      const result = await changeStatus(EMPTY_STATE, form)
-      if (result.error) setError(result.error)
-      router.refresh()
-    })
+    if (!moveId.current || !moveTo.current) return
+    moveId.current.value = ticket.id
+    moveTo.current.value = to
+    moveForm.current?.requestSubmit()
   }
+
 
   return (
     <div className="mt-5">
-      {error && (
+      {/* ຟອມລັບອັນດຽວຂອງກະດານ — ການລາກ ແລະ ປຸ່ມໃນກາດສົ່ງຜ່ານອັນນີ້ໝົດ */}
+      <form ref={moveForm} action={formAction} className="hidden">
+        <input type="hidden" name="ticket_id" ref={moveId} />
+        <input type="hidden" name="status" ref={moveTo} />
+      </form>
+
+      {state.error && (
         <p
           role="alert"
           className="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
         >
-          {error}
+          {state.error}
         </p>
       )}
 
-      {/* ຖັນສູງເທົ່າຈໍ ແລ້ວເລື່ອນຢູ່ໃນຖັນ — ຫົວຖັນຈຶ່ງຄ້າງໃຫ້ເຫັນຕະຫຼອດ
-          ແລະ ໜ້າບໍ່ຍາວຕາມຖັນທີ່ມີກາດຫຼາຍທີ່ສຸດ */}
-      <div className="flex h-[calc(100vh-20rem)] min-h-96 items-stretch gap-3 overflow-x-auto pb-2">
+      {/* ຖັນສູງຕາມກາດທີ່ມີ ແຕ່ບໍ່ເກີນຈໍ — ກາດໜ້ອຍຖັນກໍ່ສັ້ນ ບໍ່ມີບ່ອນຫວ່າງລອຍ
+          ກາດຫຼາຍຈຶ່ງເລື່ອນຢູ່ໃນຖັນ ໂດຍຫົວຖັນຄ້າງໃຫ້ເຫັນ */}
+      <div className="flex max-h-[calc(100vh-17rem)] items-stretch gap-3 overflow-x-auto pb-2">
         {columns.map((column) => {
-          const all = board.filter((t) => t.status === column)
+          const all = tickets.filter((t) => t.status === column)
           const items =
             column === 'closed'
               ? [...all]
                   .sort((a, b) => closedAtKey(b).localeCompare(closedAtKey(a)))
                   .slice(0, CLOSED_LIMIT)
               : all
+
           const accepts = dragging
-            ? quickMoves(dragging.status).includes(column)
+            ? dropTargets(dragging.status).includes(column)
             : false
           const blocked = Boolean(dragging) && !accepts && dragging?.status !== column
 
           return (
             <section
               key={column}
-              onDragOver={(event) => {
-                if (!accepts) return
-                event.preventDefault()
-                event.dataTransfer.dropEffect = 'move'
-                setOverColumn(column)
-              }}
-              onDragLeave={() => setOverColumn((c) => (c === column ? null : c))}
-              onDrop={(event) => {
-                if (!accepts || !dragging) return
-                event.preventDefault()
-                move(dragging, column)
-                setDragging(null)
-                setOverColumn(null)
-              }}
+              {...dropColumn(column)}
               className={`flex min-h-0 w-64 shrink-0 flex-col glass-subtle rounded-xl p-2 transition ${
-                overColumn === column && accepts
+                over === column
                   ? 'ring-2 ring-brand-blue/60'
                   : accepts
                     ? 'ring-1 ring-brand-blue/25'
@@ -153,11 +164,8 @@ export default function TicketBoard({
                     ticket={ticket}
                     user={user}
                     dimmed={dragging?.id === ticket.id}
-                    onDragStart={() => setDragging(ticket)}
-                    onDragEnd={() => {
-                      setDragging(null)
-                      setOverColumn(null)
-                    }}
+                    onGrab={(event) => begin(event, ticket)}
+                    onPick={(to) => drop(ticket, to)}
                   />
                 ))}
 
@@ -173,9 +181,112 @@ export default function TicketBoard({
       </div>
 
       <p className="mt-2 text-xs text-muted">
-        {pending ? 'ກຳລັງບັນທຶກການຍ້າຍ…' : 'ລາກກາດໄປວາງໃສ່ຖັນທີ່ຕ້ອງການເພື່ອປ່ຽນສະຖານະ'}
+        {pending
+          ? 'ກຳລັງບັນທຶກການຍ້າຍ…'
+          : 'ລາກກາດໄປວາງໃສ່ຖັນທີ່ຕ້ອງການ — ຖັນທີ່ຢ່ອນໄດ້ຈະຂຶ້ນຂອບຟ້າ'}
       </p>
+
+      {ghost}
+
+      <Modal
+        open={asking !== null}
+        onClose={stopAsking}
+        title={
+          asking
+            ? `${asking.ticket.ticket_no} → ${STATUS_LABEL_LO[asking.to]}`
+            : ''
+        }
+      >
+        {asking && <FinishForm ticket={asking.ticket} to={asking.to} />}
+      </Modal>
     </div>
+  )
+}
+
+/**
+ * ຟອມທີ່ໂຜ່ຫຼັງລາກໃສ່ຖັນ ສຳເລັດ / ສ້ອມບໍ່ໄດ້
+ * ຖາມຂໍ້ມູນອັນດຽວກັນກັບກ່ອງ "ຂັ້ນຕອນຕໍ່ໄປ" ຢູ່ໜ້າ ticket ຈຶ່ງກົດການດຽວກັນ
+ */
+function FinishForm({ ticket, to }: { ticket: TicketRow; to: TicketStatus }) {
+  const close = useModalClose()
+  const router = useRouter()
+  const [state, formAction] = useActionState(changeStatus, EMPTY_STATE)
+
+  const unrepairable = to === 'unrepairable'
+  const needsResolution = unrepairable || !ticket.resolution
+
+  /**
+   * ສົ່ງຜ່ານແລ້ວຈຶ່ງປິດໜ້າຕ່າງ ແລະ ດຶງຂໍ້ມູນໃໝ່
+   *
+   * ຮູ້ວ່າ "ຍັງບໍ່ທັນສົ່ງ" ຈາກ identity ຂອງ state — ທຸກຄັ້ງທີ່ action ຈົບ
+   * useActionState ຄືນ object ໃໝ່ ສ່ວນກ່ອນສົ່ງມັນຍັງເປັນ EMPTY_STATE ອັນເກົ່າ
+   *
+   * ຢ່າໃຊ້ ref ແບບ "ຂ້າມຮອບທຳອິດ" — Strict Mode (ເປີດຢູ່ຕອນ dev) ແລ່ນ
+   * effect ຂອງການ mount ສອງເທື່ອ ຮອບທີສອງ ref ຖືກລ້າງໄປແລ້ວຈຶ່ງຕົກລົງມາ
+   * ປິດໜ້າຕ່າງໃສ່ທັນທີທີ່ເປີດ — ຜົນຄື "ລາກ/ກົດແລ້ວບໍ່ມີຫຍັງເກີດຂຶ້ນ"
+   */
+  useEffect(() => {
+    if (state === EMPTY_STATE) return
+    if (!state.error) {
+      close()
+      router.refresh()
+    }
+  }, [state, close, router])
+
+  return (
+    <form action={formAction} className="space-y-3">
+      <input type="hidden" name="ticket_id" value={ticket.id} />
+      <input type="hidden" name="status" value={to} />
+
+      <p className="text-sm text-muted">{ticket.title}</p>
+
+      <label className="block">
+        <span className="text-sm font-medium text-body">
+          {unrepairable ? 'ເຫດຜົນທີ່ສ້ອມບໍ່ໄດ້' : 'ວິທີແກ້ໄຂ'}
+          {needsResolution && <span className="text-red-600"> *</span>}
+        </span>
+        <textarea
+          name="resolution"
+          rows={3}
+          required={needsResolution}
+          defaultValue={unrepairable ? '' : (ticket.resolution ?? '')}
+          placeholder={
+            unrepairable
+              ? 'ເຊັ່ນ ອາໄຫຼ່ບໍ່ມີແລ້ວ, ຄ່າສ້ອມແພງກວ່າຊື້ໃໝ່'
+              : 'ແກ້ດ້ວຍວິທີໃດ'
+          }
+          className="input mt-1 w-full rounded-lg px-3 py-2 text-sm"
+        />
+      </label>
+
+      <ImagePicker
+        label={unrepairable ? 'ຮູບສະພາບເຄື່ອງ' : 'ຮູບຫຼັກຖານການແກ້ໄຂ'}
+        required={!unrepairable && REQUIRE_EVIDENCE_ON_RESOLVE}
+        hint={
+          unrepairable
+            ? 'ຮູບຄວາມເສຍຫາຍ — ໃຊ້ອ້າງອີງຕອນຕັດຈຳໜ່າຍ ຫຼື ຂໍຊື້ໃໝ່ (ບໍ່ບັງຄັບ)'
+            : 'ຮູບຜົນລັບຫຼັງແກ້ໄຂ — ຖ້າແນບໄວ້ແລ້ວຢູ່ໜ້າ ticket ບໍ່ຕ້ອງແນບຊໍ້າ'
+        }
+      />
+
+      {state.error && (
+        <p
+          role="alert"
+          className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300"
+        >
+          {state.error}
+        </p>
+      )}
+
+      <div className="flex justify-end">
+        <SubmitButton
+          pendingLabel="ກຳລັງບັນທຶກ…"
+          className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+        >
+          ບັນທຶກ
+        </SubmitButton>
+      </div>
+    </form>
   )
 }
 
@@ -183,38 +294,27 @@ function TicketCard({
   ticket,
   user,
   dimmed,
-  onDragStart,
-  onDragEnd,
+  onGrab,
+  onPick,
 }: {
   ticket: TicketRow
   user: ItStaff
   dimmed: boolean
-  onDragStart: () => void
-  onDragEnd: () => void
+  onGrab: (event: React.PointerEvent) => void
+  onPick: (to: TicketStatus) => void
 }) {
   const deadline = formatDeadline(
     ticket.is_finished ? null : ticket.sla_resolve_due_at
   )
-  const moves = quickMoves(ticket.status)
-  const mayResolve = (ALLOWED_TRANSITIONS[ticket.status] ?? []).includes('resolved')
+  const targets = dropTargets(ticket.status)
   const editable = canEditTicket(user, ticket)
-  const draggable = editable && moves.length > 0
+  const draggable = editable && targets.length > 0
 
   return (
     <article
-      draggable={draggable}
-      onDragStart={(event) => {
-        // ລາກຈາກໃນ dropdown ຫຼື ປຸ່ມ ບໍ່ໃຫ້ນັບເປັນການລາກກາດ
-        if ((event.target as HTMLElement).closest('form, a')) {
-          event.preventDefault()
-          return
-        }
-        event.dataTransfer.effectAllowed = 'move'
-        event.dataTransfer.setData('text/plain', ticket.id)
-        onDragStart()
-      }}
-      onDragEnd={onDragEnd}
-      className={`glass-card shrink-0 rounded-lg p-3 transition ${
+      onPointerDown={draggable ? onGrab : undefined}
+      {...blockNativeDrag()}
+      className={`glass-card shrink-0 select-none rounded-lg p-3 transition ${
         draggable ? 'cursor-grab active:cursor-grabbing' : ''
       } ${dimmed ? 'opacity-40' : ''}`}
     >
@@ -239,39 +339,32 @@ function TicketCard({
         {!ticket.is_finished && !deadline.overdue && ` · ${deadline.text}`}
       </p>
 
-      {editable && moves.length > 0 && (
-        <ActionForm action={changeStatus} className="mt-2 flex gap-1">
-          <input type="hidden" name="ticket_id" value={ticket.id} />
-          <select
-            name="status"
-            defaultValue={moves[0]}
-            aria-label={`ຍ້າຍ ${ticket.ticket_no} ໄປສະຖານະ`}
-            className="input min-w-0 flex-1 rounded px-1.5 py-1 text-xs"
-          >
-            {moves.map((s) => (
-              <option key={s} value={s}>
-                {STATUS_LABEL_LO[s]}
-              </option>
-            ))}
-          </select>
-          <button
-            type="submit"
-            className="btn-secondary rounded px-2 py-1 text-xs"
-          >
-            ຍ້າຍ
-          </button>
-        </ActionForm>
-      )}
-
-      {/* ປິດວຽກຕ້ອງມີວິທີແກ້ + ຫຼັກຖານ ຈຶ່ງສົ່ງໄປເຮັດຢູ່ໜ້າ ticket */}
-      {editable && mayResolve && (
-        <Link
-          href={`/tickets/${ticket.id}`}
-          className="btn-secondary mt-1.5 block rounded px-2 py-1 text-center text-xs"
-        >
-          ບັນທຶກການແກ້ໄຂ →
-        </Link>
+      {/* ທາງເລືອກສຳລັບມືຖື/ຄີບອດ — ຜ່ານ onPick ຈຶ່ງໄດ້ໜ້າຕ່າງຖາມຂໍ້ມູນຄືກັນ */}
+      {editable && targets.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {targets.map((to) => (
+            <button
+              key={to}
+              type="button"
+              onClick={() => onPick(to)}
+              className="btn-secondary rounded px-2 py-1 text-xs"
+            >
+              → {STATUS_LABEL_LO[to]}
+            </button>
+          ))}
+        </div>
       )}
     </article>
   )
+}
+
+/**
+ * ຖັນ "ປິດແລ້ວ" ເອົາແຕ່ 10 ລ້າສຸດ — ວຽກທີ່ຈົບແລ້ວບໍ່ຕ້ອງລົງມືຫຍັງອີກ
+ * ມີໄວ້ພຽງໃຫ້ເຫັນວ່າຫາກໍປິດອັນໃດໄປ. ຢາກເບິ່ງໃຫ້ຄົບໃຫ້ໄປຕາຕະລາງ
+ */
+const CLOSED_LIMIT = 10
+
+/** ອັນທີ່ຫາກໍລາກມາປິດຍັງບໍ່ທັນມີເວລາປິດຈາກເຊີບເວີ — ໃຫ້ຂຶ້ນເທິງສຸດໄວ້ກ່ອນ */
+function closedAtKey(ticket: TicketRow) {
+  return String(ticket.closed_at ?? ticket.resolved_at ?? '9999-12-31')
 }

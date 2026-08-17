@@ -16,6 +16,7 @@ import { KanbanBoard } from '@/components/kanban'
 import { formatDateTime } from '@/lib/format'
 import { updateProjectStatus } from '../actions'
 import NewTaskForm from '../new-task-form'
+import Modal from '@/components/modal'
 
 export default async function ProjectDetailPage({
   params,
@@ -124,25 +125,23 @@ export default async function ProjectDetailPage({
           <h2 className="text-lg font-semibold text-fg">
             ກະດານວຽກ ({tasks.length})
           </h2>
-          <p className="text-xs text-muted">
-            ສ້າງເມື່ອ {formatDateTime(project.created_at)}
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-xs text-muted">
+              ສ້າງເມື່ອ {formatDateTime(project.created_at)}
+            </p>
+            <Modal trigger="+ ເພີ່ມວຽກ" title="ເພີ່ມວຽກເຂົ້າໂປຣເຈັກ">
+              <NewTaskForm
+                projectId={project.id}
+                staff={staff}
+                priorities={priorities}
+                canAssign={can.assignWork(user)}
+                currentUserId={user.employee_id}
+              />
+            </Modal>
+          </div>
         </div>
 
         <KanbanBoard tasks={tasks} user={user} />
-      </section>
-
-      <section className="mt-6">
-        <h2 className="mb-3 text-lg font-semibold text-fg">
-          ເພີ່ມວຽກເຂົ້າໂປຣເຈັກ
-        </h2>
-        <NewTaskForm
-          projectId={project.id}
-          staff={staff}
-          priorities={priorities}
-          canAssign={can.assignWork(user)}
-          currentUserId={user.employee_id}
-        />
       </section>
     </div>
   )

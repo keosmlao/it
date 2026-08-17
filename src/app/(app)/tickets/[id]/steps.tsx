@@ -12,12 +12,11 @@ import {
  * ແຖບນີ້ຕອບສອງຄຳຖາມນັ້ນຢູ່ເທິງສຸດ ກ່ອນຈະລົງໄປລາຍລະອຽດ
  */
 
-/** ສະຖານະໃດຢືນຢູ່ຂັ້ນໃດ — 'ລໍຂໍ້ມູນ' ຍັງນັບເປັນຂັ້ນກຳລັງເຮັດ, ຍົກເລີກຢູ່ນອກເສັ້ນ */
+/** ສະຖານະໃດຢືນຢູ່ຂັ້ນໃດ — ຍົກເລີກຢູ່ນອກເສັ້ນ ຈຶ່ງເປັນ -1 */
 const STEP_AT: Record<TicketStatus, number> = {
   new: 0,
   assigned: 1,
   in_progress: 2,
-  pending: 2,
   // ຂັ້ນທີ 4 ຄື "ຜົນ" — ອອກໄດ້ 2 ທາງ ແຕ່ຢືນຢູ່ຂັ້ນດຽວກັນ
   resolved: 3,
   unrepairable: 3,
@@ -41,8 +40,6 @@ function nextStepLo(status: TicketStatus): string {
       return `ເລີ່ມລົງມື ແລ້ວປ່ຽນສະຖານະເປັນ ${q('in_progress')}`
     case 'in_progress':
       return `ແກ້ແລ້ວກົດ ${q('resolved')} — ຂຽນວິທີແກ້ ແລະ ແນບຮູບຫຼັກຖານໃນບ່ອນດຽວກັນ. ສ້ອມບໍ່ໄດ້ໃຫ້ກົດ ${q('unrepairable')} ພ້ອມບອກເຫດຜົນ`
-    case 'pending':
-      return `ລໍຂໍ້ມູນຈາກຜູ້ແຈ້ງ — ໄດ້ຂໍ້ມູນແລ້ວປ່ຽນກັບເປັນ ${q('in_progress')}`
     case 'resolved':
       return `ສົ່ງເຄື່ອງ/ງານຄືນຜູ້ແຈ້ງ ແລ້ວກົດ ${q('closed')}`
     case 'unrepairable':

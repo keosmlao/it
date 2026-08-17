@@ -4,6 +4,7 @@ import { listTasks } from '@/lib/projects/queries'
 import { getAssignableStaff, getPriorities } from '@/lib/tickets/queries'
 import { KanbanBoard } from '@/components/kanban'
 import NewTaskForm from '../projects/new-task-form'
+import Modal from '@/components/modal'
 
 export const metadata = { title: 'ວຽກຂອງຂ້ອຍ' }
 
@@ -34,31 +35,30 @@ export default async function TasksPage({ searchParams }: PageProps<'/tasks'>) {
           </p>
         </div>
 
-        <nav className="flex gap-1 rounded-lg border border-line p-1">
-          <Tab href="/tasks?scope=mine" active={scope === 'mine'}>
-            ຂອງຂ້ອຍ
-          </Tab>
-          <Tab href="/tasks?scope=all" active={scope === 'all'}>
-            ທັງໝົດ
-          </Tab>
-        </nav>
+        <div className="flex flex-wrap items-center gap-2">
+          <nav className="flex gap-1 rounded-lg border border-line p-1">
+            <Tab href="/tasks?scope=mine" active={scope === 'mine'}>
+              ຂອງຂ້ອຍ
+            </Tab>
+            <Tab href="/tasks?scope=all" active={scope === 'all'}>
+              ທັງໝົດ
+            </Tab>
+          </nav>
+
+          <Modal trigger="+ ເພີ່ມວຽກໃໝ່" title="ເພີ່ມວຽກໃໝ່">
+            <NewTaskForm
+              staff={staff}
+              priorities={priorities}
+              canAssign={can.assignWork(user)}
+              currentUserId={user.employee_id}
+            />
+          </Modal>
+        </div>
       </div>
 
       <div className="mt-5">
         <KanbanBoard tasks={tasks} user={user} />
       </div>
-
-      <section className="mt-6">
-        <h2 className="mb-3 text-lg font-semibold text-fg">
-          ເພີ່ມວຽກໃໝ່
-        </h2>
-        <NewTaskForm
-          staff={staff}
-          priorities={priorities}
-          canAssign={can.assignWork(user)}
-          currentUserId={user.employee_id}
-        />
-      </section>
     </div>
   )
 }

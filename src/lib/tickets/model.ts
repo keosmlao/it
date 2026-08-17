@@ -4,7 +4,6 @@ export const TICKET_STATUSES = [
   'new',
   'assigned',
   'in_progress',
-  'pending',
   'resolved',
   'unrepairable',
   'closed',
@@ -17,7 +16,6 @@ export const STATUS_LABEL_LO: Record<TicketStatus, string> = {
   new: 'ລົງທະບຽນໃໝ່',
   assigned: 'ມອບໝາຍແລ້ວ',
   in_progress: 'ກຳລັງດຳເນີນການ',
-  pending: 'ລໍຂໍ້ມູນ',
   resolved: 'ສຳເລັດ ລໍຖ້າສົ່ງຄືນ',
   unrepairable: 'ສ້ອມບໍ່ໄດ້',
   closed: 'ປິດແລ້ວ',
@@ -29,7 +27,6 @@ export const STATUS_STYLE: Record<TicketStatus, string> = {
   new: 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300',
   assigned: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300',
   in_progress: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
-  pending: 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300',
   resolved: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
   unrepairable: 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300',
   closed: 'bg-slate-200 text-body dark:bg-slate-800',
@@ -54,15 +51,13 @@ export const OPEN_STATUSES: TicketStatus[] = [
   'new',
   'assigned',
   'in_progress',
-  'pending',
 ]
 
 /** ການປ່ຽນສະຖານະທີ່ອະນຸຍາດ — ກັນການຂ້າມຂັ້ນທີ່ບໍ່ມີຄວາມໝາຍ */
 export const ALLOWED_TRANSITIONS: Record<TicketStatus, TicketStatus[]> = {
   new: ['assigned', 'in_progress', 'cancelled'],
-  assigned: ['in_progress', 'pending', 'resolved', 'unrepairable', 'cancelled'],
-  in_progress: ['pending', 'resolved', 'unrepairable', 'cancelled'],
-  pending: ['in_progress', 'resolved', 'unrepairable', 'cancelled'],
+  assigned: ['in_progress', 'resolved', 'unrepairable', 'cancelled'],
+  in_progress: ['resolved', 'unrepairable', 'cancelled'],
   resolved: ['closed', 'in_progress'],
   // ສ້ອມບໍ່ໄດ້ ຍັງກັບໄປເຮັດຕໍ່ໄດ້ ຖ້າຫາອາໄຫຼ່ໄດ້ ຫຼື ຕັດສິນໃຈໃໝ່
   unrepairable: ['closed', 'in_progress'],
@@ -87,8 +82,8 @@ export const TICKET_FLOW: TicketStatus[] = [
 /**
  * ຖັນຂອງກະດານ — ຄືການໄຫຼວຽກ ບວກທາງອອກ "ສ້ອມບໍ່ໄດ້"
  *
- * 'pending' ກັບ 'cancelled' ບໍ່ຢູ່ໃນນີ້ ເພາະບໍ່ແມ່ນຂັ້ນທີ່ວຽກຕ້ອງຜ່ານ —
- * ກະດານຈະຕໍ່ຖັນເຫຼົ່ານັ້ນໃສ່ທ້າຍເອງສະເພາະເມື່ອມີວຽກຄ້າງຢູ່ຈິງ
+ * 'cancelled' ບໍ່ຢູ່ໃນນີ້ ເພາະບໍ່ແມ່ນຂັ້ນທີ່ວຽກຕ້ອງຜ່ານ — ກະດານຈະຕໍ່ຖັນນັ້ນ
+ * ໃສ່ທ້າຍເອງສະເພາະເມື່ອມີວຽກຄ້າງຢູ່ຈິງ
  * ຈຶ່ງບໍ່ມີວຽກໃດຫາຍໄປຈາກສາຍຕາ
  */
 export const TICKET_BOARD_COLUMNS: TicketStatus[] = [

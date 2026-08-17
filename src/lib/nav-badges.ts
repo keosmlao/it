@@ -17,13 +17,13 @@ export async function getNavBadges(user: ItStaff): Promise<NavBadges> {
   const rows = await query<Record<keyof NavBadges, string>>(
     `select
        (select count(*) from it.v_tickets
-         where status in ('new','assigned','in_progress','pending')
+         where status in ('new','assigned','in_progress')
            and ($1::text[] is null
                 or unit_code = any($1::text[]) or unit_code is null
                 or assignee_employee_id = $2::int))            as tickets,
        (select count(*) from it.v_tickets
          where assignee_employee_id = $2::int
-           and status in ('new','assigned','in_progress','pending'))
+           and status in ('new','assigned','in_progress'))
                                                                 as "myWork",
        (select count(*) from it.v_requests
          where status in ('submitted','head_approved'))         as requests,
