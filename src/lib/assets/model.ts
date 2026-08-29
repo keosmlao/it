@@ -64,6 +64,50 @@ export type AssetRow = {
 }
 
 /**
+ * ຊ່ອງ spec ທີ່ພະແນກ IT ປ້ອນເອງ — ໃຊ້ຮ່ວມກັນທັງຟອມ spec ແລະ ຟອມລົງທະບຽນ
+ *
+ * `max` ຕ້ອງເທົ່າກັບຄວາມກວ້າງຄໍລຳໃນ `it.asset_specs`
+ * (ເບິ່ງ `db/migrations/012_asset_specs_repairs.sql`) — ຍາວກວ່ານັ້ນ
+ * Postgres ຖິ້ມ 22001 ແລ້ວໜ້າພັງ. ມີ test ກວດວ່າຍັງກົງກັນຢູ່.
+ */
+export const SPEC_FIELDS = [
+  { name: 'cpu', label: 'CPU', placeholder: 'Intel Core i5-1235U', max: 120 },
+  { name: 'ram', label: 'RAM', placeholder: '16GB DDR4', max: 60 },
+  { name: 'storage', label: 'ດິສກ໌', placeholder: 'SSD 512GB', max: 120 },
+  { name: 'gpu', label: 'ກາດຈໍ', placeholder: 'Intel Iris Xe', max: 120 },
+  { name: 'os', label: 'ລະບົບປະຕິບັດການ', placeholder: 'Windows 11 Pro', max: 80 },
+  { name: 'screen', label: 'ໜ້າຈໍ', placeholder: '15.6" FHD', max: 60 },
+] as const
+
+/** `spec_note` ເປັນ `text` ບໍ່ຈຳກັດ — ຈຳກັດເອງບໍ່ໃຫ້ວາງນະວະນິຍາຍລົງ */
+export const SPEC_NOTE_MAX = 2000
+
+/** `warranty_note` = varchar(200) ໃນ `it.asset_specs` */
+export const WARRANTY_NOTE_MAX = 200
+
+export type SpecField = (typeof SPEC_FIELDS)[number]['name']
+
+export type SpecValues = Record<SpecField, string | null> & {
+  spec_note: string | null
+}
+
+/** ຢ່າງໜ້ອຍຕ້ອງມີສາມຢ່າງນີ້ ຈຶ່ງເອີ້ນວ່າຮູ້ສະເປັກເຄື່ອງ */
+export const REQUIRED_SPEC_FIELDS = ['cpu', 'ram', 'storage'] as const
+
+/**
+ * ໝວດທີ່ຖືວ່າເປັນຄອມ — ຕ້ອງມີສະເປັກຈຶ່ງລົງທະບຽນໄດ້
+ *
+ * ຕັດສິນຈາກ **ຊື່** ໝວດ ບໍ່ແມ່ນລະຫັດ ເພາະລະຫັດໃນ ERP ບໍ່ເປັນລະບຽບ
+ * (NOTEBOOK = '2', PC = 'PC', MINI PC = 'MINI PC') ແລະ ເພີ່ມໃໝ່ໄດ້ຕະຫຼອດ
+ */
+const COMPUTER_CATEGORY =
+  /notebook|laptop|macbook|desktop|all[ -]?in[ -]?one|\bpc\b|surface|server|workstation|ຄອມ/i
+
+export function isComputerCategory(name: string | null | undefined): boolean {
+  return Boolean(name && COMPUTER_CATEGORY.test(name))
+}
+
+/**
  * ແຫຼ່ງທີ່ມາຂອງວັນທີ — ບອກໃຫ້ຜູ້ໃຊ້ຮູ້ວ່າຄ່າໃດເປັນຂອງແທ້ ຄ່າໃດລະບົບຄິດໃຫ້
  * it = ພະແນກ IT ປ້ອນເອງ · erp = ມາຈາກທະບຽນ ERP
  * registered = ໃຊ້ວັນລົງທະບຽນແທນ · auto = ຄິດເອງ (ປະກັນ 12 ເດືອນ)

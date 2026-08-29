@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { safeDate } from '@/lib/assets/model'
+import type { SpecValues } from '@/lib/assets/model'
 import type { LocalAsset } from '@/lib/assets/local'
 import AssetForm from '../new/asset-form'
 import { setLocalAssetActive } from '../local-actions'
@@ -17,12 +18,14 @@ type Option = { code: string; name: string }
  */
 export default function LocalAssetPanel({
   asset,
+  spec,
   canManage,
   categories,
   locations,
   departments,
 }: {
   asset: LocalAsset
+  spec: SpecValues
   canManage: boolean
   categories: Option[]
   locations: Option[]
@@ -83,6 +86,7 @@ export default function LocalAssetPanel({
         <div className="mt-2">
           <AssetForm
             asset={asset}
+            spec={spec}
             categories={categories}
             locations={locations}
             departments={departments}

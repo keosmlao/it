@@ -4,16 +4,12 @@ import { useState } from 'react'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { isoDate } from '@/lib/format'
 import { saveAssetSpec } from '../actions'
-import type { AssetRow } from '@/lib/assets/model'
-
-const FIELDS = [
-  { name: 'cpu', label: 'CPU', placeholder: 'Intel Core i5-1235U' },
-  { name: 'ram', label: 'RAM', placeholder: '16GB DDR4' },
-  { name: 'storage', label: 'ດິສກ໌', placeholder: 'SSD 512GB' },
-  { name: 'gpu', label: 'ກາດຈໍ', placeholder: 'Intel Iris Xe' },
-  { name: 'os', label: 'ລະບົບປະຕິບັດການ', placeholder: 'Windows 11 Pro' },
-  { name: 'screen', label: 'ໜ້າຈໍ', placeholder: '15.6" FHD' },
-] as const
+import {
+  SPEC_FIELDS,
+  SPEC_NOTE_MAX,
+  WARRANTY_NOTE_MAX,
+  type AssetRow,
+} from '@/lib/assets/model'
 
 const inputClass = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
 
@@ -44,11 +40,12 @@ export default function SpecForm({ asset }: { asset: AssetRow }) {
       <input type="hidden" name="asset_code" value={asset.asset_code} />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {FIELDS.map((field) => (
+        {SPEC_FIELDS.map((field) => (
           <label key={field.name} className="block text-xs text-muted">
             {field.label}
             <input
               name={field.name}
+              maxLength={field.max}
               defaultValue={asset[field.name] ?? ''}
               placeholder={field.placeholder}
               className={inputClass}
@@ -90,6 +87,7 @@ export default function SpecForm({ asset }: { asset: AssetRow }) {
           ໝາຍເຫດປະກັນ
           <input
             name="warranty_note"
+            maxLength={WARRANTY_NOTE_MAX}
             defaultValue={asset.warranty_note ?? ''}
             placeholder="ຮ້ານ, ເງື່ອນໄຂ, ເລກໃບຮັບປະກັນ"
             className={inputClass}
@@ -101,6 +99,7 @@ export default function SpecForm({ asset }: { asset: AssetRow }) {
           <textarea
             name="spec_note"
             rows={2}
+            maxLength={SPEC_NOTE_MAX}
             defaultValue={asset.spec_note ?? ''}
             className={inputClass}
           />

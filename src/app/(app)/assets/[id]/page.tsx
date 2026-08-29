@@ -117,6 +117,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
         {local && localOptions && (
           <LocalAssetPanel
             asset={local}
+            spec={asset}
             canManage={canManage}
             categories={localOptions[0]}
             locations={localOptions[1]}

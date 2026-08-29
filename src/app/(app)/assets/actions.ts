@@ -6,6 +6,12 @@ import { requireUser } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { logAudit, notify } from '@/lib/activity'
 import { refreshMovements } from '@/lib/assets/cache'
+import {
+  SPEC_FIELDS,
+  SPEC_NOTE_MAX,
+  WARRANTY_NOTE_MAX,
+  type SpecField,
+} from '@/lib/assets/model'
 import type { FormState } from '@/lib/action-state'
 
 /**
@@ -380,9 +386,18 @@ export async function saveAssetSpec(
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   if (!assetCode) return { error: 'ບໍ່ພົບລະຫັດອຸປະກອນ' }
 
-  const text = (name: string) => String(formData.get(name) ?? '').trim() || null
+  // ຕັດຄວາມຍາວຕາມຄໍລຳຈິງ — `maxLength` ຢູ່ຟອມກັນໄດ້ແຕ່ browser
+  // ບໍ່ໄດ້ກັນ request ທີ່ສົ່ງກົງ ແລະ Postgres ຈະຖິ້ມ 22001 ໃສ່
+  const text = (name: string, max: number) => {
+    const v = String(formData.get(name) ?? '').trim()
+    return v ? v.slice(0, max) : null
+  }
   const date = (name: string) => String(formData.get(name) ?? '') || null
   const price = String(formData.get('purchase_price') ?? '').trim()
+
+  const spec = Object.fromEntries(
+    SPEC_FIELDS.map((f) => [f.name, text(f.name, f.max)])
+  ) as Record<SpecField, string | null>
 
   if (price && Number.isNaN(Number(price))) {
     return { error: 'ລາຄາຕ້ອງເປັນຕົວເລກ' }
@@ -417,17 +432,17 @@ export async function saveAssetSpec(
            updated_at     = now()`,
     [
       assetCode,
-      text('cpu'),
-      text('ram'),
-      text('storage'),
-      text('gpu'),
-      text('os'),
-      text('screen'),
-      text('spec_note'),
+      spec.cpu,
+      spec.ram,
+      spec.storage,
+      spec.gpu,
+      spec.os,
+      spec.screen,
+      text('spec_note', SPEC_NOTE_MAX),
       purchaseDate,
       price || null,
       warrantyUntil,
-      text('warranty_note'),
+      text('warranty_note', WARRANTY_NOTE_MAX),
       user.employee_id,
     ]
   )

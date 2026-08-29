@@ -31,6 +31,21 @@ export async function getLocalAsset(assetCode: string) {
   return rows[0] ?? null
 }
 
+/**
+ * ຊື່ໝວດຈາກລະຫັດ — ໃຊ້ຕັດສິນວ່າເປັນຄອມ (ຕ້ອງມີສະເປັກ) ຫຼື ບໍ່
+ *
+ * ອ່ານຈາກຖານຂໍ້ມູນ ບໍ່ເຊື່ອຊື່ທີ່ browser ສົ່ງມາ — ຝັ່ງ client ປອມໄດ້
+ */
+export async function getCategoryName(code: string) {
+  const rows = await query<{ name: string }>(
+    `select name_1 as name
+       from public.odg_it_category
+      where code = $1::varchar`,
+    [code]
+  )
+  return rows[0]?.name ?? null
+}
+
 /** ໝວດທີ່ຕັ້ງໄວ້ໃນ ERP — ໃຊ້ເປັນຕົວເລືອກຕອນລົງທະບຽນ */
 export async function getCategoryOptions() {
   return query<{ code: string; name: string }>(

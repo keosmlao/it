@@ -19,6 +19,9 @@ try {
   await client.query('begin')
 
   const emp = await one('select employee_id from it.v_it_staff limit 1')
+  const computer = await one(
+    `select code from public.odg_it_category where upper(name_1) like 'NOTEBOOK%' limit 1`
+  )
   const before = await one('select count(*) n from it.v_it_assets')
 
   // ---- ລົງທະບຽນ ----
@@ -96,6 +99,37 @@ try {
     `select count(*) n from it.v_it_assets where asset_code like 'ITA-%'`
   )
   check('ຕົວກັ່ນຕອງ source=local ໃຊ້ໄດ້', Number(filtered.n) >= 1, `${filtered.n} ເຄື່ອງ`)
+
+  // ---- ຄອມຕ້ອງມີສະເປັກ — ເກັບຢູ່ຕາຕະລາງດຽວກັນກັບເຄື່ອງ ERP ----
+  const pc = await one(
+    `insert into it.local_assets (name, category_code, registered_by)
+     values ('NOTEBOOK ທົດສອບ', $1::varchar, $2::int)
+     returning asset_code`,
+    [computer.code, emp.employee_id]
+  )
+  await client.query(
+    `insert into it.asset_specs (asset_code, cpu, ram, storage, updated_by)
+     values ($1::varchar, 'Intel Core i5-1235U', '16GB DDR4', 'SSD 512GB',
+             $2::int)`,
+    [pc.asset_code, emp.employee_id]
+  )
+
+  const spec = await one(
+    `select cpu, ram, storage, has_spec from it.v_it_assets
+      where asset_code = $1::varchar`,
+    [pc.asset_code]
+  )
+  check(
+    'ສະເປັກຄອມຂຶ້ນໃນທະບຽນລວມ',
+    spec?.has_spec === true && spec.ram === '16GB DDR4' && spec.storage === 'SSD 512GB',
+    JSON.stringify(spec)
+  )
+
+  const hist = await one(
+    `select count(*) n from it.asset_spec_history where asset_code = $1::varchar`,
+    [pc.asset_code]
+  )
+  check('ບັນທຶກປະຫວັດການປ້ອນສະເປັກ', Number(hist.n) === 3, `${hist.n} ແຖວ`)
 
   // ---- view ທີ່ອີງໃສ່ຍັງໃຊ້ໄດ້ ----
   for (const v of ['it.v_damaged_assets', 'it.v_asset_deployments']) {
