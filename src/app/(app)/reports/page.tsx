@@ -184,13 +184,17 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
           <table className="w-full text-sm">
             <thead className="border-b border-line text-left text-muted">
               <tr>
-                <th className="px-4 py-2.5 font-medium">ພະນັກງານ</th>
-                <th className="px-4 py-2.5 font-medium">ບົດບາດ</th>
-                <th className="px-4 py-2.5 text-right font-medium">ຮັບຜິດຊອບ</th>
-                <th className="px-4 py-2.5 text-right font-medium">ແກ້ໄຂແລ້ວ</th>
-                <th className="px-4 py-2.5 text-right font-medium">ຕາມ SLA</th>
-                <th className="px-4 py-2.5 text-right font-medium">ເວລາສະເລ່ຍ</th>
-                <th className="px-4 py-2.5 text-right font-medium">ຊົ່ວໂມງ</th>
+                <th className="px-2 py-2.5 sm:px-4 font-medium">ພະນັກງານ</th>
+                <th className="hidden px-2 py-2.5 sm:px-4 font-medium md:table-cell">ບົດບາດ</th>
+                <th className="px-2 py-2.5 sm:px-4 text-right font-medium">ຮັບຜິດຊອບ</th>
+                <th className="px-2 py-2.5 sm:px-4 text-right font-medium">ແກ້ໄຂແລ້ວ</th>
+                <th className="px-2 py-2.5 sm:px-4 text-right font-medium">ຕາມ SLA</th>
+                <th className="hidden px-2 py-2.5 sm:px-4 text-right font-medium lg:table-cell">
+                  ເວລາສະເລ່ຍ
+                </th>
+                <th className="hidden px-2 py-2.5 sm:px-4 text-right font-medium lg:table-cell">
+                  ຊົ່ວໂມງ
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
@@ -203,19 +207,23 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
 
                 return (
                   <tr key={s.employee_id}>
-                    <td className="px-4 py-2.5 text-fg">
+                    <td className="px-2 py-2.5 sm:px-4 text-fg">
                       {s.fullname_lo}
+                      {/* ຖັນທີ່ເຊື່ອງຢູ່ຈໍນ້ອຍ — ຍ້າຍລົງມາຢູ່ນີ້ແທນ */}
+                      <div className="text-xs text-muted md:hidden">
+                        {ROLE_LABEL_LO[s.role as Role] ?? s.role}
+                      </div>
                     </td>
-                    <td className="px-4 py-2.5 text-muted">
+                    <td className="hidden px-2 py-2.5 sm:px-4 text-muted md:table-cell">
                       {ROLE_LABEL_LO[s.role as Role] ?? s.role}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-muted">
+                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
                       {s.assigned}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-muted">
+                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
                       {s.resolved}
                     </td>
-                    <td className="px-4 py-2.5 text-right">
+                    <td className="px-2 py-2.5 sm:px-4 text-right">
                       {staffRate === null ? (
                         <span className="text-faint">—</span>
                       ) : (
@@ -230,12 +238,12 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-muted">
+                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
                       {s.avg_resolve_minutes
                         ? formatDuration(Number(s.avg_resolve_minutes))
                         : '—'}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-muted">
+                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
                       {staffHours ? Number(staffHours.total_hours).toFixed(1) : '0.0'}
                     </td>
                   </tr>

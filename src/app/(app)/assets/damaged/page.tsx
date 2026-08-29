@@ -129,11 +129,15 @@ export default async function DamagedPage({
         <table className="w-full text-sm">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="px-4 py-2.5 font-medium">ອຸປະກອນ</th>
-              <th className="px-4 py-2.5 font-medium">ສະຖານະ</th>
-              <th className="px-4 py-2.5 font-medium">ອາການ / ເຫດຜົນ</th>
-              <th className="px-4 py-2.5 font-medium">ພົບເມື່ອ</th>
-              <th className="px-4 py-2.5 text-right font-medium">ສ້ອມມາແລ້ວ</th>
+              <th className="px-2 py-2.5 font-medium sm:px-4">ອຸປະກອນ</th>
+              <th className="px-2 py-2.5 font-medium sm:px-4">ສະຖານະ</th>
+              <th className="hidden px-4 py-2.5 font-medium md:table-cell">
+                ອາການ / ເຫດຜົນ
+              </th>
+              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ພົບເມື່ອ</th>
+              <th className="hidden px-4 py-2.5 text-right font-medium lg:table-cell">
+                ສ້ອມມາແລ້ວ
+              </th>
               <th className="px-4 py-2.5" />
             </tr>
           </thead>

@@ -271,6 +271,9 @@ body {
     border: 1px solid var(--glass-border-subtle);
     color: var(--foreground);
     transition: border-color 0.2s, box-shadow 0.2s;
+    /* ຂະໜາດຕ່ຳສຸດຂອງ <select> ຄິດຈາກ option ທີ່ຍາວທີ່ສຸດ (ຊື່ພະນັກງານ,
+       ຊື່ໜ່ວຍງານ) ຈຶ່ງດັນໜ້າໃຫ້ກວ້າງກວ່າຈໍມືຖືໄດ້ — ບອກໃຫ້ຫຍໍ້ໄດ້ */
+    min-width: 0;
   }
   .input:focus {
     outline: none;

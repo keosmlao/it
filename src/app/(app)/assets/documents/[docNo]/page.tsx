@@ -123,8 +123,10 @@ export default async function DocumentPage({
               <tr>
                 <th className="px-3 py-2 font-medium">ລະຫັດ</th>
                 <th className="px-3 py-2 font-medium">ອຸປະກອນ</th>
-                <th className="px-3 py-2 font-medium">Serial</th>
-                <th className="px-3 py-2 font-medium">ອຸປະກອນເສີມ</th>
+                <th className="hidden px-3 py-2 font-medium md:table-cell">Serial</th>
+                <th className="hidden px-3 py-2 font-medium sm:table-cell">
+                  ອຸປະກອນເສີມ
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
@@ -160,10 +162,10 @@ export default async function DocumentPage({
                         </div>
                       )}
                     </td>
-                    <td className="px-3 py-2 font-mono text-xs text-muted">
+                    <td className="hidden px-3 py-2 font-mono text-xs text-muted md:table-cell">
                       {item.serial_no ?? '—'}
                     </td>
-                    <td className="px-3 py-2">
+                    <td className="hidden px-3 py-2 sm:table-cell">
                       {extras.length > 0 ? (
                         <span className="flex flex-wrap gap-1">
                           {extras.map((a) => (

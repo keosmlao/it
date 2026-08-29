@@ -137,9 +137,11 @@ export default async function RecoveryPage({
           <thead className="border-b border-line text-left text-muted">
             <tr>
               <th className="px-4 py-2.5 font-medium">ຜູ້ຖືຄອງ</th>
-              <th className="px-4 py-2.5 font-medium">ອຸປະກອນ</th>
-              <th className="px-4 py-2.5 font-medium">ຢືມເມື່ອ</th>
-              <th className="px-4 py-2.5 text-right font-medium">ຖືມາແລ້ວ</th>
+              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ອຸປະກອນ</th>
+              <th className="hidden px-4 py-2.5 font-medium xl:table-cell">ຢືມເມື່ອ</th>
+              <th className="hidden px-4 py-2.5 text-right font-medium lg:table-cell">
+                ຖືມາແລ້ວ
+              </th>
               <th className="px-4 py-2.5 font-medium">ສະຖານະທວງ</th>
               <th className="px-4 py-2.5" />
             </tr>

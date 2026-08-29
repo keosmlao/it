@@ -132,9 +132,11 @@ export default async function SurveyPage({
           <thead className="border-b border-line text-left text-muted">
             <tr>
               <th className="px-4 py-2.5 font-medium">ອຸປະກອນ</th>
-              <th className="px-4 py-2.5 font-medium">ສະຖານທີ່ຕາມທະບຽນ</th>
+              <th className="hidden px-4 py-2.5 font-medium md:table-cell">
+                ສະຖານທີ່ຕາມທະບຽນ
+              </th>
               <th className="px-4 py-2.5 font-medium">ສະຖານະຈິງ</th>
-              <th className="px-4 py-2.5 font-medium">ກວດເມື່ອ</th>
+              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ກວດເມື່ອ</th>
               <th className="px-4 py-2.5" />
             </tr>
           </thead>

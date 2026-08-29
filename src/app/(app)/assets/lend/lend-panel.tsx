@@ -75,7 +75,9 @@ export default function LendPanel({
   return (
     <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_380px]">
       {/* ---- ເລືອກເຄື່ອງ ---- */}
-      <section className="glass-card rounded-xl p-4">
+      {/* min-w-0: ຊ່ອງ grid ຄິດຄວາມກວ້າງຕ່ຳສຸດຈາກເນື້ອໃນ ແລະ <select>
+          ຜູ້ຢືມກວ້າງຕາມຊື່ພະນັກງານທີ່ຍາວທີ່ສຸດ — ດັນໜ້າລົ້ນຈໍມືຖື */}
+      <section className="glass-card min-w-0 rounded-xl p-4">
         <h2 className="font-semibold text-fg">1. ເລືອກອຸປະກອນ</h2>
 
         <input
@@ -157,7 +159,7 @@ export default function LendPanel({
       </section>
 
       {/* ---- ຂໍ້ມູນການຢືມ ---- */}
-      <section className="glass-card h-fit rounded-xl p-4">
+      <section className="glass-card h-fit min-w-0 rounded-xl p-4">
         <h2 className="font-semibold text-fg">2. ຂໍ້ມູນການຢືມ</h2>
 
         {!selected ? (

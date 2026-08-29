@@ -179,13 +179,13 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
             <tr>
               <th className="px-4 py-2.5 font-medium">ລະຫັດ</th>
               <th className="px-4 py-2.5 font-medium">ອຸປະກອນ</th>
-              <th className="px-4 py-2.5 font-medium">ປະເພດ</th>
-              <th className="px-4 py-2.5 font-medium">Serial</th>
-              <th className="px-4 py-2.5 font-medium">ຜູ້ຖືຄອງ</th>
-              <th className="px-4 py-2.5 font-medium">ຢືມເມື່ອ</th>
-              <th className="px-4 py-2.5 font-medium">ວັນທີຊື້</th>
+              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ປະເພດ</th>
+              <th className="hidden px-4 py-2.5 font-medium xl:table-cell">Serial</th>
+              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ຜູ້ຖືຄອງ</th>
+              <th className="hidden px-4 py-2.5 font-medium xl:table-cell">ຢືມເມື່ອ</th>
+              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ວັນທີຊື້</th>
               <th className="px-4 py-2.5 font-medium">ປະກັນ</th>
-              <th className="px-4 py-2.5 font-medium">ປະຫວັດ</th>
+              <th className="hidden px-4 py-2.5 font-medium sm:table-cell">ປະຫວັດ</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
@@ -204,8 +204,25 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
                   <div className="text-xs text-muted">
                     {[a.brand, a.model].filter(Boolean).join(' · ') || '—'}
                   </div>
+                  {/* ຖັນທີ່ເຊື່ອງຢູ່ຈໍນ້ອຍ — ຍ້າຍລົງມາຢູ່ນີ້ແທນ */}
+                  <div className="mt-1 flex flex-wrap items-center gap-x-1.5 text-xs text-muted lg:hidden">
+                    <span className="text-brand-blue dark:text-brand-sky">
+                      {a.category_name}
+                    </span>
+                    <span className="md:hidden">
+                      ·{' '}
+                      {a.holder_name
+                        ? `${a.holder_name}${
+                            a.holder_department ? ` (${a.holder_department})` : ''
+                          }`
+                        : 'ຢູ່ໃນສາງ'}
+                    </span>
+                    {a.serial_no && (
+                      <span className="font-mono xl:hidden">· {a.serial_no}</span>
+                    )}
+                  </div>
                 </td>
-                <td className="px-4 py-2.5 whitespace-nowrap">
+                <td className="hidden px-4 py-2.5 whitespace-nowrap lg:table-cell">
                   <span className="rounded-full bg-brand-blue/10 px-2 py-0.5 text-xs text-brand-blue dark:text-brand-sky">
                     {a.category_name}
                   </span>
@@ -218,10 +235,10 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-2.5 font-mono text-xs text-muted">
+                <td className="hidden px-4 py-2.5 font-mono text-xs text-muted xl:table-cell">
                   {a.serial_no ?? '—'}
                 </td>
-                <td className="px-4 py-2.5">
+                <td className="hidden px-4 py-2.5 md:table-cell">
                   {a.holder_name ? (
                     <>
                       <span className="text-body">{a.holder_name}</span>
@@ -233,10 +250,10 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-2.5 text-xs whitespace-nowrap text-muted">
+                <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted xl:table-cell">
                   {safeDate(a.borrowed_at)}
                 </td>
-                <td className="px-4 py-2.5 text-xs whitespace-nowrap text-muted">
+                <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted lg:table-cell">
                   {safeDate(a.purchase_date)}
                   {a.purchase_date_source === 'registered' && (
                     <span
@@ -259,7 +276,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
                     {WARRANTY_LABEL_LO[a.warranty_status]}
                   </span>
                 </td>
-                <td className="px-4 py-2.5 whitespace-nowrap">
+                <td className="hidden px-4 py-2.5 whitespace-nowrap sm:table-cell">
                   <Link
                     href={`/assets/${encodeURIComponent(a.asset_code)}`}
                     className="btn-secondary inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs"

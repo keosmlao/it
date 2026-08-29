@@ -142,6 +142,7 @@ npm run healthcheck
 | `npm run smoke:platform` | ເອກະສານແນບ · ແຜນປ່ຽນເຄື່ອງ · ອີເມວແຈ້ງເຕືອນ · ຄົ້ນຫາ · ກວດຄວາມປອດໄພ |
 | `npm run smoke:nav` | sidebar ເນັ້ນແຖວດຽວ ແລະ ບໍ່ມີລິ້ງຊ້ຳ |
 | `npm run smoke:loading` | ທຸກໜ້າມີໂຄງລໍໂຫຼດ (ບໍ່ຕ້ອງມີ server) |
+| `npm run smoke:responsive` | ທຸກໜ້າໃຊ້ໄດ້ຢູ່ມືຖື — ເປີດດ້ວຍ Edge/Chrome ກວ້າງ 390px ແລ້ວຫາເນື້ອຫາທີ່ລົ້ນຈໍ (ໃສ່ຄວາມກວ້າງອື່ນເປັນ argument ທີ 2) |
 | `npm run audit:loans` | ກວດຄວາມຜິດປົກກະຕິຂອງໃບຢືມ–ຄືນ (ອ່ານຢ່າງດຽວ) |
 
 ຄຳສັ່ງທີ່ຂຶ້ນຕົ້ນດ້ວຍ `smoke:` ຕ້ອງມີ server ແລ່ນຢູ່ກ່ອນ

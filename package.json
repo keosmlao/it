@@ -40,7 +40,8 @@
     "smoke:local-assets": "node --env-file=.env.local scripts/smoke-local-assets.mjs",
     "smoke:subscriptions": "node --env-file=.env.local scripts/smoke-subscriptions.mjs",
     "smoke:itops": "node --env-file=.env.local scripts/smoke-itops.mjs",
-    "smoke:platform": "node --env-file=.env.local scripts/smoke-platform.mjs"
+    "smoke:platform": "node --env-file=.env.local scripts/smoke-platform.mjs",
+    "smoke:responsive": "node --env-file=.env.local scripts/smoke-responsive.mjs"
   },
   "dependencies": {
     "@fontsource/noto-sans-lao": "^5.3.0",

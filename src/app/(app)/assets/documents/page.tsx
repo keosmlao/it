@@ -86,9 +86,11 @@ export default async function DocumentsPage({
             <tr>
               <th className="px-4 py-2.5 font-medium">ເລກໃບ</th>
               <th className="px-4 py-2.5 font-medium">ປະເພດ</th>
-              <th className="px-4 py-2.5 font-medium">ວັນທີ</th>
-              <th className="px-4 py-2.5 font-medium">ຜູ້ຢືມ</th>
-              <th className="px-4 py-2.5 font-medium">ເຫດຜົນ / ໝາຍເຫດ</th>
+              <th className="hidden px-4 py-2.5 font-medium sm:table-cell">ວັນທີ</th>
+              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ຜູ້ຢືມ</th>
+              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">
+                ເຫດຜົນ / ໝາຍເຫດ
+              </th>
               <th className="px-4 py-2.5 text-right font-medium">ລາຍການ</th>
             </tr>
           </thead>
@@ -107,20 +109,25 @@ export default async function DocumentsPage({
                       IT
                     </span>
                   )}
+                  {/* ຖັນທີ່ເຊື່ອງຢູ່ຈໍນ້ອຍ — ຍ້າຍລົງມາຢູ່ນີ້ແທນ */}
+                  <div className="text-xs text-muted md:hidden">
+                    <span className="sm:hidden">{safeDate(doc.doc_date)} · </span>
+                    {doc.emp_name ?? doc.emp_code}
+                  </div>
                 </td>
                 <td className="px-4 py-2.5 whitespace-nowrap">
                   <DocKindBadge kind={doc.doc_kind} />
                 </td>
-                <td className="px-4 py-2.5 text-xs whitespace-nowrap text-muted">
+                <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted sm:table-cell">
                   {safeDate(doc.doc_date)}
                 </td>
-                <td className="px-4 py-2.5">
+                <td className="hidden px-4 py-2.5 md:table-cell">
                   <span className="text-body">{doc.emp_name ?? doc.emp_code}</span>
                   <div className="text-xs text-muted">
                     {doc.department_name ?? '—'}
                   </div>
                 </td>
-                <td className="max-w-md px-4 py-2.5">
+                <td className="hidden max-w-md px-4 py-2.5 lg:table-cell">
                   {doc.reason && (
                     <span className="block truncate text-body">{doc.reason}</span>
                   )}

@@ -93,7 +93,7 @@ export default function DocumentPanel({
               name="files"
               multiple
               accept="application/pdf,image/*"
-              className="text-sm text-body file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue/10 file:px-4 file:py-2 file:text-sm file:text-brand-blue"
+              className="block w-full text-sm text-body file:mr-3 file:rounded-lg file:border-0 file:bg-brand-blue/10 file:px-3 file:py-2 file:text-sm file:text-brand-blue"
             />
             <SubmitButton
               className="btn-secondary rounded-lg px-4 py-2 text-sm"

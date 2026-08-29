@@ -35,9 +35,18 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
             </span>
           )}
           <div className="text-xs text-muted">{target.org_department ?? '—'}</div>
+          {/* ຖັນທີ່ເຊື່ອງຢູ່ຈໍນ້ອຍ — ຍ້າຍລົງມາຢູ່ນີ້ແທນ */}
+          <div className="text-xs text-muted md:hidden">
+            {target.asset_name}
+            <span className="lg:hidden">
+              {' '}
+              · ຖືມາ {years > 0 ? `${years} ປີ ` : ''}
+              {target.days_held % 365} ມື້
+            </span>
+          </div>
         </td>
 
-        <td className="px-4 py-2.5">
+        <td className="hidden px-4 py-2.5 md:table-cell">
           <Link
             href={`/assets/${encodeURIComponent(target.asset_code)}`}
             className="text-body underline-offset-2 hover:underline"
@@ -47,14 +56,14 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
           <div className="font-mono text-xs text-muted">{target.asset_code}</div>
         </td>
 
-        <td className="px-4 py-2.5 text-xs whitespace-nowrap text-muted">
+        <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted xl:table-cell">
           {safeDate(target.borrowed_at)}
           {target.borrow_doc_no && (
             <div className="font-mono text-[11px]">{target.borrow_doc_no}</div>
           )}
         </td>
 
-        <td className="px-4 py-2.5 text-right text-xs whitespace-nowrap">
+        <td className="hidden px-4 py-2.5 text-right text-xs whitespace-nowrap lg:table-cell">
           <span
             className={
               target.days_held > 730

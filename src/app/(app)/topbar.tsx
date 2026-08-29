@@ -83,7 +83,7 @@ export default function Topbar({
             type="search"
             placeholder="ຄົ້ນຫາທົ່ວລະບົບ…"
             aria-label="ຄົ້ນຫາທົ່ວລະບົບ"
-            className="input w-56 rounded-full py-2 pr-3 pl-9 text-sm"
+            className="input w-40 rounded-full py-2 pr-3 pl-9 text-sm lg:w-56"
           />
         </form>
 
@@ -106,9 +106,13 @@ export default function Topbar({
           <span className="brand-gradient-warm flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
             {(user.nickname ?? user.fullname_lo).slice(0, 1)}
           </span>
-          <span className="hidden leading-tight sm:block">
-            <span className="block text-sm font-medium">{user.fullname_lo}</span>
-            <span className="block text-[11px] opacity-70">
+          {/* ຊື່ເຕັມພ້ອມໜ່ວຍງານຍາວກວ່າທີ່ຫົວໜ້າຈໍມີ — ສະແດງເມື່ອກວ້າງພໍ
+              ແລະ ຕັດຫາງເອົາ ບໍ່ດັ່ງນັ້ນດັນລົ້ນອອກນອກຈໍຢູ່ແທັບເລັດ */}
+          <span className="hidden max-w-[11rem] leading-tight lg:block">
+            <span className="block truncate text-sm font-medium">
+              {user.fullname_lo}
+            </span>
+            <span className="block truncate text-[11px] opacity-70">
               {ROLE_LABEL_LO[user.role]}
               {user.unit_name_lo && ` · ${user.unit_name_lo}`}
             </span>

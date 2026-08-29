@@ -207,7 +207,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
         </section>
       </div>
 
-      <div className="space-y-5">
+      <div className="min-w-0 space-y-5">
         <section className="glass-card rounded-xl p-5">
           <h2 className="font-semibold text-fg">ຜູ້ຖືຄອງປັດຈຸບັນ</h2>
 

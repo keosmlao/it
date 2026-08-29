@@ -35,9 +35,13 @@ export default function SurveyRow({ row }: { row: Row }) {
               ບໍ່ເຄີຍມີໃບຢືມ
             </span>
           )}
+          {/* ຖັນທີ່ເຊື່ອງຢູ່ຈໍນ້ອຍ — ຍ້າຍລົງມາຢູ່ນີ້ແທນ */}
+          <div className="text-xs text-muted md:hidden">
+            {row.location_name ?? 'ບໍ່ລະບຸສະຖານທີ່'}
+          </div>
         </td>
 
-        <td className="px-4 py-2.5 text-xs text-muted">
+        <td className="hidden px-4 py-2.5 text-xs text-muted md:table-cell">
           {row.location_name ?? 'ບໍ່ລະບຸ'}
         </td>
 
@@ -60,7 +64,7 @@ export default function SurveyRow({ row }: { row: Row }) {
           )}
         </td>
 
-        <td className="px-4 py-2.5 text-xs whitespace-nowrap text-muted">
+        <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted lg:table-cell">
           {row.checked_at ? (
             <>
               {safeDate(row.checked_at)}

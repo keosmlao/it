@@ -108,10 +108,10 @@ export default async function MovementsPage({
         <table className="w-full text-sm">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="px-4 py-2.5 font-medium">ໃບຢືມ</th>
+              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ໃບຢືມ</th>
               <th className="px-4 py-2.5 font-medium">ອຸປະກອນ</th>
-              <th className="px-4 py-2.5 font-medium">ຜູ້ຢືມ</th>
-              <th className="px-4 py-2.5 font-medium">ຢືມ</th>
+              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ຜູ້ຢືມ</th>
+              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ຢືມ</th>
               <th className="px-4 py-2.5 font-medium">ຄືນ</th>
             </tr>
           </thead>
@@ -121,7 +121,7 @@ export default async function MovementsPage({
                 key={`${m.borrow_doc_no}-${m.asset_code}-${index}`}
                 className="hover-surface transition"
               >
-                <td className="px-4 py-2.5 font-mono text-xs whitespace-nowrap text-muted">
+                <td className="hidden px-4 py-2.5 font-mono text-xs whitespace-nowrap text-muted lg:table-cell">
                   {m.borrow_doc_no ?? '—'}
                 </td>
                 <td className="px-4 py-2.5">
@@ -132,14 +132,18 @@ export default async function MovementsPage({
                     {m.asset_name}
                   </Link>
                   <div className="font-mono text-xs text-muted">{m.asset_code}</div>
+                  {/* ຖັນທີ່ເຊື່ອງຢູ່ຈໍນ້ອຍ — ຍ້າຍລົງມາຢູ່ນີ້ແທນ */}
+                  <div className="text-xs text-muted md:hidden">
+                    {m.emp_name ?? '—'} · ຢືມ {safeDate(m.borrowed_at)}
+                  </div>
                 </td>
-                <td className="px-4 py-2.5">
+                <td className="hidden px-4 py-2.5 md:table-cell">
                   <span className="text-body">{m.emp_name ?? '—'}</span>
                   <div className="text-xs text-muted">
                     {[m.org_department, m.unit_name].filter(Boolean).join(' · ') || '—'}
                   </div>
                 </td>
-                <td className="px-4 py-2.5 text-xs whitespace-nowrap text-muted">
+                <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted lg:table-cell">
                   {safeDate(m.borrowed_at)}
                 </td>
                 <td className="px-4 py-2.5 text-xs whitespace-nowrap">
