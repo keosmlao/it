@@ -82,12 +82,12 @@ export default async function SecurityPage() {
           <tbody className="divide-line divide-y">
             {formats.map((f) => (
               <tr key={f.format}>
-                <td className="px-4 py-2.5 text-fg">
+                <td className="px-3 py-1.5 text-fg">
                   {FORMAT_LABEL_LO[f.format] ?? f.format}
                 </td>
-                <td className="px-4 py-2.5 text-right text-body">{f.total}</td>
-                <td className="px-4 py-2.5 text-right text-body">{f.it_staff}</td>
-                <td className="px-4 py-2.5">
+                <td className="px-3 py-1.5 text-right text-body">{f.total}</td>
+                <td className="px-3 py-1.5 text-right text-body">{f.it_staff}</td>
+                <td className="px-3 py-1.5">
                   <span
                     className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
                       RISK_STYLE[FORMAT_RISK[f.format] ?? 'medium']
@@ -112,7 +112,7 @@ export default async function SecurityPage() {
         </p>
         <div className="divide-line mt-2 divide-y">
           {itStaff.map((s) => (
-            <div key={s.employee_code} className="flex flex-wrap items-center gap-3 px-4 py-2.5">
+            <div key={s.employee_code} className="flex flex-wrap items-center gap-3 px-3 py-1.5">
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-fg">{s.fullname_lo}</span>
                 <span className="text-xs text-muted">
@@ -134,7 +134,7 @@ export default async function SecurityPage() {
       <Panel title="ສິດ administer ທີ່ຕັ້ງລາຍຄົນ">
         <div className="divide-line divide-y">
           {admins.map((a) => (
-            <div key={a.employee_code} className="flex flex-wrap items-center gap-3 px-4 py-2.5">
+            <div key={a.employee_code} className="flex flex-wrap items-center gap-3 px-3 py-1.5">
               <span className="min-w-0 flex-1 truncate text-fg">{a.employee_name}</span>
               <span className="text-xs text-muted">
                 ຕັ້ງໂດຍ {a.updated_by_name ?? '—'} · {formatDateTime(a.updated_at)}
@@ -176,7 +176,7 @@ export default async function SecurityPage() {
         <Panel title="Login ລົ້ມເຫຼວ 7 ມື້ຫຼ້າສຸດ (ຕັ້ງແຕ່ 3 ຄັ້ງຂຶ້ນໄປ)" flush>
           <div className="divide-line divide-y">
             {failed.map((f) => (
-              <div key={f.employee_code} className="flex flex-wrap items-center gap-3 px-4 py-2.5">
+              <div key={f.employee_code} className="flex flex-wrap items-center gap-3 px-3 py-1.5">
                 <span className="min-w-0 flex-1">
                   <span className="block font-mono text-sm text-fg">
                     {f.employee_code}

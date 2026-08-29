@@ -18,7 +18,7 @@ export default async function PortalKbPage({ searchParams }: PageProps<'/my/kb'>
         ຫຼາຍບັນຫາແກ້ໄດ້ເອງພາຍໃນ 5 ນາທີ — ລອງເບິ່ງກ່ອນແຈ້ງ
       </p>
 
-      <form className="glass-card mt-4 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         <input
           name="q"
           defaultValue={q}

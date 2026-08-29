@@ -159,7 +159,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
       </Panel>
 
       <Panel title="ປະເພດບັນຫາ" hint="ປະເພດຈະກຳນົດໜ່ວຍງານທີ່ຮັບຜິດຊອບ ticket ໂດຍອັດຕະໂນມັດ">
-        <table className="w-full text-sm">
+        <table className="o-list w-full text-[13px]">
           <thead className="border-b border-line text-left text-muted">
             <tr>
               <th className="py-2 font-medium">ລະຫັດ</th>
@@ -325,7 +325,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="o-list w-full text-[13px]">
             <thead className="border-b border-line text-left text-muted">
               <tr>
                 <th className="py-2 pr-3 font-medium">ຂັ້ນ</th>
@@ -500,7 +500,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
 
         {outboxRows.length > 0 && (
           <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="o-list w-full text-[13px]">
               <thead className="border-b border-line text-left text-muted">
                 <tr>
                   <th className="py-2 pr-3 font-medium">ເວລາ</th>

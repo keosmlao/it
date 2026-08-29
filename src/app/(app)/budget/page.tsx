@@ -105,17 +105,17 @@ export default async function BudgetPage({ searchParams }: PageProps<'/budget'>)
           />
         </div>
       ) : (
-        <div className="glass-card mt-5 overflow-x-auto rounded-xl">
-          <table className="w-full min-w-[760px] text-sm">
+        <div className="o-list-wrap mt-3 overflow-x-auto">
+          <table className="o-list w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-line text-left text-xs text-muted">
-                <th className="px-4 py-2.5">ເສັ້ນງົບປະມານ</th>
-                <th className="px-4 py-2.5">ຍອດໃຊ້ຈິງມາຈາກ</th>
-                <th className="px-4 py-2.5 text-right">ງົບທີ່ຕັ້ງ</th>
-                <th className="px-4 py-2.5 text-right">ໃຊ້ໄປແລ້ວ</th>
-                <th className="px-4 py-2.5 text-right">ຍັງເຫຼືອ</th>
-                <th className="px-4 py-2.5 text-right">ໃຊ້ໄປ</th>
-                <th className="px-4 py-2.5" />
+                <th className="px-3 py-1.5">ເສັ້ນງົບປະມານ</th>
+                <th className="px-3 py-1.5">ຍອດໃຊ້ຈິງມາຈາກ</th>
+                <th className="px-3 py-1.5 text-right">ງົບທີ່ຕັ້ງ</th>
+                <th className="px-3 py-1.5 text-right">ໃຊ້ໄປແລ້ວ</th>
+                <th className="px-3 py-1.5 text-right">ຍັງເຫຼືອ</th>
+                <th className="px-3 py-1.5 text-right">ໃຊ້ໄປ</th>
+                <th className="px-3 py-1.5" />
               </tr>
             </thead>
             <tbody className="divide-line divide-y">

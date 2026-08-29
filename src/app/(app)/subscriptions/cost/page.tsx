@@ -156,7 +156,7 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[520px] text-sm">
+      <table className="o-list w-full min-w-[520px] text-sm">
         <thead>
           <tr className="border-b border-line text-left text-xs text-muted">
             {head.map((h, i) => (
@@ -172,7 +172,7 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
               {row.map((cell, j) => (
                 <td
                   key={j}
-                  className={`px-4 py-2.5 ${j > 0 ? 'text-right text-body' : 'text-fg'}`}
+                  className={`px-3 py-1.5 ${j > 0 ? 'text-right text-body' : 'text-fg'}`}
                 >
                   {cell}
                 </td>

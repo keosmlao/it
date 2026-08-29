@@ -4,7 +4,7 @@ import { Bar, ListSkeleton } from '@/components/skeleton'
 export default function Loading() {
   return (
     <div aria-busy="true" aria-label="ກຳລັງໂຫຼດ">
-      <div className="brand-gradient-warm rounded-2xl p-6">
+      <div className="brand-gradient-cool rounded p-5">
         <Bar className="h-6 w-56 bg-white/25" />
         <Bar className="mt-2 h-4 w-full max-w-md bg-white/20" />
         <div className="mt-4 flex flex-wrap gap-2">

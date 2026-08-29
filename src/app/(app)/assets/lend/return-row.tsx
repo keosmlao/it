@@ -32,7 +32,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
   return (
     <>
       <tr className="hover-surface transition">
-        <td className="px-4 py-2.5 text-xs whitespace-nowrap">
+        <td className="px-3 py-1.5 text-xs whitespace-nowrap">
           <span className="font-mono text-muted">{loan.borrow_doc_no}</span>
           <div>
             <span
@@ -46,7 +46,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
             </span>
           </div>
         </td>
-        <td className="px-4 py-2.5">
+        <td className="px-3 py-1.5">
           <Link
             href={`/assets/${encodeURIComponent(loan.asset_code)}`}
             className="text-fg underline-offset-2 hover:underline"
@@ -55,7 +55,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
           </Link>
           <div className="font-mono text-xs text-muted">{loan.asset_code}</div>
         </td>
-        <td className="px-4 py-2.5">
+        <td className="px-3 py-1.5">
           <span className="text-body">{loan.emp_name ?? loan.emp_code}</span>
           {loan.is_former_employee && (
             <span className="ml-2 rounded-full bg-red-100 px-1.5 py-0.5 text-[11px] font-medium text-red-700 dark:bg-red-950 dark:text-red-300">
@@ -64,11 +64,11 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
           )}
           <div className="text-xs text-muted">{loan.org_department ?? '—'}</div>
         </td>
-        <td className="px-4 py-2.5 text-xs whitespace-nowrap text-muted">
+        <td className="px-3 py-1.5 text-xs whitespace-nowrap text-muted">
           {safeDate(loan.borrowed_at)}
           <div className="text-[11px] text-faint">{loan.days_held} ມື້ກ່ອນ</div>
         </td>
-        <td className="px-4 py-2.5 text-xs whitespace-nowrap">
+        <td className="px-3 py-1.5 text-xs whitespace-nowrap">
           {loan.expected_return ? (
             <span className={overdue ? 'font-medium text-brand-orange' : 'text-muted'}>
               {safeDate(loan.expected_return)}
@@ -78,7 +78,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
             <span className="text-faint">—</span>
           )}
         </td>
-        <td className="px-4 py-2.5 text-right">
+        <td className="px-3 py-1.5 text-right">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

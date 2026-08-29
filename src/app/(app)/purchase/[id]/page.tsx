@@ -116,24 +116,24 @@ export default async function PurchaseDetailPage({
       )}
 
       {/* ---------- ລາຍການ ---------- */}
-      <section className="glass-card mt-4 overflow-x-auto rounded-xl">
-        <table className="w-full text-sm">
+      <section className="o-list-wrap mt-3 overflow-x-auto">
+        <table className="o-list w-full text-[13px]">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="px-4 py-2.5 font-medium">#</th>
-              <th className="px-4 py-2.5 font-medium">ລາຍການ</th>
-              <th className="px-4 py-2.5 text-right font-medium">ຈຳນວນ</th>
-              <th className="px-4 py-2.5 text-right font-medium">ລາຄາ</th>
-              <th className="px-4 py-2.5 text-right font-medium">ສ່ວນຫຼຸດ</th>
-              <th className="px-4 py-2.5 text-right font-medium">ຈຳນວນເງິນ</th>
-              {editable && <th className="px-4 py-2.5" />}
+              <th className="px-3 py-1.5 font-medium">#</th>
+              <th className="px-3 py-1.5 font-medium">ລາຍການ</th>
+              <th className="px-3 py-1.5 text-right font-medium">ຈຳນວນ</th>
+              <th className="px-3 py-1.5 text-right font-medium">ລາຄາ</th>
+              <th className="px-3 py-1.5 text-right font-medium">ສ່ວນຫຼຸດ</th>
+              <th className="px-3 py-1.5 text-right font-medium">ຈຳນວນເງິນ</th>
+              {editable && <th className="px-3 py-1.5" />}
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {lines.map((line) => (
               <tr key={line.id}>
-                <td className="px-4 py-2.5 text-muted">{line.line_no}</td>
-                <td className="px-4 py-2.5">
+                <td className="px-3 py-1.5 text-muted">{line.line_no}</td>
+                <td className="px-3 py-1.5">
                   <span className="text-fg">{line.item_name}</span>
                   {line.item_code && (
                     <span className="ml-2 font-mono text-xs text-muted">
@@ -147,23 +147,23 @@ export default async function PurchaseDetailPage({
                   )}
                   {line.note && <div className="text-xs text-faint">{line.note}</div>}
                 </td>
-                <td className="px-4 py-2.5 text-right whitespace-nowrap text-body">
+                <td className="px-3 py-1.5 text-right whitespace-nowrap text-body">
                   {Number(line.qty).toLocaleString('lo-LA')}
                   {line.unit && (
                     <span className="ml-1 text-xs text-muted">{line.unit}</span>
                   )}
                 </td>
-                <td className="px-4 py-2.5 text-right whitespace-nowrap text-body">
+                <td className="px-3 py-1.5 text-right whitespace-nowrap text-body">
                   {formatMoney(line.est_price)}
                 </td>
-                <td className="px-4 py-2.5 text-right whitespace-nowrap text-muted">
+                <td className="px-3 py-1.5 text-right whitespace-nowrap text-muted">
                   {Number(line.discount) > 0 ? formatMoney(line.discount) : '—'}
                 </td>
-                <td className="px-4 py-2.5 text-right whitespace-nowrap text-fg">
+                <td className="px-3 py-1.5 text-right whitespace-nowrap text-fg">
                   {formatMoney(line.line_total)}
                 </td>
                 {editable && (
-                  <td className="px-4 py-2.5 text-right">
+                  <td className="px-3 py-1.5 text-right">
                     <ActionForm action={deletePurchaseLine}>
                       <input type="hidden" name="pr_id" value={pr.id} />
                       <input type="hidden" name="line_id" value={line.id} />

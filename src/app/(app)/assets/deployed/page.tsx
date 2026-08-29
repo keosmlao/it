@@ -104,7 +104,7 @@ export default async function DeployedPage({
 
       <DeployPanel assets={spare} employees={employees} locations={locations} places={places} />
 
-      <form className="glass-card mt-4 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         {filters.state !== 'active' && (
           <input type="hidden" name="state" value={filters.state} />
         )}

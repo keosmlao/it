@@ -84,7 +84,7 @@ export default async function LendPage({ searchParams }: PageProps<'/assets/lend
         <LendPanel assets={assets} employees={employees} locations={locations} />
       ) : (
         <>
-          <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+          <form className="o-filter-bar mt-3">
             <input type="hidden" name="tab" value="return" />
             <label className="flex flex-col gap-1 text-xs text-muted">
               ແຫຼ່ງໃບຢືມ
@@ -115,16 +115,16 @@ export default async function LendPage({ searchParams }: PageProps<'/assets/lend
             </button>
           </form>
 
-          <div className="glass-card mt-4 overflow-x-auto rounded-xl">
-            <table className="w-full text-sm">
+          <div className="o-list-wrap mt-3 overflow-x-auto">
+            <table className="o-list w-full text-[13px]">
               <thead className="border-b border-line text-left text-muted">
                 <tr>
-                  <th className="px-4 py-2.5 font-medium">ໃບຢືມ</th>
-                  <th className="px-4 py-2.5 font-medium">ອຸປະກອນ</th>
-                  <th className="px-4 py-2.5 font-medium">ຜູ້ຢືມ</th>
-                  <th className="px-4 py-2.5 font-medium">ຢືມເມື່ອ</th>
-                  <th className="px-4 py-2.5 font-medium">ຄາດຄືນ</th>
-                  <th className="px-4 py-2.5" />
+                  <th className="px-3 py-1.5 font-medium">ໃບຢືມ</th>
+                  <th className="px-3 py-1.5 font-medium">ອຸປະກອນ</th>
+                  <th className="px-3 py-1.5 font-medium">ຜູ້ຢືມ</th>
+                  <th className="px-3 py-1.5 font-medium">ຢືມເມື່ອ</th>
+                  <th className="px-3 py-1.5 font-medium">ຄາດຄືນ</th>
+                  <th className="px-3 py-1.5" />
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">

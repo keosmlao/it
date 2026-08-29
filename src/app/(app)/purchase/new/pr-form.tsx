@@ -221,7 +221,7 @@ export default function PurchaseRequestForm({
         </header>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-4xl text-sm">
+          <table className="o-list w-full min-w-4xl text-sm">
             <thead className="border-b border-line text-left text-muted">
               <tr>
                 <th className="w-9 px-2 py-2 font-medium">#</th>

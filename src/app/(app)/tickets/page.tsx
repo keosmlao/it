@@ -196,7 +196,7 @@ export default async function TicketsPage({
         </nav>
       </div>
 
-      <FilterForm className="mt-4 flex flex-wrap items-end gap-3 glass-card rounded-xl p-4">
+      <FilterForm className="o-filter-bar mt-3">
         {/* ແຖບ ແລະ ຮູບແບບທີ່ເລືອກຢູ່ — ຄ້າງໄວ້ໃນຟອມ ຈຶ່ງກອງແລ້ວບໍ່ເດັ້ງກັບໄປອັນອື່ນ */}
         {mode === 'table' && (
           <input type="hidden" name="view" value="table" />
@@ -294,22 +294,22 @@ export default async function TicketsPage({
         </>
       ) : (
         <>
-          <div className="mt-5 overflow-x-auto glass-card rounded-xl">
-            <table className="w-full text-sm">
+          <div className="o-list-wrap mt-3 overflow-x-auto">
+            <table className="o-list w-full text-[13px]">
               <thead className="border-b border-line text-left text-muted">
                 <tr>
-                  <th className="px-4 py-2.5 font-medium">ເລກທີ</th>
-                  <th className="px-4 py-2.5 font-medium">ຫົວຂໍ້</th>
-                  <th className="hidden px-4 py-2.5 font-medium lg:table-cell">
+                  <th className="px-3 py-1.5 font-medium">ເລກທີ</th>
+                  <th className="px-3 py-1.5 font-medium">ຫົວຂໍ້</th>
+                  <th className="hidden px-3 py-1.5 font-medium lg:table-cell">
                     ຜູ້ແຈ້ງ
                   </th>
-                  <th className="hidden px-4 py-2.5 font-medium md:table-cell">
+                  <th className="hidden px-3 py-1.5 font-medium md:table-cell">
                     ຜູ້ຮັບຜິດຊອບ
                   </th>
-                  <th className="px-4 py-2.5 font-medium">ສະຖານະ</th>
-                  <th className="px-4 py-2.5 font-medium">ກຳນົດແກ້ໄຂ</th>
+                  <th className="px-3 py-1.5 font-medium">ສະຖານະ</th>
+                  <th className="px-3 py-1.5 font-medium">ກຳນົດແກ້ໄຂ</th>
                   {mayDelete && (
-                    <th className="px-4 py-2.5 font-medium">
+                    <th className="px-3 py-1.5 font-medium">
                       <span className="sr-only">ຈັດການ</span>
                     </th>
                   )}
@@ -323,7 +323,7 @@ export default async function TicketsPage({
 
                   return (
                     <tr key={t.id} className="transition hover-surface">
-                      <td className="px-4 py-2.5 whitespace-nowrap">
+                      <td className="px-3 py-1.5 whitespace-nowrap">
                         <Link
                           href={`/tickets/${t.id}`}
                           className="font-medium text-fg underline-offset-2 hover:underline"
@@ -331,7 +331,7 @@ export default async function TicketsPage({
                           {t.ticket_no}
                         </Link>
                       </td>
-                      <td className="px-4 py-2.5">
+                      <td className="px-3 py-1.5">
                         <Link
                           href={`/tickets/${t.id}`}
                           className="hover:underline"
@@ -355,21 +355,21 @@ export default async function TicketsPage({
                           </span>
                         </div>
                       </td>
-                      <td className="hidden px-4 py-2.5 text-body lg:table-cell">
+                      <td className="hidden px-3 py-1.5 text-body lg:table-cell">
                         {t.requester_name}
                         <div className="text-xs text-muted">
                           {t.requester_department_name ?? '—'}
                         </div>
                       </td>
-                      <td className="hidden px-4 py-2.5 text-body md:table-cell">
+                      <td className="hidden px-3 py-1.5 text-body md:table-cell">
                         {t.assignee_name ?? (
                           <span className="text-faint">ຍັງບໍ່ມອບໝາຍ</span>
                         )}
                       </td>
-                      <td className="px-4 py-2.5">
+                      <td className="px-3 py-1.5">
                         <StatusBadge status={t.status} />
                       </td>
-                      <td className="px-4 py-2.5 whitespace-nowrap">
+                      <td className="px-3 py-1.5 whitespace-nowrap">
                         {t.is_finished ? (
                           <span className="text-xs text-muted">
                             {formatDateTime(t.resolved_at)}
@@ -383,7 +383,7 @@ export default async function TicketsPage({
                         )}
                       </td>
                       {mayDelete && (
-                        <td className="px-4 py-2.5 text-right whitespace-nowrap">
+                        <td className="px-3 py-1.5 text-right whitespace-nowrap">
                           <DeleteTicketButton
                             ticketId={t.id}
                             ticketNo={t.ticket_no}

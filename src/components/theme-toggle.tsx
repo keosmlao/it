@@ -11,7 +11,7 @@ import { useSyncExternalStore } from 'react'
 export default function ThemeToggle({
   variant = 'default',
 }: {
-  variant?: 'default' | 'sidebar'
+  variant?: 'default' | 'sidebar' | 'navbar'
 }) {
   const isDark = useSyncExternalStore(subscribe, getSnapshot, () => false)
 
@@ -32,8 +32,10 @@ export default function ThemeToggle({
       aria-label={isDark ? 'ປ່ຽນເປັນໂໝດແຈ້ງ' : 'ປ່ຽນເປັນໂໝດມືດ'}
       className={
         variant === 'sidebar'
-          ? 'sidebar-link flex size-8 items-center justify-center rounded-lg'
-          : 'btn-secondary flex size-9 items-center justify-center rounded-full'
+          ? 'sidebar-link flex size-8 items-center justify-center rounded'
+          : variant === 'navbar'
+            ? 'flex size-8 items-center justify-center rounded hover:bg-white/10'
+            : 'btn-secondary flex size-8 items-center justify-center rounded'
       }
     >
       <svg

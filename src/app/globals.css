@@ -1,54 +1,85 @@
 @import "tailwindcss";
 
-/* ຊຸດສີ ແລະ ພື້ນຜິວດຽວກັນກັບ ODG TMS (tms.odienmall.com) */
+/* ==========================================================================
+   ໜ້າຕາແບບ Odoo — ແປ (flat), ແໜ້ນ (dense), ເສັ້ນຂອບບາງ, ບໍ່ມີເງົາ
+   ສີຫຼັກຍັງເປັນຟ້າ ODG (#2c6fb6 / #003260) ບໍ່ແມ່ນມ່ວງຂອງ Odoo
+   ========================================================================== */
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f5f9fd;
-  --foreground: #0b2338;
+  /* ພື້ນຫຼັງເທົາອ່ອນ ເນື້ອຫາຢູ່ແຜ່ນຂາວ — ຄືກັບ Odoo */
+  --background: #f4f6f8;
+  --foreground: #14212b;
 
-  --glass-bg: #ffffffd1;
-  --glass-bg-heavy: #fffffff0;
-  --glass-border: #0032601a;
-  --glass-border-subtle: #0032601f;
-  --glass-shadow: 0 18px 50px #00326014;
-  --glass-shadow-lg: 0 24px 70px #0032601a;
+  --surface: #ffffff;
+  --surface-2: #f8fafb;
+  --surface-hover: #f2f7fc;
+  --surface-selected: #e8f1fa;
 
-  --mesh-gradient: linear-gradient(180deg, #f5f9fd 0%, #eaf3fb 54%, #fdf6ec 100%);
-  --glass-glow-primary: #2c6fb624;
+  --line: #dbe2e8;
+  --line-subtle: #e8edf2;
 
-  /* Sidebar ເປັນ navy ເຂັ້ມທັງໂໝດແຈ້ງ ແລະ ມືດ (ຄືກັນກັບ TMS) */
-  --sidebar-bg: linear-gradient(180deg, #0a2a49 0%, #06203a 100%);
-  --sidebar-fg: #d7e6f4;
-  --sidebar-muted: #7e9cb8;
-  --sidebar-border: #ffffff14;
-  --sidebar-hover: #ffffff0f;
+  --text-body: #33475b;
+  --text-muted: #6b7f8f;
+  --text-faint: #94a5b2;
 
-  /* ໂຕໜັງສືຕາມລະດັບຄວາມສຳຄັນ */
-  --text-body: #1c3a52;
-  --text-muted: #5b7387;
-  --text-faint: #8ba0b1;
-  --surface-hover: #2c6fb60f;
+  --primary: #2c6fb6;
+  --primary-hover: #245c99;
+  --primary-soft: #e8f1fa;
+
+  /* ແຖບເທິງສຸດ — ແປສີດຽວ ບໍ່ມີ gradient */
+  --navbar-bg: #003260;
+  --navbar-fg: #ffffff;
+  --navbar-muted: #a9c4da;
+
+  /* ເມນູຂ້າງເປັນສີຂາວແບບ Odoo ບໍ່ແມ່ນ navy ອີກຕໍ່ໄປ */
+  --sidebar-bg: #ffffff;
+  --sidebar-fg: #33475b;
+  --sidebar-muted: #8496a5;
+  --sidebar-border: #e2e8ee;
+  --sidebar-hover: #f2f7fc;
+
+  /* ຊື່ເກົ່າ — ຍັງມີໜ້າທີ່ອ້າງເຖິງຢູ່ */
+  --glass-bg: var(--surface);
+  --glass-bg-heavy: var(--surface);
+  --glass-border: var(--line);
+  --glass-border-subtle: var(--line-subtle);
 }
 
 .dark {
-  --background: #04182a;
-  --foreground: #e4eef7;
+  --background: #101820;
+  --foreground: #e3ebf2;
 
-  --glass-bg: #062338c7;
-  --glass-bg-heavy: #062338f0;
-  --glass-border: #e0f0fa1a;
-  --glass-border-subtle: #e0f0fa1f;
-  --glass-shadow: 0 18px 52px #000c186b;
-  --glass-shadow-lg: 0 28px 80px #000c188a;
+  --surface: #18222c;
+  --surface-2: #1d2833;
+  --surface-hover: #223040;
+  --surface-selected: #1b3348;
 
-  --mesh-gradient: linear-gradient(180deg, #04182a 0%, #062338 58%, #072b45 100%);
-  --glass-glow-primary: #4bc7ef2e;
+  --line: #2a3846;
+  --line-subtle: #232f3c;
 
-  --text-body: #cadcea;
-  --text-muted: #8fa8bd;
-  --text-faint: #667f95;
-  --surface-hover: #4bc7ef14;
+  --text-body: #c3d2df;
+  --text-muted: #8c9dac;
+  --text-faint: #67788a;
+
+  --primary: #4a90d9;
+  --primary-hover: #63a4e8;
+  --primary-soft: #16304a;
+
+  --navbar-bg: #0b1a26;
+  --navbar-fg: #e8f0f7;
+  --navbar-muted: #7e94a6;
+
+  --sidebar-bg: #141d26;
+  --sidebar-fg: #c3d2df;
+  --sidebar-muted: #7e8f9e;
+  --sidebar-border: #24303d;
+  --sidebar-hover: #1d2833;
+
+  --glass-bg: var(--surface);
+  --glass-bg-heavy: var(--surface);
+  --glass-border: var(--line);
+  --glass-border-subtle: var(--line-subtle);
 }
 
 @theme inline {
@@ -60,37 +91,53 @@
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-line: var(--glass-border);
-  --color-line-subtle: var(--glass-border-subtle);
+  --color-line: var(--line);
+  --color-line-subtle: var(--line-subtle);
 
   --font-sans: var(--font-brand-sans), var(--font-lao-sans), system-ui, sans-serif;
+
+  /* Odoo ໃຊ້ມຸມມົນ 4px ເກືອບທຸກບ່ອນ — ປັບທີ່ນີ້ບ່ອນດຽວ
+     ແທນທີ່ຈະໄລ່ແກ້ rounded-xl ທຸກໄຟລ໌ (ວົງມົນເຕັມຍັງຄືເກົ່າ) */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 6px;
+  --radius-3xl: 8px;
+
+  /* ແປ — ເງົາເກືອບບໍ່ມີ */
+  --shadow-sm: 0 1px 2px #0f253a0f;
+  --shadow-md: 0 1px 3px #0f253a17;
+  --shadow-lg: 0 2px 6px #0f253a1f;
+  --shadow-xl: 0 4px 12px #0f253a24;
 }
 
 body {
-  background: var(--mesh-gradient);
-  background-attachment: fixed;
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-brand-sans), var(--font-lao-sans), system-ui, sans-serif;
+  /* Odoo ອ່ານແໜ້ນກວ່າ — 13px ເປັນຂະໜາດພື້ນຖານ */
+  font-size: 13px;
+  line-height: 1.45;
   min-height: 100vh;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: #4bc7ef4d;
+  background: #2c6fb633;
   color: var(--foreground);
 }
 
 :focus-visible {
-  outline: 2px solid #2c6fb6;
-  outline-offset: 3px;
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
 }
 
-@keyframes skeleton-pulse { 50% { opacity: .48; } }
+@keyframes skeleton-pulse { 50% { opacity: .5; } }
 .skeleton {
-  background: linear-gradient(110deg, var(--glass-bg) 8%, var(--surface-hover) 18%, var(--glass-bg) 33%);
-  background-size: 200% 100%;
-  animation: skeleton-pulse 1.5s ease-in-out infinite;
-  border: 1px solid var(--glass-border);
+  background: var(--surface-2);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  border: 1px solid var(--line-subtle);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -98,44 +145,130 @@ body {
 }
 
 @layer components {
-  /* ພື້ນຜິວແກ້ວ — ໃຊ້ແທນກາດ/ແຜງທັງໝົດ */
-  .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(16px) saturate(1.35);
-    -webkit-backdrop-filter: blur(16px) saturate(1.35);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
+  /* ---- ແຜ່ນເນື້ອຫາ (ຊື່ເກົ່າ glass-* ຍັງໃຊ້ໄດ້ ແຕ່ດຽວນີ້ແປແລ້ວ) ---- */
+  .glass-card,
+  .o-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: none;
   }
 
   .glass-heavy {
-    background: var(--glass-bg-heavy);
-    backdrop-filter: blur(18px) saturate(1.35);
-    -webkit-backdrop-filter: blur(18px) saturate(1.35);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: none;
   }
 
   .glass-subtle {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px) saturate(1.4);
-    -webkit-backdrop-filter: blur(12px) saturate(1.4);
-    border: 1px solid var(--glass-border-subtle);
+    background: var(--surface-2);
+    border: 1px solid var(--line-subtle);
   }
 
-  /* ຂອບເຫຼືອງແສງອ່ອນໆ ຮອບແຜງ — ຄືກັນກັບ .glow-primary ຂອງ TMS */
   .glow-primary {
-    box-shadow:
-      var(--glass-shadow),
-      0 0 0 1px var(--glass-glow-primary),
-      inset 0 1px 0 #ffffff1a;
+    box-shadow: none;
+    border-color: var(--primary);
   }
 
   .gradient-mesh-bg {
-    background: var(--mesh-gradient);
-    background-attachment: fixed;
+    background: var(--background);
   }
 
-  /* ---- Sidebar (navy ເຂັ້ມທັງສອງໂໝດ) ---- */
+  /* ---- ແຜ່ນຟອມແບບ Odoo (o_form_sheet) ---- */
+  .o-sheet {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px;
+  }
+
+  /* ---- ແຖບຄວບຄຸມ (o_control_panel) — ຢູ່ໃຕ້ແຖບເທິງ ---- */
+  .o-control-panel {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* ແຖບຕົວກັ່ນຕອງ — ເປັນເຄື່ອງມືແຄບໆ ບໍ່ແມ່ນກາດໃຫຍ່ຄືເກົ່າ */
+  .o-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 6px 0 8px;
+  }
+
+  /* ລາຍການເຕັມໜ້າ ບໍ່ມີກອບ — ມີແຕ່ເສັ້ນແບ່ງແຖວ */
+  .o-list-wrap { background: var(--surface); }
+
+  /* ຊິບຕົວກັ່ນຕອງທີ່ໃຊ້ຢູ່ (o_facet) */
+  .o-facet {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid var(--primary);
+    border-radius: 3px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 1px 6px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* ຕົວນັບໜ້າ (o_pager) */
+  .o-pager {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: var(--text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .o-pager button,
+  .o-pager a {
+    display: inline-flex;
+    min-width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    color: var(--text-body);
+  }
+  .o-pager button:hover,
+  .o-pager a:hover { background: var(--surface-hover); }
+
+  /* ---- ຕາຕະລາງລາຍການແບບ Odoo (o_list_view) ---- */
+  .o-list {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .o-list thead th {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .o-list tbody td { border-bottom: 1px solid var(--line-subtle); }
+  .o-list tbody tr:hover { background: var(--surface-hover); }
+  .o-list tbody tr[data-selected='true'] { background: var(--surface-selected); }
+
+  /* ---- ແຖບເມນູເທິງສຸດ (o_main_navbar) ---- */
+  .o-navbar {
+    background: var(--navbar-bg);
+    color: var(--navbar-fg);
+    border-bottom: 1px solid var(--navbar-bg);
+  }
+  .o-navbar a { color: var(--navbar-fg); }
+
+  /* ---- ແຜງຊ້າຍຂອງໜ້າເຂົ້າລະບົບ — ຍັງເປັນສີເຂັ້ມ ຕົວໜັງສືຂາວ ---- */
+  .o-login-hero {
+    background: linear-gradient(160deg, #003260 0%, #06233d 100%);
+    color: #eaf3fb;
+  }
+
+  /* ---- ເມນູຂ້າງ ---- */
   .sidebar-shell {
     background: var(--sidebar-bg);
     color: var(--sidebar-fg);
@@ -143,176 +276,160 @@ body {
   }
   .sidebar-label {
     color: var(--sidebar-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
   }
   .sidebar-link {
+    position: relative;
     color: var(--sidebar-fg);
-    transition: background 0.15s, color 0.15s;
+    transition: background .12s, color .12s;
   }
   .sidebar-link:hover {
     background: var(--sidebar-hover);
-    color: #fff;
+    color: var(--foreground);
   }
   .sidebar-link[aria-current='page'],
   .sidebar-link[data-active='true'] {
-    background: linear-gradient(135deg, #2c6fb6 0%, #1d5a97 100%);
-    color: #fff;
+    background: var(--primary-soft);
+    color: var(--primary);
     font-weight: 500;
-    box-shadow: 0 8px 20px #2c6fb64d;
+    box-shadow: none;
+  }
+  /* ແຖບຟ້າດ້ານຊ້າຍບອກແຖວທີ່ເປີດຢູ່ — ຄືກັບ Odoo */
+  .sidebar-link[aria-current='page']::before,
+  .sidebar-link[data-active='true']::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: var(--primary);
   }
   .sidebar-divider {
     border-color: var(--sidebar-border);
   }
 
-  /* Mobile navigation — ໃຫ້ໜ້າທີ່ຫຼັກເຂົ້າເຖິງໄດ້ດ້ວຍນິ້ວດຽວ */
+  /* ---- ເມນູລຸ່ມສຳລັບມືຖື ---- */
   .mobile-dock {
     position: fixed;
     z-index: 50;
-    right: 10px;
-    bottom: max(10px, env(safe-area-inset-bottom));
-    left: 10px;
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 2px;
-    padding: 6px;
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    background: color-mix(in srgb, var(--glass-bg-heavy) 92%, transparent);
-    box-shadow: 0 16px 40px #0032602e;
-    backdrop-filter: blur(22px) saturate(1.5);
-    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    padding: 2px 2px max(2px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: var(--surface);
   }
   .mobile-dock-link {
     display: flex;
     min-width: 0;
-    min-height: 52px;
+    min-height: 48px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 3px;
-    border-radius: 14px;
+    border-radius: 4px;
     color: var(--text-muted);
     font-size: 10px;
-    font-weight: 600;
-    transition: color .15s, background .15s, transform .15s;
+    font-weight: 500;
+    transition: color .12s, background .12s;
   }
-  .mobile-dock-link:active { transform: scale(.96); }
   .mobile-dock-link[data-active='true'] {
-    color: #fff;
-    background: linear-gradient(135deg, #2c6fb6, #003260);
-    box-shadow: 0 8px 18px #2c6fb642;
+    color: var(--primary);
+    background: var(--primary-soft);
+    box-shadow: none;
   }
 
-  /* ---- Topbar ---- */
+  /* ---- ຊິບຜູ້ໃຊ້ຢູ່ແຖບເທິງ ---- */
   .user-chip {
-    background: linear-gradient(135deg, #0a2a49 0%, #06203a 100%);
-    color: #eaf3fb;
-    border: 1px solid #ffffff1f;
+    background: transparent;
+    color: var(--navbar-fg);
+    border: 0;
   }
 
-  .brand-gradient-cool {
-    background: linear-gradient(135deg, #4bc7ef 0%, #2c6fb6 52%, #003260 100%);
-  }
+  .brand-gradient-cool { background: var(--primary); }
+  .brand-gradient-warm { background: var(--color-brand-orange); }
+  .brand-gradient-text { color: var(--primary); }
 
-  .brand-gradient-warm {
-    background: linear-gradient(135deg, #4bc7ef 0%, #ffd071 55%, #f6921e 100%);
-  }
-
-  .brand-gradient-text {
-    color: transparent;
-    background: linear-gradient(135deg, #4bc7ef 0%, #2c6fb6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-
-  /* ປຸ່ມ */
+  /* ---- ປຸ່ມ ---- */
   .btn-primary {
-    background: linear-gradient(135deg, #2c6fb6 0%, #003260 100%);
+    background: var(--primary);
     color: #fff;
-    box-shadow: 0 8px 20px #2c6fb633;
-    transition: filter 0.2s, box-shadow 0.2s;
+    border: 1px solid var(--primary);
+    box-shadow: none;
+    font-weight: 500;
+    transition: background .12s, border-color .12s;
   }
   .btn-primary:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 10px 26px #2c6fb64d;
-  }
-  .btn-primary:disabled {
-    opacity: 0.6;
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
     filter: none;
+    box-shadow: none;
   }
+  .btn-primary:disabled { opacity: .55; }
 
   .btn-secondary {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
+    background: var(--surface);
+    border: 1px solid var(--line);
     color: var(--text-body);
-    transition: background 0.2s, border-color 0.2s;
+    transition: background .12s, border-color .12s;
   }
   .btn-secondary:hover {
     background: var(--surface-hover);
-    border-color: #2c6fb659;
+    border-color: var(--primary);
+    color: var(--primary);
   }
 
   .btn-danger {
-    border: 1px solid #ef444459;
-    color: #dc2626;
-    transition: background 0.2s;
+    background: var(--surface);
+    border: 1px solid #e0b4b4;
+    color: #c0392b;
+    transition: background .12s;
   }
-  .btn-danger:hover {
-    background: #ef44441a;
-  }
-  .dark .btn-danger {
-    color: #f87171;
-  }
+  .btn-danger:hover { background: #fbeceb; }
+  .dark .btn-danger { color: #e88b82; border-color: #5c3634; }
+  .dark .btn-danger:hover { background: #2b1e1d; }
 
-  /* ຊ່ອງປ້ອນຂໍ້ມູນ */
+  /* ---- ຊ່ອງປ້ອນຂໍ້ມູນ ---- */
   .input {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border-subtle);
+    background: var(--surface);
+    border: 1px solid var(--line);
     color: var(--foreground);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color .12s, box-shadow .12s;
     /* ຂະໜາດຕ່ຳສຸດຂອງ <select> ຄິດຈາກ option ທີ່ຍາວທີ່ສຸດ (ຊື່ພະນັກງານ,
        ຊື່ໜ່ວຍງານ) ຈຶ່ງດັນໜ້າໃຫ້ກວ້າງກວ່າຈໍມືຖືໄດ້ — ບອກໃຫ້ຫຍໍ້ໄດ້ */
     min-width: 0;
   }
   .input:focus {
     outline: none;
-    border-color: #2c6fb6;
-    box-shadow: 0 0 0 3px #2c6fb626;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px #2c6fb62e;
   }
+  .input::placeholder { color: var(--text-faint); }
 
-  /* ສີໂຕໜັງສືຕາມລະດັບ */
-  .text-fg {
-    color: var(--foreground);
-  }
-  .text-body {
-    color: var(--text-body);
-  }
-  .text-muted {
-    color: var(--text-muted);
-  }
-  .text-faint {
-    color: var(--text-faint);
-  }
+  /* ---- ສີໂຕໜັງສືຕາມລະດັບ ---- */
+  .text-fg { color: var(--foreground); }
+  .text-body { color: var(--text-body); }
+  .text-muted { color: var(--text-muted); }
+  .text-faint { color: var(--text-faint); }
 
-  .border-line {
-    border-color: var(--glass-border);
-  }
-  .divide-line > * + * {
-    border-color: var(--glass-border-subtle);
-  }
-  .hover-surface:hover {
-    background: var(--surface-hover);
-  }
+  .border-line { border-color: var(--line); }
+  .divide-line > * + * { border-color: var(--line-subtle); }
+  .hover-surface:hover { background: var(--surface-hover); }
 }
 
-/* ພິມເອກະສານ: ເອົາພື້ນຫຼັງ ແລະ ເງົາອອກ ໃຫ້ອອກກະດາດສະອາດ */
+/* ພິມເອກະສານ: ເອົາພື້ນຫຼັງອອກ ໃຫ້ອອກກະດາດສະອາດ */
 @media print {
   body { background: #fff !important; }
-  .glass-card, .glass-heavy, .glass-subtle {
+  .glass-card, .glass-heavy, .glass-subtle, .o-card, .o-sheet {
     background: #fff !important;
     box-shadow: none !important;
-    backdrop-filter: none !important;
   }
   aside, header, footer, nav { display: none !important; }
 }

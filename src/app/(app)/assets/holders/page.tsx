@@ -113,7 +113,7 @@ export default async function HoldersPage({
       </nav>
 
       {filters.state !== 'former' && Number(stats?.former_people ?? 0) > 0 && (
-        <p className="mt-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+        <p className="mt-3 rounded-xl bg-red-50 px-3 py-1.5 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
           ມີ {stats?.former_people} ຄົນທີ່ບໍ່ມີໃນທະບຽນພະນັກງານແລ້ວ ແຕ່ຍັງຄ້າງເຄື່ອງ{' '}
           {stats?.former_items} ອັນ —{' '}
           <Link href="/assets/holders?state=former" className="underline">
@@ -122,7 +122,7 @@ export default async function HoldersPage({
         </p>
       )}
 
-      <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         {filters.state !== 'holding' && (
           <input type="hidden" name="state" value={filters.state} />
         )}
@@ -162,25 +162,25 @@ export default async function HoldersPage({
         )}
       </form>
 
-      <div className="glass-card mt-5 overflow-x-auto rounded-xl">
-        <table className="w-full text-sm">
+      <div className="o-list-wrap mt-3 overflow-x-auto">
+        <table className="o-list w-full text-[13px]">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="px-4 py-2.5 font-medium">ພະນັກງານ</th>
-              <th className="hidden px-4 py-2.5 font-medium xl:table-cell">ຝ່າຍ</th>
-              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ພະແນກ</th>
-              <th className="hidden px-4 py-2.5 font-medium xl:table-cell">ໜ່ວຍງານ</th>
-              <th className="px-4 py-2.5 text-right font-medium">ຖືຢູ່</th>
-              <th className="hidden px-4 py-2.5 text-right font-medium lg:table-cell">
+              <th className="px-3 py-1.5 font-medium">ພະນັກງານ</th>
+              <th className="hidden px-3 py-1.5 font-medium xl:table-cell">ຝ່າຍ</th>
+              <th className="hidden px-3 py-1.5 font-medium md:table-cell">ພະແນກ</th>
+              <th className="hidden px-3 py-1.5 font-medium xl:table-cell">ໜ່ວຍງານ</th>
+              <th className="px-3 py-1.5 text-right font-medium">ຖືຢູ່</th>
+              <th className="hidden px-3 py-1.5 text-right font-medium lg:table-cell">
                 ເຄີຍຢືມ
               </th>
-              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ຢືມລ່າສຸດ</th>
+              <th className="hidden px-3 py-1.5 font-medium lg:table-cell">ຢືມລ່າສຸດ</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {holderPage.items.map((h) => (
               <tr key={h.emp_code} className="hover-surface transition">
-                <td className="px-4 py-2.5">
+                <td className="px-3 py-1.5">
                   <Link
                     href={`/assets/holders/${encodeURIComponent(h.emp_code)}`}
                     className="flex items-center gap-2.5"
@@ -207,16 +207,16 @@ export default async function HoldersPage({
                     </span>
                   </Link>
                 </td>
-                <td className="hidden px-4 py-2.5 text-muted xl:table-cell">
+                <td className="hidden px-3 py-1.5 text-muted xl:table-cell">
                   {h.division_name ?? '—'}
                 </td>
-                <td className="hidden px-4 py-2.5 text-body md:table-cell">
+                <td className="hidden px-3 py-1.5 text-body md:table-cell">
                   {h.department_name ?? '—'}
                 </td>
-                <td className="hidden px-4 py-2.5 text-muted xl:table-cell">
+                <td className="hidden px-3 py-1.5 text-muted xl:table-cell">
                   {h.unit_name ?? '—'}
                 </td>
-                <td className="px-4 py-2.5 text-right">
+                <td className="px-3 py-1.5 text-right">
                   {Number(h.holding) > 0 ? (
                     <span className="rounded-full bg-brand-orange/20 px-2 py-0.5 font-medium text-brand-orange">
                       {h.holding}
@@ -225,10 +225,10 @@ export default async function HoldersPage({
                     <span className="text-faint">0</span>
                   )}
                 </td>
-                <td className="hidden px-4 py-2.5 text-right text-muted lg:table-cell">
+                <td className="hidden px-3 py-1.5 text-right text-muted lg:table-cell">
                   {h.total}
                 </td>
-                <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted lg:table-cell">
+                <td className="hidden px-3 py-1.5 text-xs whitespace-nowrap text-muted lg:table-cell">
                   {safeDate(h.last_borrowed_at)}
                 </td>
               </tr>

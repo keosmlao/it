@@ -64,7 +64,7 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
         {from} ຫາ {to}
       </p>
 
-      <form className="mt-5 flex flex-wrap items-end gap-3 glass-card rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         <label className="flex flex-col gap-1 text-xs text-muted">
           ຈາກວັນທີ
           <input
@@ -155,7 +155,7 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
           {byCategory.length === 0 ? (
             <Empty />
           ) : (
-            <table className="w-full text-sm">
+            <table className="o-list w-full text-[13px]">
               <tbody className="divide-y divide-line">
                 {byCategory.map((c) => (
                   <tr key={c.category_name_lo}>
@@ -180,19 +180,19 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
         <h2 className="mb-3 text-lg font-semibold text-fg">
           ຜົນງານຕໍ່ພະນັກງານ
         </h2>
-        <div className="overflow-x-auto glass-card rounded-xl">
-          <table className="w-full text-sm">
+        <div className="o-list-wrap overflow-x-auto">
+          <table className="o-list w-full text-[13px]">
             <thead className="border-b border-line text-left text-muted">
               <tr>
-                <th className="px-2 py-2.5 sm:px-4 font-medium">ພະນັກງານ</th>
-                <th className="hidden px-2 py-2.5 sm:px-4 font-medium md:table-cell">ບົດບາດ</th>
-                <th className="px-2 py-2.5 sm:px-4 text-right font-medium">ຮັບຜິດຊອບ</th>
-                <th className="px-2 py-2.5 sm:px-4 text-right font-medium">ແກ້ໄຂແລ້ວ</th>
-                <th className="px-2 py-2.5 sm:px-4 text-right font-medium">ຕາມ SLA</th>
-                <th className="hidden px-2 py-2.5 sm:px-4 text-right font-medium lg:table-cell">
+                <th className="px-2 py-1.5 sm:px-4 font-medium">ພະນັກງານ</th>
+                <th className="hidden px-2 py-1.5 sm:px-4 font-medium md:table-cell">ບົດບາດ</th>
+                <th className="px-2 py-1.5 sm:px-4 text-right font-medium">ຮັບຜິດຊອບ</th>
+                <th className="px-2 py-1.5 sm:px-4 text-right font-medium">ແກ້ໄຂແລ້ວ</th>
+                <th className="px-2 py-1.5 sm:px-4 text-right font-medium">ຕາມ SLA</th>
+                <th className="hidden px-2 py-1.5 sm:px-4 text-right font-medium lg:table-cell">
                   ເວລາສະເລ່ຍ
                 </th>
-                <th className="hidden px-2 py-2.5 sm:px-4 text-right font-medium lg:table-cell">
+                <th className="hidden px-2 py-1.5 sm:px-4 text-right font-medium lg:table-cell">
                   ຊົ່ວໂມງ
                 </th>
               </tr>
@@ -207,23 +207,23 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
 
                 return (
                   <tr key={s.employee_id}>
-                    <td className="px-2 py-2.5 sm:px-4 text-fg">
+                    <td className="px-2 py-1.5 sm:px-4 text-fg">
                       {s.fullname_lo}
                       {/* ຖັນທີ່ເຊື່ອງຢູ່ຈໍນ້ອຍ — ຍ້າຍລົງມາຢູ່ນີ້ແທນ */}
                       <div className="text-xs text-muted md:hidden">
                         {ROLE_LABEL_LO[s.role as Role] ?? s.role}
                       </div>
                     </td>
-                    <td className="hidden px-2 py-2.5 sm:px-4 text-muted md:table-cell">
+                    <td className="hidden px-2 py-1.5 sm:px-4 text-muted md:table-cell">
                       {ROLE_LABEL_LO[s.role as Role] ?? s.role}
                     </td>
-                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
+                    <td className="px-2 py-1.5 sm:px-4 text-right text-muted">
                       {s.assigned}
                     </td>
-                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
+                    <td className="px-2 py-1.5 sm:px-4 text-right text-muted">
                       {s.resolved}
                     </td>
-                    <td className="px-2 py-2.5 sm:px-4 text-right">
+                    <td className="px-2 py-1.5 sm:px-4 text-right">
                       {staffRate === null ? (
                         <span className="text-faint">—</span>
                       ) : (
@@ -238,12 +238,12 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
                         </span>
                       )}
                     </td>
-                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
+                    <td className="px-2 py-1.5 sm:px-4 text-right text-muted">
                       {s.avg_resolve_minutes
                         ? formatDuration(Number(s.avg_resolve_minutes))
                         : '—'}
                     </td>
-                    <td className="px-2 py-2.5 sm:px-4 text-right text-muted">
+                    <td className="px-2 py-1.5 sm:px-4 text-right text-muted">
                       {staffHours ? Number(staffHours.total_hours).toFixed(1) : '0.0'}
                     </td>
                   </tr>

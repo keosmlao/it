@@ -19,7 +19,7 @@ export default function SurveyRow({ row }: { row: Row }) {
   return (
     <>
       <tr className="hover-surface transition">
-        <td className="px-4 py-2.5">
+        <td className="px-3 py-1.5">
           <Link
             href={`/assets/${encodeURIComponent(row.asset_code)}`}
             className="text-fg underline-offset-2 hover:underline"
@@ -41,11 +41,11 @@ export default function SurveyRow({ row }: { row: Row }) {
           </div>
         </td>
 
-        <td className="hidden px-4 py-2.5 text-xs text-muted md:table-cell">
+        <td className="hidden px-3 py-1.5 text-xs text-muted md:table-cell">
           {row.location_name ?? 'ບໍ່ລະບຸ'}
         </td>
 
-        <td className="px-4 py-2.5 whitespace-nowrap">
+        <td className="px-3 py-1.5 whitespace-nowrap">
           {row.stock_state ? (
             <>
               <span
@@ -64,7 +64,7 @@ export default function SurveyRow({ row }: { row: Row }) {
           )}
         </td>
 
-        <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted lg:table-cell">
+        <td className="hidden px-3 py-1.5 text-xs whitespace-nowrap text-muted lg:table-cell">
           {row.checked_at ? (
             <>
               {safeDate(row.checked_at)}
@@ -75,7 +75,7 @@ export default function SurveyRow({ row }: { row: Row }) {
           )}
         </td>
 
-        <td className="px-4 py-2.5 text-right">
+        <td className="px-3 py-1.5 text-right">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

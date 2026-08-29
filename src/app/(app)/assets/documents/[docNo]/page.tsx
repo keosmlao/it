@@ -118,7 +118,7 @@ export default async function DocumentPage({
         </h3>
 
         <div className="overflow-x-auto rounded-lg border border-line">
-          <table className="w-full text-sm">
+          <table className="o-list w-full text-[13px]">
             <thead className="border-b border-line text-left text-muted">
               <tr>
                 <th className="px-3 py-2 font-medium">ລະຫັດ</th>

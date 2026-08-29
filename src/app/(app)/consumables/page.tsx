@@ -74,7 +74,7 @@ export default async function ConsumablesPage({
         </Link>
       )}
 
-      <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         <label className="flex flex-col gap-1 text-xs text-muted">
           ໝວດ
           <select

@@ -128,17 +128,17 @@ export default function Sidebar({
       }`}
     >
       {/* ---------- ໂລໂກ້ ---------- */}
-      <div className="flex items-center gap-2.5 px-3 py-4">
+      <div className="sidebar-divider flex items-center gap-2.5 border-b px-3 py-2.5">
         <Link
           href="/"
           title="ໜ້າພາບລວມ"
-          className="brand-gradient-cool flex size-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white shadow-[0_10px_24px_#2c6fb64d]"
+          className="brand-gradient-cool flex size-8 shrink-0 items-center justify-center rounded text-xs font-bold text-white"
         >
           IT
         </Link>
         {!collapsed && (
           <span className="min-w-0 flex-1 leading-tight">
-            <span className="block truncate text-sm font-bold text-white">
+            <span className="block truncate text-sm font-semibold text-fg">
               ODIEN Group
             </span>
             <span className="sidebar-label block text-[11px] font-medium tracking-wider uppercase">
@@ -247,11 +247,11 @@ function Badge({
   return (
     <span
       className={`ml-auto shrink-0 rounded-full px-1.5 py-0.5 text-[11px] font-medium tabular-nums ${
-        active
-          ? 'bg-white/25 text-white'
-          : urgent
-            ? 'bg-red-500/90 text-white'
-            : 'bg-white/15 text-white/85'
+        urgent
+          ? 'bg-red-500 text-white'
+          : active
+            ? 'bg-brand-blue text-white'
+            : 'bg-brand-blue/10 text-brand-blue dark:bg-brand-blue/20 dark:text-brand-sky'
       }`}
     >
       {count > 999 ? '999+' : count}
@@ -300,9 +300,9 @@ function NavRow({
           href={item.href}
           data-active={active ? 'true' : undefined}
           title={collapsed ? item.label : undefined}
-          className={`sidebar-link relative flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-3 py-2 text-sm ${
+          className={`sidebar-link relative flex min-w-0 flex-1 items-center gap-2.5 rounded px-3 py-1.5 text-sm ${
             collapsed ? 'justify-center' : ''
-          } ${within ? 'text-white' : ''}`}
+          } ${within ? 'font-medium text-fg' : ''}`}
         >
           <Icon d={item.icon} />
           {!collapsed && <span className="truncate">{item.label}</span>}
@@ -331,7 +331,7 @@ function NavRow({
       </div>
 
       {hasChildren && open && (
-        <div className="mt-0.5 ml-5 flex flex-col gap-0.5 border-l border-white/10 pl-2">
+        <div className="sidebar-divider mt-0.5 ml-5 flex flex-col gap-0.5 border-l pl-2">
           {children.map((child) => {
             const count = child.badge ? badges[child.badge] : 0
             const childIsActive = isChildActive(child.href)

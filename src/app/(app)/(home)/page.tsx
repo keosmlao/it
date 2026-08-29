@@ -218,30 +218,30 @@ export default async function DashboardPage() {
           ທີມງານ ({team.length} ຄົນ)
         </h2>
 
-        <div className="glass-card overflow-x-auto rounded-xl">
-          <table className="w-full text-sm">
+        <div className="o-list-wrap overflow-x-auto">
+          <table className="o-list w-full text-[13px]">
             <thead className="border-b border-line text-left text-muted">
               <tr>
-                <th className="px-4 py-2.5 font-medium">ລະຫັດ</th>
-                <th className="px-4 py-2.5 font-medium">ຊື່ ແລະ ນາມສະກຸນ</th>
-                <th className="px-4 py-2.5 font-medium">ບົດບາດ</th>
-                <th className="px-4 py-2.5 font-medium">ໜ່ວຍງານ</th>
+                <th className="px-3 py-1.5 font-medium">ລະຫັດ</th>
+                <th className="px-3 py-1.5 font-medium">ຊື່ ແລະ ນາມສະກຸນ</th>
+                <th className="px-3 py-1.5 font-medium">ບົດບາດ</th>
+                <th className="px-3 py-1.5 font-medium">ໜ່ວຍງານ</th>
               </tr>
             </thead>
             <tbody className="divide-line divide-y">
               {team.map((member) => (
                 <tr key={member.employee_id}>
-                  <td className="px-4 py-2.5 text-muted">{member.employee_code}</td>
-                  <td className="px-4 py-2.5 text-fg">
+                  <td className="px-3 py-1.5 text-muted">{member.employee_code}</td>
+                  <td className="px-3 py-1.5 text-fg">
                     {member.fullname_lo}
                     {member.nickname && (
                       <span className="text-muted"> ({member.nickname})</span>
                     )}
                   </td>
-                  <td className="px-4 py-2.5 text-body">
+                  <td className="px-3 py-1.5 text-body">
                     {ROLE_LABEL_LO[member.role]}
                   </td>
-                  <td className="px-4 py-2.5 text-body">
+                  <td className="px-3 py-1.5 text-body">
                     {member.unit_name_lo ?? '—'}
                   </td>
                 </tr>

@@ -42,7 +42,7 @@ export default async function WorkLogsPage({
         <WorkLogForm tickets={work.tickets} tasks={work.tasks} />
       </div>
 
-      <form className="mt-5 flex flex-wrap items-end gap-3 glass-card rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         <label className="flex flex-col gap-1 text-xs text-muted">
           ຈາກວັນທີ
           <input
@@ -74,33 +74,33 @@ export default async function WorkLogsPage({
           <h2 className="mb-3 text-lg font-semibold text-fg">
             ສະຫຼຸບຊົ່ວໂມງຕໍ່ຄົນ
           </h2>
-          <div className="overflow-x-auto glass-card rounded-xl">
-            <table className="w-full text-sm">
+          <div className="o-list-wrap overflow-x-auto">
+            <table className="o-list w-full text-[13px]">
               <thead className="border-b border-line text-left text-muted">
                 <tr>
-                  <th className="px-4 py-2.5 font-medium">ພະນັກງານ</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Ticket</th>
-                  <th className="px-4 py-2.5 text-right font-medium">ວຽກພັດທະນາ</th>
-                  <th className="px-4 py-2.5 text-right font-medium">ອື່ນໆ</th>
-                  <th className="px-4 py-2.5 text-right font-medium">ລວມ</th>
+                  <th className="px-3 py-1.5 font-medium">ພະນັກງານ</th>
+                  <th className="px-3 py-1.5 text-right font-medium">Ticket</th>
+                  <th className="px-3 py-1.5 text-right font-medium">ວຽກພັດທະນາ</th>
+                  <th className="px-3 py-1.5 text-right font-medium">ອື່ນໆ</th>
+                  <th className="px-3 py-1.5 text-right font-medium">ລວມ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
                 {summary.map((s) => (
                   <tr key={s.employee_id}>
-                    <td className="px-4 py-2.5 text-fg">
+                    <td className="px-3 py-1.5 text-fg">
                       {s.employee_name}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-muted">
+                    <td className="px-3 py-1.5 text-right text-muted">
                       {Number(s.ticket_hours).toFixed(1)}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-muted">
+                    <td className="px-3 py-1.5 text-right text-muted">
                       {Number(s.task_hours).toFixed(1)}
                     </td>
-                    <td className="px-4 py-2.5 text-right text-muted">
+                    <td className="px-3 py-1.5 text-right text-muted">
                       {Number(s.other_hours).toFixed(1)}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-medium text-fg">
+                    <td className="px-3 py-1.5 text-right font-medium text-fg">
                       {Number(s.total_hours).toFixed(1)}
                     </td>
                   </tr>

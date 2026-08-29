@@ -111,7 +111,7 @@ export default async function RecoveryPage({
         ))}
       </nav>
 
-      <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         {filters.reason !== 'all' && (
           <input type="hidden" name="reason" value={filters.reason} />
         )}
@@ -132,18 +132,18 @@ export default async function RecoveryPage({
         </button>
       </form>
 
-      <div className="glass-card mt-5 overflow-x-auto rounded-xl">
-        <table className="w-full text-sm">
+      <div className="o-list-wrap mt-3 overflow-x-auto">
+        <table className="o-list w-full text-[13px]">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="px-4 py-2.5 font-medium">ຜູ້ຖືຄອງ</th>
-              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ອຸປະກອນ</th>
-              <th className="hidden px-4 py-2.5 font-medium xl:table-cell">ຢືມເມື່ອ</th>
-              <th className="hidden px-4 py-2.5 text-right font-medium lg:table-cell">
+              <th className="px-3 py-1.5 font-medium">ຜູ້ຖືຄອງ</th>
+              <th className="hidden px-3 py-1.5 font-medium md:table-cell">ອຸປະກອນ</th>
+              <th className="hidden px-3 py-1.5 font-medium xl:table-cell">ຢືມເມື່ອ</th>
+              <th className="hidden px-3 py-1.5 text-right font-medium lg:table-cell">
                 ຖືມາແລ້ວ
               </th>
-              <th className="px-4 py-2.5 font-medium">ສະຖານະທວງ</th>
-              <th className="px-4 py-2.5" />
+              <th className="px-3 py-1.5 font-medium">ສະຖານະທວງ</th>
+              <th className="px-3 py-1.5" />
             </tr>
           </thead>
           <tbody className="divide-y divide-line">

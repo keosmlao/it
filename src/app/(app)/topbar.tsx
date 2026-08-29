@@ -44,6 +44,15 @@ function describe(pathname: string) {
   return { title: parentTitle, trail: [] }
 }
 
+/**
+ * ແຖບເທິງແບບ Odoo — ສອງຊັ້ນ
+ *
+ * 1. navbar ສີເຂັ້ມ: ຊື່ລະບົບ ແລະ ເຄື່ອງມືປະຈຳຕົວ (ແຈ້ງເຕືອນ, ຜູ້ໃຊ້)
+ * 2. control panel ສີຂາວ: breadcrumb + ຫົວຂໍ້ໜ້າ ແລະ ຊ່ອງຄົ້ນຫາ
+ *
+ * ແຍກສອງຊັ້ນຕາມ Odoo ເພາະຄົນລະໜ້າທີ່ — ຊັ້ນເທິງບໍ່ປ່ຽນຕາມໜ້າ
+ * ຊັ້ນລຸ່ມບອກວ່າກຳລັງຢູ່ໃສ ແລະ ເຮັດຫຍັງກັບຂໍ້ມູນຊຸດນີ້ໄດ້
+ */
 export default function Topbar({
   user,
   unread,
@@ -55,27 +64,71 @@ export default function Topbar({
   const { title, trail } = describe(pathname)
 
   return (
-    <header className="glass-heavy sticky top-0 z-20 flex min-h-16 flex-wrap items-center justify-between gap-3 border-x-0 border-t-0 px-3 py-2.5 sm:px-5">
-      <div className="min-w-0">
-        <h1 className="truncate text-lg font-bold tracking-tight text-fg sm:text-xl">{title}</h1>
-        <p className="hidden items-center gap-1.5 text-xs text-muted sm:flex">
-          <Link href="/" className="hover:underline">
-            ໜ້າຫຼັກ
+    <>
+      <header className="o-navbar sticky top-0 z-30 flex h-11 shrink-0 items-center gap-1 px-2 sm:px-3">
+        <Link
+          href="/"
+          className="flex items-center gap-2 rounded px-2 py-1 text-sm font-semibold tracking-tight hover:bg-white/10"
+        >
+          ODIEN <span className="font-normal opacity-70">IT</span>
+        </Link>
+
+        <div className="ml-auto flex items-center gap-0.5">
+          <Link
+            href="/notifications"
+            aria-label={`ການແຈ້ງເຕືອນ${unread ? ` — ຍັງບໍ່ໄດ້ອ່ານ ${unread}` : ''}`}
+            className="relative flex size-8 items-center justify-center rounded hover:bg-white/10"
+          >
+            <Icon d={ICON.bell} />
+            {unread > 0 && (
+              <span className="absolute top-0.5 right-0.5 flex min-w-[16px] items-center justify-center rounded-full bg-brand-orange px-1 text-[10px] font-bold text-white">
+                {unread > 9 ? '9+' : unread}
+              </span>
+            )}
           </Link>
+
+          <ThemeToggle variant="navbar" />
+
+          <span className="user-chip flex items-center gap-2 rounded px-1.5 py-1">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-xs font-bold">
+              {(user.nickname ?? user.fullname_lo).slice(0, 1)}
+            </span>
+            {/* ຊື່ເຕັມພ້ອມໜ່ວຍງານຍາວກວ່າທີ່ຫົວໜ້າຈໍມີ — ສະແດງເມື່ອກວ້າງພໍ */}
+            <span className="hidden max-w-[11rem] truncate text-xs leading-tight lg:block">
+              {user.fullname_lo}
+              <span className="block truncate opacity-70">
+                {ROLE_LABEL_LO[user.role]}
+                {user.unit_name_lo && ` · ${user.unit_name_lo}`}
+              </span>
+            </span>
+          </span>
+        </div>
+      </header>
+
+      <div className="o-control-panel sticky top-11 z-20 flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5 sm:px-4">
+        <div className="flex min-w-0 items-baseline gap-1.5">
+          {trail.length > 0 || pathname !== '/' ? (
+            <Link
+              href="/"
+              className="hidden text-xs text-muted underline-offset-2 hover:underline sm:inline"
+            >
+              ໜ້າຫຼັກ
+            </Link>
+          ) : null}
           {trail.map((crumb) => (
-            <span key={crumb} className="flex items-center gap-1.5">
-              <span className="text-faint">›</span>
-              {crumb}
+            <span key={crumb} className="hidden items-baseline gap-1.5 sm:flex">
+              <span className="text-faint">/</span>
+              <span className="text-xs text-muted">{crumb}</span>
             </span>
           ))}
-          <span className="text-faint">›</span>
-          <span className="text-body">{title}</span>
-        </p>
-      </div>
+          {(trail.length > 0 || pathname !== '/') && (
+            <span className="hidden text-faint sm:inline">/</span>
+          )}
+          <h1 className="truncate text-base font-semibold text-fg">{title}</h1>
+        </div>
 
-      <div className="flex shrink-0 items-center gap-2">
-        <form action="/search" className="relative hidden sm:block">
-          <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-faint">
+        <form action="/search" className="relative ml-auto hidden sm:block">
+          <span className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-faint">
             <Icon d={ICON.search} className="size-4" />
           </span>
           <input
@@ -83,42 +136,10 @@ export default function Topbar({
             type="search"
             placeholder="ຄົ້ນຫາທົ່ວລະບົບ…"
             aria-label="ຄົ້ນຫາທົ່ວລະບົບ"
-            className="input w-40 rounded-full py-2 pr-3 pl-9 text-sm lg:w-56"
+            className="input w-44 rounded py-1 pr-2 pl-8 text-sm lg:w-64"
           />
         </form>
-
-        <Link
-          href="/notifications"
-          aria-label={`ການແຈ້ງເຕືອນ${unread ? ` — ຍັງບໍ່ໄດ້ອ່ານ ${unread}` : ''}`}
-          className="btn-secondary relative flex size-9 items-center justify-center rounded-full"
-        >
-          <Icon d={ICON.bell} />
-          {unread > 0 && (
-            <span className="absolute -top-1 -right-1 flex min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-              {unread > 9 ? '9+' : unread}
-            </span>
-          )}
-        </Link>
-
-        <ThemeToggle />
-
-        <span className="user-chip flex items-center gap-2.5 rounded-full py-1 pr-4 pl-1">
-          <span className="brand-gradient-warm flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white">
-            {(user.nickname ?? user.fullname_lo).slice(0, 1)}
-          </span>
-          {/* ຊື່ເຕັມພ້ອມໜ່ວຍງານຍາວກວ່າທີ່ຫົວໜ້າຈໍມີ — ສະແດງເມື່ອກວ້າງພໍ
-              ແລະ ຕັດຫາງເອົາ ບໍ່ດັ່ງນັ້ນດັນລົ້ນອອກນອກຈໍຢູ່ແທັບເລັດ */}
-          <span className="hidden max-w-[11rem] leading-tight lg:block">
-            <span className="block truncate text-sm font-medium">
-              {user.fullname_lo}
-            </span>
-            <span className="block truncate text-[11px] opacity-70">
-              {ROLE_LABEL_LO[user.role]}
-              {user.unit_name_lo && ` · ${user.unit_name_lo}`}
-            </span>
-          </span>
-        </span>
       </div>
-    </header>
+    </>
   )
 }

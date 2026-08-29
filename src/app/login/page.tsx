@@ -32,7 +32,7 @@ export default async function LoginPage() {
   return (
     <main className="relative flex min-h-dvh flex-col lg:flex-row">
       {/* ---------- ແຜງແບຣນ ---------- */}
-      <section className="sidebar-shell relative flex flex-col justify-between overflow-hidden px-6 py-8 lg:w-[46%] lg:px-12 lg:py-12">
+      <section className="o-login-hero relative flex flex-col justify-between overflow-hidden px-6 py-8 lg:w-[46%] lg:px-12 lg:py-12">
         {/* ວົງແສງຕົກແຕ່ງ */}
         <span
           aria-hidden="true"

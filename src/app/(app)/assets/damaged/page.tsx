@@ -107,7 +107,7 @@ export default async function DamagedPage({
         ))}
       </nav>
 
-      <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         {filters.state !== 'broken' && (
           <input type="hidden" name="state" value={filters.state} />
         )}
@@ -125,20 +125,20 @@ export default async function DamagedPage({
         </button>
       </form>
 
-      <div className="glass-card mt-5 overflow-x-auto rounded-xl">
-        <table className="w-full text-sm">
+      <div className="o-list-wrap mt-3 overflow-x-auto">
+        <table className="o-list w-full text-[13px]">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="px-2 py-2.5 font-medium sm:px-4">ອຸປະກອນ</th>
-              <th className="px-2 py-2.5 font-medium sm:px-4">ສະຖານະ</th>
-              <th className="hidden px-4 py-2.5 font-medium md:table-cell">
+              <th className="px-2 py-1.5 font-medium sm:px-4">ອຸປະກອນ</th>
+              <th className="px-2 py-1.5 font-medium sm:px-4">ສະຖານະ</th>
+              <th className="hidden px-3 py-1.5 font-medium md:table-cell">
                 ອາການ / ເຫດຜົນ
               </th>
-              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ພົບເມື່ອ</th>
-              <th className="hidden px-4 py-2.5 text-right font-medium lg:table-cell">
+              <th className="hidden px-3 py-1.5 font-medium lg:table-cell">ພົບເມື່ອ</th>
+              <th className="hidden px-3 py-1.5 text-right font-medium lg:table-cell">
                 ສ້ອມມາແລ້ວ
               </th>
-              <th className="px-4 py-2.5" />
+              <th className="px-3 py-1.5" />
             </tr>
           </thead>
           <tbody className="divide-y divide-line">

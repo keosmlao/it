@@ -43,7 +43,7 @@ export default function DamageRow({
   return (
     <>
       <tr className="hover-surface transition">
-        <td className="px-2 py-2.5 sm:px-4">
+        <td className="px-2 py-1.5 sm:px-4">
           <Link
             href={`/assets/${encodeURIComponent(row.asset_code)}`}
             className="text-fg underline-offset-2 hover:underline"
@@ -64,7 +64,7 @@ export default function DamageRow({
           </div>
         </td>
 
-        <td className="px-2 py-2.5 whitespace-nowrap sm:px-4">
+        <td className="px-2 py-1.5 whitespace-nowrap sm:px-4">
           <span
             className={`rounded-full px-2 py-0.5 text-xs font-medium ${row.state_style}`}
           >
@@ -72,7 +72,7 @@ export default function DamageRow({
           </span>
         </td>
 
-        <td className="hidden px-4 py-2.5 md:table-cell">
+        <td className="hidden px-3 py-1.5 md:table-cell">
           <p className="text-body">{row.damage_detail ?? '—'}</p>
           {row.writeoff_reason && (
             <p className="text-xs text-muted">
@@ -82,14 +82,14 @@ export default function DamageRow({
           )}
         </td>
 
-        <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted lg:table-cell">
+        <td className="hidden px-3 py-1.5 text-xs whitespace-nowrap text-muted lg:table-cell">
           {scrapped ? row.written_off_at : row.damaged_at}
           {row.checked_by_name && (
             <div className="text-[11px] text-faint">{row.checked_by_name}</div>
           )}
         </td>
 
-        <td className="hidden px-4 py-2.5 text-right text-xs whitespace-nowrap text-muted lg:table-cell">
+        <td className="hidden px-3 py-1.5 text-right text-xs whitespace-nowrap text-muted lg:table-cell">
           {row.repair_count > 0 ? (
             <>
               {row.repair_count} ຄັ້ງ
@@ -100,7 +100,7 @@ export default function DamageRow({
           )}
         </td>
 
-        <td className="px-2 py-2.5 text-right whitespace-nowrap sm:px-4">
+        <td className="px-2 py-1.5 text-right whitespace-nowrap sm:px-4">
           {/* ຢູ່ມືຖືວາງປຸ່ມຊ້ອນກັນ — ຮຽງແຖວດຽວແລ້ວຕາຕະລາງກວ້າງເກີນຈໍ */}
           <div className="flex flex-col items-end gap-1.5 sm:flex-row sm:justify-end sm:gap-2">
             {!scrapped && (

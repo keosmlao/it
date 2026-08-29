@@ -22,7 +22,7 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
   return (
     <>
       <tr className="hover-surface transition">
-        <td className="px-4 py-2.5">
+        <td className="px-3 py-1.5">
           <Link
             href={`/assets/holders/${encodeURIComponent(target.emp_code)}`}
             className="text-fg underline-offset-2 hover:underline"
@@ -46,7 +46,7 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
           </div>
         </td>
 
-        <td className="hidden px-4 py-2.5 md:table-cell">
+        <td className="hidden px-3 py-1.5 md:table-cell">
           <Link
             href={`/assets/${encodeURIComponent(target.asset_code)}`}
             className="text-body underline-offset-2 hover:underline"
@@ -56,14 +56,14 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
           <div className="font-mono text-xs text-muted">{target.asset_code}</div>
         </td>
 
-        <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted xl:table-cell">
+        <td className="hidden px-3 py-1.5 text-xs whitespace-nowrap text-muted xl:table-cell">
           {safeDate(target.borrowed_at)}
           {target.borrow_doc_no && (
             <div className="font-mono text-[11px]">{target.borrow_doc_no}</div>
           )}
         </td>
 
-        <td className="hidden px-4 py-2.5 text-right text-xs whitespace-nowrap lg:table-cell">
+        <td className="hidden px-3 py-1.5 text-right text-xs whitespace-nowrap lg:table-cell">
           <span
             className={
               target.days_held > 730
@@ -76,7 +76,7 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
           </span>
         </td>
 
-        <td className="px-4 py-2.5 whitespace-nowrap">
+        <td className="px-3 py-1.5 whitespace-nowrap">
           <span
             className={`rounded-full px-2 py-0.5 text-xs font-medium ${RECOVERY_STYLE[status]}`}
           >
@@ -89,7 +89,7 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
           )}
         </td>
 
-        <td className="px-4 py-2.5 text-right">
+        <td className="px-3 py-1.5 text-right">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

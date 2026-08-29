@@ -64,7 +64,7 @@ export default async function DocumentsPage({
         ))}
       </nav>
 
-      <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         {kind !== 'all' && <input type="hidden" name="kind" value={kind} />}
         <label className="flex flex-col gap-1 text-xs text-muted">
           ຄົ້ນຫາ
@@ -80,24 +80,24 @@ export default async function DocumentsPage({
         </button>
       </form>
 
-      <div className="glass-card mt-5 overflow-x-auto rounded-xl">
-        <table className="w-full text-sm">
+      <div className="o-list-wrap mt-3 overflow-x-auto">
+        <table className="o-list w-full text-[13px]">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="px-4 py-2.5 font-medium">ເລກໃບ</th>
-              <th className="px-4 py-2.5 font-medium">ປະເພດ</th>
-              <th className="hidden px-4 py-2.5 font-medium sm:table-cell">ວັນທີ</th>
-              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ຜູ້ຢືມ</th>
-              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">
+              <th className="px-3 py-1.5 font-medium">ເລກໃບ</th>
+              <th className="px-3 py-1.5 font-medium">ປະເພດ</th>
+              <th className="hidden px-3 py-1.5 font-medium sm:table-cell">ວັນທີ</th>
+              <th className="hidden px-3 py-1.5 font-medium md:table-cell">ຜູ້ຢືມ</th>
+              <th className="hidden px-3 py-1.5 font-medium lg:table-cell">
                 ເຫດຜົນ / ໝາຍເຫດ
               </th>
-              <th className="px-4 py-2.5 text-right font-medium">ລາຍການ</th>
+              <th className="px-3 py-1.5 text-right font-medium">ລາຍການ</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {docPage.items.map((doc) => (
               <tr key={doc.doc_no} className="hover-surface transition">
-                <td className="px-4 py-2.5 whitespace-nowrap">
+                <td className="px-3 py-1.5 whitespace-nowrap">
                   <Link
                     href={`/assets/documents/${encodeURIComponent(doc.doc_no)}`}
                     className="font-mono text-xs font-medium text-fg underline-offset-2 hover:underline"
@@ -115,19 +115,19 @@ export default async function DocumentsPage({
                     {doc.emp_name ?? doc.emp_code}
                   </div>
                 </td>
-                <td className="px-4 py-2.5 whitespace-nowrap">
+                <td className="px-3 py-1.5 whitespace-nowrap">
                   <DocKindBadge kind={doc.doc_kind} />
                 </td>
-                <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted sm:table-cell">
+                <td className="hidden px-3 py-1.5 text-xs whitespace-nowrap text-muted sm:table-cell">
                   {safeDate(doc.doc_date)}
                 </td>
-                <td className="hidden px-4 py-2.5 md:table-cell">
+                <td className="hidden px-3 py-1.5 md:table-cell">
                   <span className="text-body">{doc.emp_name ?? doc.emp_code}</span>
                   <div className="text-xs text-muted">
                     {doc.department_name ?? '—'}
                   </div>
                 </td>
-                <td className="hidden max-w-md px-4 py-2.5 lg:table-cell">
+                <td className="hidden max-w-md px-3 py-1.5 lg:table-cell">
                   {doc.reason && (
                     <span className="block truncate text-body">{doc.reason}</span>
                   )}
@@ -140,7 +140,7 @@ export default async function DocumentsPage({
                     <span className="text-faint">—</span>
                   )}
                 </td>
-                <td className="px-4 py-2.5 text-right text-muted">
+                <td className="px-3 py-1.5 text-right text-muted">
                   {doc.item_count}
                 </td>
               </tr>

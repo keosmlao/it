@@ -79,7 +79,7 @@ export default async function MovementsPage({
         ))}
       </nav>
 
-      <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         {state !== 'holding' && <input type="hidden" name="state" value={state} />}
         <label className="flex flex-col gap-1 text-xs text-muted">
           ຄົ້ນຫາ
@@ -104,15 +104,15 @@ export default async function MovementsPage({
         </button>
       </form>
 
-      <div className="glass-card mt-5 overflow-x-auto rounded-xl">
-        <table className="w-full text-sm">
+      <div className="o-list-wrap mt-3 overflow-x-auto">
+        <table className="o-list w-full text-[13px]">
           <thead className="border-b border-line text-left text-muted">
             <tr>
-              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ໃບຢືມ</th>
-              <th className="px-4 py-2.5 font-medium">ອຸປະກອນ</th>
-              <th className="hidden px-4 py-2.5 font-medium md:table-cell">ຜູ້ຢືມ</th>
-              <th className="hidden px-4 py-2.5 font-medium lg:table-cell">ຢືມ</th>
-              <th className="px-4 py-2.5 font-medium">ຄືນ</th>
+              <th className="hidden px-3 py-1.5 font-medium lg:table-cell">ໃບຢືມ</th>
+              <th className="px-3 py-1.5 font-medium">ອຸປະກອນ</th>
+              <th className="hidden px-3 py-1.5 font-medium md:table-cell">ຜູ້ຢືມ</th>
+              <th className="hidden px-3 py-1.5 font-medium lg:table-cell">ຢືມ</th>
+              <th className="px-3 py-1.5 font-medium">ຄືນ</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
@@ -121,10 +121,10 @@ export default async function MovementsPage({
                 key={`${m.borrow_doc_no}-${m.asset_code}-${index}`}
                 className="hover-surface transition"
               >
-                <td className="hidden px-4 py-2.5 font-mono text-xs whitespace-nowrap text-muted lg:table-cell">
+                <td className="hidden px-3 py-1.5 font-mono text-xs whitespace-nowrap text-muted lg:table-cell">
                   {m.borrow_doc_no ?? '—'}
                 </td>
-                <td className="px-4 py-2.5">
+                <td className="px-3 py-1.5">
                   <Link
                     href={`/assets/${encodeURIComponent(m.asset_code)}`}
                     className="text-fg underline-offset-2 hover:underline"
@@ -137,16 +137,16 @@ export default async function MovementsPage({
                     {m.emp_name ?? '—'} · ຢືມ {safeDate(m.borrowed_at)}
                   </div>
                 </td>
-                <td className="hidden px-4 py-2.5 md:table-cell">
+                <td className="hidden px-3 py-1.5 md:table-cell">
                   <span className="text-body">{m.emp_name ?? '—'}</span>
                   <div className="text-xs text-muted">
                     {[m.org_department, m.unit_name].filter(Boolean).join(' · ') || '—'}
                   </div>
                 </td>
-                <td className="hidden px-4 py-2.5 text-xs whitespace-nowrap text-muted lg:table-cell">
+                <td className="hidden px-3 py-1.5 text-xs whitespace-nowrap text-muted lg:table-cell">
                   {safeDate(m.borrowed_at)}
                 </td>
-                <td className="px-4 py-2.5 text-xs whitespace-nowrap">
+                <td className="px-3 py-1.5 text-xs whitespace-nowrap">
                   {m.is_returned ? (
                     <span className="text-muted">{safeDate(m.returned_at)}</span>
                   ) : (

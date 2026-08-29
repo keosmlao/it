@@ -81,7 +81,7 @@ export default async function NotifyEmailsPage({
           : '⚠️ ຍັງບໍ່ໄດ້ຕັ້ງ SMTP_HOST / SMTP_FROM ໃນ .env.local — ບັນທຶກອີເມວໄວ້ກ່ອນໄດ້ ແຕ່ຈະຍັງບໍ່ສົ່ງ'}
       </p>
 
-      <form className="glass-card mt-5 flex flex-wrap items-end gap-3 rounded-xl p-4">
+      <form className="o-filter-bar mt-3">
         <label className="flex flex-col gap-1 text-xs text-muted">
           ຄົ້ນຫາ
           <input

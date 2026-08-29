@@ -15,7 +15,7 @@ export default async function MyHomePage() {
 
   return (
     <div>
-      <section className="brand-gradient-warm rounded-2xl p-6 text-white">
+      <section className="brand-gradient-cool rounded p-5 text-white">
         <h1 className="text-xl font-semibold">ສະບາຍດີ {user.fullname_lo}</h1>
         <p className="mt-1 text-sm opacity-90">
           ຄອມພິວເຕີ, ເຄື່ອງພິມ, ອິນເຕີເນັດ ຫຼື ລະບົບມີບັນຫາ — ແຈ້ງໄດ້ຢູ່ນີ້

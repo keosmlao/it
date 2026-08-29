@@ -46,7 +46,7 @@ export default function WeekGrid({
       </div>
 
       <div className="-mx-4 mt-3 overflow-x-auto px-4">
-        <table className="w-full min-w-[620px] border-collapse text-sm">
+        <table className="o-list w-full min-w-[620px] border-collapse text-sm">
           <thead>
             <tr>
               <th className="pb-2 text-left text-xs font-medium text-muted">
