@@ -64,13 +64,21 @@ pm2 save
 
 ເບິ່ງ log: `pm2 logs odg-it` · ຣີສະຕາດ: `pm2 restart odg-it`
 
-## ສົ່ງຂໍ້ຄວາມ LINE ຕາມເວລາ
+## ວຽກຕາມຕາຕະລາງ (cron)
 
-ຕັ້ງ Task Scheduler ໃຫ້ເອີ້ນທຸກ 5 ນາທີ:
+ເຄື່ອງຈິງ (10.0.40.9) ເປັນ **Ubuntu** ແລ່ນດ້ວຍ systemd `it.service` ຢູ່ port 3010
+ແລະ ຕັ້ງຕາຕະລາງໄວ້ໃນ **crontab ຂອງ user `odg`** — ຕັ້ງແລ້ວເມື່ອ 31/08/2026:
 
-```powershell
-curl -X POST -H "x-notify-secret: <NOTIFY_DRAIN_SECRET>" http://localhost:3000/api/notify/drain
+```cron
+# ທຸກ 5 ນາທີ: ສົ່ງຂໍ້ຄວາມຄ້າງຄິວ + ອັບເດດ cache ປະຫວັດຢືມ–ຄືນ
+*/5 * * * * /home/odg/it/scripts/cron-run.sh /api/notify/drain 3010
+# ວຽກເຕືອນປະຈຳວັນ — 08:00 ໂມງລາວ = 01:00 UTC (cron ແລ່ນຕາມ UTC)
+0 1 * * * /home/odg/it/scripts/cron-run.sh /api/reminders/run 3010
 ```
+
+`scripts/cron-run.sh` ອ່ານ `NOTIFY_DRAIN_SECRET` ຈາກ `.env.local` ເອງ
+(ບໍ່ໃສ່ຄ່າລັບໄວ້ໃນ crontab) ແລ້ວຂຽນຜົນລົງ `logs/drain.log` · `logs/run.log`
+ພ້ອມເວລາທຸກຮອບ. ກວດຮອບຫຼ້າສຸດ: `tail -3 /home/odg/it/logs/drain.log`
 
 ຖ້າບໍ່ຕັ້ງ ຜູ້ຈັດການກົດສົ່ງເອງໄດ້ຈາກໜ້າ **ຕັ້ງຄ່າລະບົບ**
 
@@ -80,13 +88,7 @@ curl -X POST -H "x-notify-secret: <NOTIFY_DRAIN_SECRET>" http://localhost:3000/a
 
 ## ວຽກເຕືອນປະຈຳວັນ
 
-ຕັ້ງ Task Scheduler ອີກອັນໃຫ້ແລ່ນມື້ລະເທື່ອ (ແນະນຳ 08:00):
-
-```powershell
-curl -X POST -H "x-notify-secret: <NOTIFY_DRAIN_SECRET>" http://localhost:3000/api/reminders/run
-```
-
-ອັນດຽວກວດໃຫ້ 2 ເລື່ອງ:
+ຮອບ `0 1 * * *` ຂ້າງເທິງ (08:00 ໂມງລາວ) ອັນດຽວກວດໃຫ້ 2 ເລື່ອງ:
 
 | ເລື່ອງ | ເຕືອນເມື່ອໃດ | ຫາໃຜ |
 | --- | --- | --- |
