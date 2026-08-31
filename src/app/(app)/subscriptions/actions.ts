@@ -106,7 +106,7 @@ export async function createSubscription(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດລົງທະບຽນສັນຍາເຊົ່າ' }
+  if (!can.module(user, 'subscriptions', 'create')) return { error: 'ບໍ່ມີສິດລົງທະບຽນສັນຍາເຊົ່າ' }
 
   const f = readFields(formData)
   const invalid = validate(f)
@@ -143,7 +143,7 @@ export async function updateSubscription(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດແກ້ສັນຍາເຊົ່າ' }
+  if (!can.module(user, 'subscriptions', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ສັນຍາເຊົ່າ' }
 
   const id = String(formData.get('id') ?? '').trim()
   if (!id) return { error: 'ບໍ່ພົບສັນຍາ' }
@@ -180,7 +180,7 @@ export async function cancelSubscription(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດຍົກເລີກສັນຍາ' }
+  if (!can.module(user, 'subscriptions', 'delete')) return { error: 'ບໍ່ມີສິດຍົກເລີກສັນຍາ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const reason = String(formData.get('cancel_reason') ?? '')
@@ -213,7 +213,7 @@ export async function reopenSubscription(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດເປີດສັນຍາຄືນ' }
+  if (!can.module(user, 'subscriptions', 'edit')) return { error: 'ບໍ່ມີສິດເປີດສັນຍາຄືນ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const sub = await getSubscription(id)
@@ -248,7 +248,7 @@ export async function recordPeriod(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດບັນທຶກການຈ່າຍ' }
+  if (!can.module(user, 'subscriptions', 'edit')) return { error: 'ບໍ່ມີສິດບັນທຶກການຈ່າຍ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const sub = await getSubscription(id)
@@ -318,7 +318,7 @@ export async function setPeriodStatus(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດແກ້ງວດການຈ່າຍ' }
+  if (!can.module(user, 'subscriptions', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ງວດການຈ່າຍ' }
 
   const periodId = String(formData.get('period_id') ?? '').trim()
   const status = String(formData.get('status') ?? '').trim()
@@ -372,7 +372,7 @@ export async function deletePeriod(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດລຶບງວດ' }
+  if (!can.module(user, 'subscriptions', 'delete')) return { error: 'ບໍ່ມີສິດລຶບງວດ' }
 
   const periodId = String(formData.get('period_id') ?? '').trim()
   const rows = await query<{ subscription_id: string }>(
@@ -398,7 +398,7 @@ export async function renewSubscription(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດຕໍ່ອາຍຸ' }
+  if (!can.module(user, 'subscriptions', 'edit')) return { error: 'ບໍ່ມີສິດຕໍ່ອາຍຸ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const sub = await getSubscription(id)

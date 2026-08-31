@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getDepartmentOptions, getOwnerOptions } from '@/lib/subscriptions/queries'
 import { getVendorOptions } from '@/lib/vendors/queries'
@@ -8,7 +8,7 @@ import SubscriptionForm from '../subscription-form'
 export const metadata = { title: 'ລົງທະບຽນການເຊົ່າ' }
 
 export default async function NewSubscriptionPage() {
-  const user = await requireUser()
+  const user = await requireModuleView('subscriptions')
   if (!can.manageSubscriptions(user)) notFound()
 
   const [owners, departments, vendors] = await Promise.all([

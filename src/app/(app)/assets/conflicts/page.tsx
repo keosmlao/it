@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getConflictStats,
   listDateErrors,
@@ -11,7 +11,7 @@ import ExportMenu from '@/components/export-menu'
 export const metadata = { title: 'ໃບຢືມທີ່ຂັດກັນ' }
 
 export default async function ConflictsPage() {
-  await requireUser()
+  await requireModuleView('assets')
 
   const [rows, dateErrors, stats] = await Promise.all([
     listLoanConflicts(),

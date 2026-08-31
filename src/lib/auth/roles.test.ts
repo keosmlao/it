@@ -2,18 +2,22 @@ import { describe, expect, it } from 'vitest'
 import {
   allows,
   can,
+  MODULE_ACTIONS,
+  MODULES,
   PERMISSIONS,
   PERMISSION_LABEL_LO,
   roleAllows,
+  roleAllowsModule,
   type ItStaff,
-  type Permission,
+  type ModuleAction,
+  type ModuleCode,
   type Role,
 } from './roles'
 
 function user(
   role: Role,
-  unit_code = '8010',
-  permissions: Partial<Record<Permission, boolean>> | null = null
+  unit_code: string | null = '8010',
+  permissions: ItStaff['permissions'] = null
 ): ItStaff {
   return { employee_id: 1, employee_code: 'E1', fullname_lo: 'Test', nickname: null,
     unit_code, unit_name_lo: null, position_code: null, position_name_lo: null, role,
@@ -94,5 +98,74 @@ describe('ສິດລາຍຄົນ (per-user overrides)', () => {
 
   it('ທຸກສິດມີປ້າຍພາສາລາວ', () => {
     for (const p of PERMISSIONS) expect(PERMISSION_LABEL_LO[p]).toBeTruthy()
+  })
+})
+
+/**
+ * ສິດລາຍໂມດູນ — ຄ່າຕັ້ງຕົ້ນຕ້ອງເທົ່າກັບສິດເກົ່າ ຈຶ່ງບໍ່ມີໃຜເສຍ ຫຼື
+ * ໄດ້ສິດເພີ່ມໃນມື້ທີ່ເປີດໃຊ້ — ຢືນຢັນດ້ວຍ test ບໍ່ແມ່ນດ້ວຍຄວາມຫວັງ
+ */
+describe('ສິດລາຍໂມດູນ', () => {
+  it('ຄ່າຕັ້ງຕົ້ນຄືສິດເກົ່າ: support ຈັດການອຸປະກອນໄດ້ ແຕ່ຄ່າເຊົ່າບໍ່ໄດ້', () => {
+    const support = user('support')
+    expect(can.module(support, 'assets', 'create')).toBe(true)
+    expect(can.module(support, 'assets', 'edit')).toBe(true)
+    expect(can.module(support, 'subscriptions', 'create')).toBe(false)
+    expect(can.module(support, 'subscriptions', 'edit')).toBe(false)
+  })
+
+  it('ຜູ້ຈັດການ ແລະ ຫົວໜ້າ ຈັດການຄ່າເຊົ່າໄດ້', () => {
+    for (const role of ['manager', 'head'] as Role[]) {
+      expect(can.module(user(role), 'subscriptions', 'create')).toBe(true)
+    }
+  })
+
+  it('ເປີດໃຫ້ເປັນລາຍຄົນໄດ້ ໂດຍບໍ່ຕ້ອງເລື່ອນບົດບາດ', () => {
+    const support = user('support', '8010', { 'subscriptions.create': true })
+    expect(can.module(support, 'subscriptions', 'create')).toBe(true)
+    // ບໍ່ຮົ່ວໄປຂໍ້ອື່ນ
+    expect(can.module(support, 'subscriptions', 'delete')).toBe(false)
+    expect(can.manageSubscriptions(support)).toBe(false)
+  })
+
+  it('ຫ້າມລາຍຄົນໄດ້ ເຖິງແມ່ນບົດບາດຈະເປີດໃຫ້', () => {
+    const head = user('head', '8010', { 'subscriptions.delete': false })
+    expect(can.module(head, 'subscriptions', 'edit')).toBe(true)
+    expect(can.module(head, 'subscriptions', 'delete')).toBe(false)
+  })
+
+  it('ປິດ "ເບິ່ງ" ແລ້ວເຮັດຫຍັງໃນໂມດູນນັ້ນບໍ່ໄດ້ເລີຍ', () => {
+    const support = user('support', '8010', {
+      'assets.view': false,
+      'assets.create': true,
+    })
+    expect(can.viewModule(support, 'assets')).toBe(false)
+    expect(can.module(support, 'assets', 'create')).toBe(false)
+  })
+
+  it('ຜູ້ແຈ້ງບັນຫາບໍ່ໄດ້ຫຍັງເລີຍ ເຖິງແມ່ນຈະຕັ້ງເປີດໃຫ້', () => {
+    const outsider = user('requester', null, { 'assets.view': true })
+    for (const m of MODULES) {
+      for (const a of MODULE_ACTIONS) {
+        expect(can.module(outsider, m.code as ModuleCode, a as ModuleAction)).toBe(false)
+      }
+    }
+  })
+
+  it('ລຶບ ticket ໄດ້ສະເພາະຜູ້ຈັດການ ຄືກົດເກົ່າ', () => {
+    expect(roleAllowsModule('manager', 'tickets', 'delete')).toBe(true)
+    for (const role of ['head', 'support', 'staff'] as Role[]) {
+      expect(roleAllowsModule(role, 'tickets', 'delete')).toBe(false)
+      expect(roleAllowsModule(role, 'tickets', 'edit')).toBe(true)
+    }
+  })
+
+  it('ທຸກໂມດູນມີຊື່ ແລະ ເສັ້ນທາງບໍ່ຊ້ຳກັນ', () => {
+    const codes = MODULES.map((m) => m.code)
+    expect(new Set(codes).size).toBe(codes.length)
+    for (const m of MODULES) {
+      expect(m.label.length).toBeGreaterThan(0)
+      expect(m.path.startsWith('/')).toBe(true)
+    }
   })
 })

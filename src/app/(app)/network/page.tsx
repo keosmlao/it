@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getNetworkStats, listSegments } from '@/lib/network/queries'
 import { getLocationOptions } from '@/lib/assets/local'
@@ -10,7 +10,7 @@ import SegmentForm from './segment-form'
 export const metadata = { title: 'ເຄືອຂ່າຍ & IP' }
 
 export default async function NetworkPage() {
-  const user = await requireUser()
+  const user = await requireModuleView('network')
   const editable = can.manageAssets(user)
 
   const [segments, stats, locations] = await Promise.all([

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getDowntimeByService,
@@ -24,7 +24,7 @@ export const metadata = { title: 'ເຫດຂັດຂ້ອງລະບົບ'
 
 export default async function IncidentsPage({ searchParams }: PageProps<'/incidents'>) {
   const params = await searchParams
-  const user = await requireUser()
+  const user = await requireModuleView('incidents')
 
   // ຄິດເປັນ string ຕາມເວລາລາວ — ຜ່ານ Date ແລ້ວ toISOString ຈະໄດ້ UTC
   // ເຮັດໃຫ້ຕົ້ນປີກາຍເປັນ 31/12 ຂອງປີກ່ອນ

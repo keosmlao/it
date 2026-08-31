@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getAssetBrands,
   getAssetCategories,
@@ -19,7 +19,7 @@ export const metadata = { title: 'ອຸປະກອນ' }
 
 export default async function AssetsPage({ searchParams }: PageProps<'/assets'>) {
   const params = await searchParams
-  await requireUser()
+  await requireModuleView('assets')
 
   const filters = {
     holding: pick(params.holding),

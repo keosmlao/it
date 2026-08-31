@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getLendableAssets,
   getLendableLocations,
@@ -16,7 +16,7 @@ export const metadata = { title: 'ບັນທຶກການຢືມ–ຄື�
 
 export default async function LendPage({ searchParams }: PageProps<'/assets/lend'>) {
   const params = await searchParams
-  await requireUser()
+  await requireModuleView('assets')
 
   const tab = pick(params.tab) || 'lend'
   const source = pick(params.source)

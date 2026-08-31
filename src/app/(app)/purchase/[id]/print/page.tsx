@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getPurchaseApprovals,
   getPurchaseLines,
@@ -22,7 +22,7 @@ export default async function PurchasePrintPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  await requireUser()
+  await requireModuleView('purchase')
 
   const pr = await getPurchaseRequest(id)
   if (!pr) notFound()

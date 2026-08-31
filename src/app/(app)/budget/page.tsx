@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getBudgetTotals,
@@ -22,7 +22,7 @@ export const metadata = { title: 'ງົບປະມານ' }
 
 export default async function BudgetPage({ searchParams }: PageProps<'/budget'>) {
   const params = await searchParams
-  const user = await requireUser()
+  const user = await requireModuleView('budget')
   if (!can.viewReports(user)) redirect('/')
 
   const thisYear = new Date().getFullYear()

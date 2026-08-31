@@ -77,7 +77,7 @@ export async function createVendor(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດເພີ່ມຜູ້ຂາຍ' }
+  if (!can.module(user, 'vendors', 'create')) return { error: 'ບໍ່ມີສິດເພີ່ມຜູ້ຂາຍ' }
 
   const f = readFields(formData)
   const invalid = validate(f)
@@ -112,7 +112,7 @@ export async function updateVendor(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນຜູ້ຂາຍ' }
+  if (!can.module(user, 'vendors', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນຜູ້ຂາຍ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const f = readFields(formData)
@@ -153,7 +153,7 @@ export async function setVendorActive(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageSubscriptions(user)) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນຜູ້ຂາຍ' }
+  if (!can.module(user, 'vendors', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນຜູ້ຂາຍ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const active = String(formData.get('is_active') ?? '') === '1'

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getBudgetLine, getBudgetSpends } from '@/lib/budget/queries'
 import {
@@ -18,7 +18,7 @@ import SpendPanel from './spend-panel'
 
 export default async function BudgetLinePage({ params }: PageProps<'/budget/[id]'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('budget')
   if (!can.viewReports(user)) redirect('/')
 
   const line = await getBudgetLine(id)

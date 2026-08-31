@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { getRequestTypes } from '@/lib/requests/queries'
 import NewRequestForm from './new-request-form'
 
 export const metadata = { title: 'ສ້າງຄຳຮ້ອງ' }
 
 export default async function NewRequestPage() {
-  await requireUser()
+  await requireModuleView('requests')
   const types = await getRequestTypes()
 
   return (

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import ActionForm from '@/components/action-form'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { canDecide, getApprovals, getRequest } from '@/lib/requests/queries'
 import { RequestStatusBadge } from '@/components/request-badge'
 import { formatDateTime } from '@/lib/format'
@@ -11,7 +11,7 @@ export default async function RequestDetailPage({
   params,
 }: PageProps<'/requests/[id]'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('requests')
 
   const request = await getRequest(id)
   if (!request) notFound()

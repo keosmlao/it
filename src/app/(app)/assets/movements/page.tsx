@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getMovementDepartments,
   getMovementDivisions,
@@ -18,7 +18,7 @@ export default async function MovementsPage({
   searchParams,
 }: PageProps<'/assets/movements'>) {
   const params = await searchParams
-  await requireUser()
+  await requireModuleView('assets')
 
   const state = pick(params.state) || 'holding'
   const q = pick(params.q)

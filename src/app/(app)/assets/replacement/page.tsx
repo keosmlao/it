@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   PRIORITY_LABEL_LO,
   PRIORITY_STYLE,
@@ -19,7 +19,7 @@ export default async function ReplacementPage({
   searchParams,
 }: PageProps<'/assets/replacement'>) {
   const params = await searchParams
-  await requireUser()
+  await requireModuleView('assets')
 
   // ຕັ້ງຕົ້ນສະແດງສະເພາະອັນທີ່ຄວນວາງແຜນ — ບໍ່ດັ່ງນັ້ນລາຍການຈະຍາວຈົນອ່ານບໍ່ໄຫວ
   const priority = pick(params.priority) || 'plan'

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getDeploymentPlaces,
   getDeploymentStats,
@@ -19,7 +19,7 @@ export default async function DeployedPage({
   searchParams,
 }: PageProps<'/assets/deployed'>) {
   const params = await searchParams
-  await requireUser()
+  await requireModuleView('assets')
 
   const filters = {
     state: pick(params.state) || 'active',

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getDamageStats, listDamagedAssets } from '@/lib/assets/damage'
 import {
@@ -17,7 +17,7 @@ export default async function DamagedPage({
   searchParams,
 }: PageProps<'/assets/damaged'>) {
   const params = await searchParams
-  const user = await requireUser()
+  const user = await requireModuleView('assets')
 
   const filters = {
     state: pick(params.state) || 'broken',

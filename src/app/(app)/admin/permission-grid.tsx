@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import {
   PERMISSIONS,
@@ -136,10 +137,17 @@ export default function PermissionGrid({
                   )
                 })}
 
-                <div className="text-right">
+                <div className="flex items-center justify-end gap-1.5">
                   <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-xs">
                     ບັນທຶກ
                   </SubmitButton>
+                  <Link
+                    href={`/admin/permissions/${s.employee_id}`}
+                    title="ຕັ້ງ ເບິ່ງ/ເພີ່ມ/ແກ້ໄຂ/ລົບ ເປັນລາຍໂມດູນ"
+                    className="btn-secondary rounded px-2 py-1.5 text-xs whitespace-nowrap"
+                  >
+                    ລາຍໂມດູນ →
+                  </Link>
                 </div>
               </div>
             </ActionForm>

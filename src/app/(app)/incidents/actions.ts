@@ -74,7 +74,7 @@ export async function createIncident(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດບັນທຶກເຫດຂັດຂ້ອງ' }
+  if (!can.module(user, 'incidents', 'create')) return { error: 'ບໍ່ມີສິດບັນທຶກເຫດຂັດຂ້ອງ' }
 
   const f = readFields(formData)
   const invalid = validate(f)
@@ -102,7 +102,7 @@ export async function updateIncident(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດແກ້ເຫດຂັດຂ້ອງ' }
+  if (!can.module(user, 'incidents', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ເຫດຂັດຂ້ອງ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const f = readFields(formData)
@@ -140,7 +140,7 @@ export async function resolveIncident(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.manageAssets(user)) return { error: 'ບໍ່ມີສິດປິດເຫດຂັດຂ້ອງ' }
+  if (!can.module(user, 'incidents', 'edit')) return { error: 'ບໍ່ມີສິດປິດເຫດຂັດຂ້ອງ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const incident = await getIncident(id)

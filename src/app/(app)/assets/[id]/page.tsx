@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getAsset,
   getAssetHistory,
@@ -37,7 +37,7 @@ import { listDocuments } from '@/lib/attachments/documents'
 
 export default async function AssetDetailPage({ params }: PageProps<'/assets/[id]'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('assets')
 
   const canManage = can.manageAssets(user)
 

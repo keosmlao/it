@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { listVendors } from '@/lib/vendors/queries'
 import EmptyState from '@/components/empty-state'
@@ -10,7 +10,7 @@ export const metadata = { title: 'ທະບຽນຜູ້ຂາຍ' }
 
 export default async function VendorsPage({ searchParams }: PageProps<'/vendors'>) {
   const params = await searchParams
-  const user = await requireUser()
+  const user = await requireModuleView('vendors')
 
   const q = pick(params.q)
   const showAll = pick(params.all) === '1'

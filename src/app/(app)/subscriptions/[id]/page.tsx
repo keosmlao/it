@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getSubscription, getSubscriptionPeriods } from '@/lib/subscriptions/queries'
 import {
@@ -20,7 +20,7 @@ export default async function SubscriptionPage({
   params,
 }: PageProps<'/subscriptions/[id]'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('subscriptions')
 
   const subscription = await getSubscription(id)
   if (!subscription) notFound()

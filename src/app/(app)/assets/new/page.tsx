@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getCategoryOptions,
@@ -13,7 +13,7 @@ import AssetForm from './asset-form'
 export const metadata = { title: 'ລົງທະບຽນຊັບສິນ' }
 
 export default async function NewAssetPage() {
-  const user = await requireUser()
+  const user = await requireModuleView('assets')
   if (!can.manageAssets(user)) notFound()
 
   const [categories, locations, departments, counts] = await Promise.all([

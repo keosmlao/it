@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getCostByCurrency,
@@ -25,7 +25,7 @@ export default async function SubscriptionsPage({
   searchParams,
 }: PageProps<'/subscriptions'>) {
   const params = await searchParams
-  const user = await requireUser()
+  const user = await requireModuleView('subscriptions')
 
   // ບໍ່ໄດ້ລະບຸມາ = ສະເພາະທີ່ໃຊ້ງານຢູ່ (ອັນທີ່ຍົກເລີກແລ້ວບໍ່ຕ້ອງເບິ່ງທຸກມື້)
   const status = pick(params.status)

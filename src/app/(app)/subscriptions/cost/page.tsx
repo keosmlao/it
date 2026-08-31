@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import {
   getCostByCategory,
   getCostByCurrency,
@@ -18,7 +18,7 @@ import { safeDate } from '@/lib/assets/model'
 export const metadata = { title: 'ຄ່າໃຊ້ຈ່າຍການເຊົ່າ' }
 
 export default async function SubscriptionCostPage() {
-  await requireUser()
+  await requireModuleView('subscriptions')
 
   const [byCurrency, byCategory, byDepartment, paidByMonth, unpaid] = await Promise.all([
     getCostByCurrency(),

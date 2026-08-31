@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { getArticle } from '@/lib/kb/queries'
 import { getCategories } from '@/lib/tickets/queries'
 import ArticleForm from '../../article-form'
@@ -11,7 +11,7 @@ export default async function EditArticlePage({
   params,
 }: PageProps<'/kb/[id]/edit'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('kb')
 
   const article = await getArticle(id)
   if (!article) notFound()

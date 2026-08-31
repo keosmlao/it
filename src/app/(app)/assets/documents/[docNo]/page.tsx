@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { getDocument, getDocumentItems } from '@/lib/assets/queries'
 import { safeDate } from '@/lib/assets/model'
 import DocKindBadge from '@/components/doc-badge'
@@ -21,7 +21,7 @@ export default async function DocumentPage({
   params,
 }: PageProps<'/assets/documents/[docNo]'>) {
   const { docNo } = await params
-  await requireUser()
+  await requireModuleView('assets')
 
   const decoded = decodeURIComponent(docNo)
   const [doc, items] = await Promise.all([

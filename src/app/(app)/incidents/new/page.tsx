@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getSubscriptionOptions } from '@/lib/incidents/queries'
 import { getAssetOptions } from '@/lib/maintenance/queries'
@@ -8,7 +8,7 @@ import IncidentForm from '../incident-form'
 export const metadata = { title: 'ບັນທຶກເຫດຂັດຂ້ອງ' }
 
 export default async function NewIncidentPage() {
-  const user = await requireUser()
+  const user = await requireModuleView('incidents')
   if (!can.manageAssets(user)) notFound()
 
   const [subscriptions, assets] = await Promise.all([

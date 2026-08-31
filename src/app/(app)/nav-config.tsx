@@ -86,6 +86,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         href: '/tickets',
+        visible: (u) => can.viewModule(u, 'tickets'),
         label: 'Ticket ແຈ້ງບັນຫາ',
         icon: ICON.ticket,
         badge: 'tickets',
@@ -97,6 +98,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/requests',
+        visible: (u) => can.viewModule(u, 'requests'),
         label: 'ຄຳຮ້ອງ & ອະນຸມັດ',
         icon: ICON.request,
         badge: 'requests',
@@ -104,6 +106,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/purchase',
+        visible: (u) => can.viewModule(u, 'purchase'),
         label: 'ໃບສະເໜີຊື້ (PR)',
         icon: ICON.request,
         badge: 'purchase',
@@ -119,6 +122,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         href: '/subscriptions',
+        visible: (u) => can.viewModule(u, 'subscriptions'),
         label: 'ຄ່າເຊົ່າບໍລິການ',
         icon: ICON.cloud,
         // ຂາດຕໍ່ອາຍຸ = ບໍລິການລົ້ມ ຈຶ່ງໃຫ້ຕົວເລກເປັນສີແດງຄືກັບເລື່ອງດ່ວນອື່ນ
@@ -137,6 +141,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/maintenance',
+        visible: (u) => can.viewModule(u, 'maintenance'),
         label: 'ບຳລຸງຮັກສາຕາມແຜນ',
         icon: ICON.wrench,
         badge: 'maintenance',
@@ -153,6 +158,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/incidents',
+        visible: (u) => can.viewModule(u, 'incidents'),
         label: 'ເຫດຂັດຂ້ອງລະບົບ',
         icon: ICON.warning,
         badge: 'incidents',
@@ -168,11 +174,12 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/network',
+        visible: (u) => can.viewModule(u, 'network'),
         label: 'ເຄືອຂ່າຍ & IP',
         icon: ICON.network,
         children: [{ href: '/network/ports', label: 'ຜັງພອດສະວິດ', icon: ICON.swap }],
       },
-      { href: '/vendors', label: 'ທະບຽນຜູ້ຂາຍ', icon: ICON.box },
+      { visible: (u) => can.viewModule(u, 'vendors'), href: '/vendors', label: 'ທະບຽນຜູ້ຂາຍ', icon: ICON.box },
     ],
   },
   {
@@ -180,6 +187,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         href: '/assets',
+        visible: (u) => can.viewModule(u, 'assets'),
         label: 'ທະບຽນອຸປະກອນ',
         icon: ICON.asset,
         children: [
@@ -191,6 +199,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/assets/lend',
+        visible: (u) => can.viewModule(u, 'assets'),
         label: 'ຢືມ–ຄືນ',
         icon: ICON.swap,
         children: [
@@ -201,6 +210,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/assets/damaged',
+        visible: (u) => can.viewModule(u, 'assets'),
         label: 'ສະພາບ & ຕິດຕາມ',
         icon: ICON.warning,
         badge: 'damaged',
@@ -231,6 +241,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       {
         href: '/consumables',
+        visible: (u) => can.viewModule(u, 'consumables'),
         label: 'ອຸປະກອນສິ້ນເປືອງ',
         icon: ICON.box,
         badge: 'consumables',
@@ -251,6 +262,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         href: '/projects',
+        visible: (u) => can.viewModule(u, 'projects'),
         label: 'ໂປຣເຈັກ',
         icon: ICON.project,
         children: [
@@ -268,9 +280,10 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     title: 'ຄວາມຮູ້ & ບໍລິຫານ',
     items: [
-      { href: '/kb', label: 'ຄັງຄວາມຮູ້', icon: ICON.book },
+      { visible: (u) => can.viewModule(u, 'kb'), href: '/kb', label: 'ຄັງຄວາມຮູ້', icon: ICON.book },
       {
         href: '/accounts',
+        visible: (u) => can.viewModule(u, 'accounts'),
         label: 'ບັນຊີຜູ້ໃຊ້',
         icon: ICON.key,
         // ບັນຊີຄ້າງເປີດຂອງຄົນທີ່ອອກໄປແລ້ວ = ຮູຮົ່ວຄວາມປອດໄພ + ຈ່າຍ seat ລົມ
@@ -294,7 +307,7 @@ export const NAV_GROUPS: NavGroup[] = [
         href: '/budget',
         label: 'ງົບປະມານ',
         icon: ICON.wallet,
-        visible: can.viewReports,
+        visible: (u) => can.viewReports(u) && can.viewModule(u, 'budget'),
       },
       { href: '/reports', label: 'ລາຍງານ', icon: ICON.chart, visible: can.viewReports },
       {

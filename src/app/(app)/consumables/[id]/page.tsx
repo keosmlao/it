@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getConsumable, getConsumableMoves } from '@/lib/consumables/queries'
 import { getVendorOptions } from '@/lib/vendors/queries'
@@ -21,7 +21,7 @@ export default async function ConsumablePage({
   params,
 }: PageProps<'/consumables/[id]'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('consumables')
 
   const item = await getConsumable(id)
   if (!item) notFound()

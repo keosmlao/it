@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 import { query } from '@/lib/db'
-import { can, type ItStaff } from './roles'
+import { can, type ItStaff, type ModuleCode } from './roles'
 
 export const SESSION_COOKIE = 'it_session'
 const SESSION_HOURS = 8
@@ -85,5 +85,17 @@ export async function requireUser(): Promise<ItStaff> {
 export async function requireStaff(): Promise<ItStaff> {
   const user = await requireUser()
   if (!can.useStaffArea(user)) redirect('/my')
+  return user
+}
+
+/**
+ * ດ່ານກວດຂອງແຕ່ລະໂມດູນ — ຄົນທີ່ຜູ້ຈັດການປິດສິດ "ເບິ່ງ" ໄວ້
+ * ຈະຖືກສົ່ງກັບໜ້າພາບລວມ ເຖິງແມ່ນຈະພິມ URL ເຂົ້າມາກົງໆ
+ *
+ * ເອີ້ນຢູ່ຫົວໜ້າຂອງແຕ່ລະໂມດູນ — ເມນູທີ່ເຊື່ອງໄວ້ຢ່າງດຽວກັນບໍ່ໄດ້
+ */
+export async function requireModuleView(code: ModuleCode): Promise<ItStaff> {
+  const user = await requireStaff()
+  if (!can.viewModule(user, code)) redirect('/')
   return user
 }

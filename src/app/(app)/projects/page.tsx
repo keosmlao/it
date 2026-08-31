@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { paginateProjects } from '@/lib/projects/queries'
 import Pagination from '@/components/pagination'
@@ -14,7 +14,7 @@ export default async function ProjectsPage({
   searchParams,
 }: PageProps<'/projects'>) {
   const params = await searchParams
-  const user = await requireUser()
+  const user = await requireModuleView('projects')
 
   // ບໍ່ໄດ້ລະບຸມາ = ສະເພາະທີ່ຍັງບໍ່ຈົບ; 'all' = ເອົາໝົດ
   const status = params.status === undefined ? 'open' : pick(params.status) || 'all'

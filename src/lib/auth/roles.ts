@@ -100,6 +100,77 @@ const ROLE_DEFAULT: Record<Permission, (role: Role) => boolean> = {
   administer: (r) => r === 'manager',
 }
 
+/** ການກະທຳຕໍ່ຂໍ້ມູນ ທີ່ຕັ້ງໄດ້ເປັນລາຍຄົນ */
+export const MODULE_ACTIONS = ['view', 'create', 'edit', 'delete'] as const
+export type ModuleAction = (typeof MODULE_ACTIONS)[number]
+
+export const MODULE_ACTION_LABEL_LO: Record<ModuleAction, string> = {
+  view: 'ເບິ່ງ',
+  create: 'ເພີ່ມ',
+  edit: 'ແກ້ໄຂ',
+  delete: 'ລົບ',
+}
+
+export const MODULE_ACTION_HINT_LO: Record<ModuleAction, string> = {
+  view: 'ປິດແລ້ວເມນູຫາຍ ແລະ ເຂົ້າ URL ກົງກໍ່ຖືກດີດອອກ',
+  create: 'ສ້າງລາຍການໃໝ່ໃນໂມດູນນີ້',
+  edit: 'ແກ້ຂໍ້ມູນ ຫຼື ປ່ຽນສະຖານະລາຍການທີ່ມີຢູ່',
+  delete: 'ລຶບ ຫຼື ຍົກເລີກລາຍການ',
+}
+
+/**
+ * ໂມດູນທີ່ມີຂໍ້ມູນໃຫ້ຈັດການ — ຜູ້ຈັດການຕັ້ງໄດ້ວ່າໃຜ ເບິ່ງ/ເພີ່ມ/ແກ້/ລົບ ໄດ້
+ *
+ * `base` ຄືສິດເດີມທີ່ໂມດູນນັ້ນເຄີຍໃຊ້ — ເອົາມາເປັນ **ຄ່າຕັ້ງຕົ້ນ** ຈຶ່ງ
+ * ບໍ່ມີໃຜເສຍ ຫຼື ໄດ້ສິດເພີ່ມໃນມື້ທີ່ເປີດໃຊ້ລະບົບໃໝ່ນີ້. ຢາກໃຫ້ໃຜເຮັດ
+ * ຫຍັງໄດ້ຕ່າງຈາກບົດບາດ ຜູ້ຈັດການຕັ້ງເອງຢູ່ໜ້າ **ຕັ້ງຄ່າລະບົບ → ຈັດການສິດ**
+ *
+ * `staff` = ພະນັກງານ IT ທຸກຄົນ (ບໍ່ລວມຜູ້ແຈ້ງບັນຫາ)
+ * `del`   = ສິດຕັ້ງຕົ້ນສະເພາະການລຶບ ເມື່ອຄວນເຄັ່ງກວ່າການແກ້
+ */
+export const MODULES = [
+  { code: 'tickets', label: 'Ticket ແຈ້ງບັນຫາ', path: '/tickets', base: 'staff', del: 'administer' },
+  { code: 'requests', label: 'ຄຳຮ້ອງ & ອະນຸມັດ', path: '/requests', base: 'staff' },
+  { code: 'purchase', label: 'ໃບສະເໜີຊື້ (PR)', path: '/purchase', base: 'staff' },
+  { code: 'assets', label: 'ທະບຽນອຸປະກອນ', path: '/assets', base: 'manageAssets' },
+  { code: 'consumables', label: 'ອຸປະກອນສິ້ນເປືອງ', path: '/consumables', base: 'manageAssets' },
+  { code: 'maintenance', label: 'ບຳລຸງຮັກສາຕາມແຜນ', path: '/maintenance', base: 'manageAssets' },
+  { code: 'incidents', label: 'ເຫດຂັດຂ້ອງລະບົບ', path: '/incidents', base: 'manageAssets' },
+  { code: 'network', label: 'ເຄືອຂ່າຍ & IP', path: '/network', base: 'manageAssets' },
+  { code: 'subscriptions', label: 'ຄ່າເຊົ່າບໍລິການ', path: '/subscriptions', base: 'manageSubscriptions' },
+  { code: 'vendors', label: 'ທະບຽນຜູ້ຂາຍ', path: '/vendors', base: 'manageSubscriptions' },
+  { code: 'budget', label: 'ງົບປະມານ', path: '/budget', base: 'manageSubscriptions' },
+  { code: 'accounts', label: 'ບັນຊີຜູ້ໃຊ້', path: '/accounts', base: 'manageAccounts' },
+  { code: 'projects', label: 'ໂປຣເຈັກ', path: '/projects', base: 'staff' },
+  { code: 'kb', label: 'ຄັງຄວາມຮູ້', path: '/kb', base: 'staff' },
+] as const
+
+export type ModuleCode = (typeof MODULES)[number]['code']
+export type ModulePermission = `${ModuleCode}.${ModuleAction}`
+
+const MODULE_BY_CODE = new Map(MODULES.map((m) => [m.code as ModuleCode, m]))
+
+export function moduleLabel(code: ModuleCode): string {
+  return MODULE_BY_CODE.get(code)?.label ?? code
+}
+
+/** ສິດຕັ້ງຕົ້ນຂອງໂມດູນຕາມບົດບາດ — ບໍ່ນັບການຕັ້ງລາຍຄົນ */
+export function roleAllowsModule(
+  role: Role,
+  code: ModuleCode,
+  action: ModuleAction
+): boolean {
+  if (role === 'requester') return false
+  // ເບິ່ງໄດ້ໝົດຄືເກົ່າ — ຜູ້ຈັດການປິດເປັນລາຍຄົນເອົາເອງ
+  if (action === 'view') return true
+
+  const m = MODULE_BY_CODE.get(code)
+  if (!m) return false
+
+  const base = action === 'delete' && 'del' in m ? m.del : m.base
+  return base === 'staff' ? true : roleAllows(role, base as Permission)
+}
+
 export type ItStaff = {
   employee_id: number
   employee_code: string
@@ -115,7 +186,7 @@ export type ItStaff = {
   department_name: string | null
   unread_count?: number
   /** ສິດທີ່ຕັ້ງລາຍຄົນ — ຂໍ້ທີ່ບໍ່ມີໃນນີ້ຈະຄິດຕາມບົດບາດ */
-  permissions?: Partial<Record<Permission, boolean>> | null
+  permissions?: Partial<Record<Permission | ModulePermission, boolean>> | null
 }
 
 /** ສິດຕາມບົດບາດຢ່າງດຽວ — ໃຊ້ໃນໜ້າຈັດການສິດເພື່ອສະແດງຄ່າຕັ້ງຕົ້ນ */
@@ -170,4 +241,27 @@ export const can = {
 
   /** ເປີດ–ປິດບັນຊີຜູ້ໃຊ້ ແລະ ຈັດການລະບົບທີ່ມີບັນຊີ */
   manageAccounts: (u: ItStaff) => allows(u, 'manageAccounts'),
+
+  /**
+   * ເຮັດຫຍັງໄດ້ແດ່ໃນໂມດູນໜຶ່ງ — ເບິ່ງ / ເພີ່ມ / ແກ້ໄຂ / ລົບ
+   *
+   * ເບິ່ງບໍ່ໄດ້ = ເຮັດຫຍັງໃນໂມດູນນັ້ນບໍ່ໄດ້ເລີຍ ເພາະການ ເພີ່ມ/ແກ້/ລົບ
+   * ຕ້ອງເປີດໜ້ານັ້ນກ່ອນສະເໝີ — ກັນການຕັ້ງທີ່ຂັດກັນເອງ
+   */
+  module: (u: ItStaff, code: ModuleCode, action: ModuleAction): boolean => {
+    if (!can.useStaffArea(u)) return false
+
+    const decide = (a: ModuleAction) => {
+      const override = u.permissions?.[`${code}.${a}` as ModulePermission]
+      return typeof override === 'boolean'
+        ? override
+        : roleAllowsModule(u.role, code, a)
+    }
+
+    if (action !== 'view' && !decide('view')) return false
+    return decide(action)
+  },
+
+  /** ເປີດໜ້າຂອງໂມດູນນີ້ໄດ້ບໍ (ໃຊ້ໃນເມນູ ແລະ ດ່ານກວດຂອງແຕ່ລະໜ້າ) */
+  viewModule: (u: ItStaff, code: ModuleCode) => can.module(u, code, 'view'),
 }

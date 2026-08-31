@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getAssignableStaff, getComments, getTicket } from '@/lib/tickets/queries'
 import {
@@ -24,7 +24,7 @@ export default async function TicketDetailPage({
   params,
 }: PageProps<'/tickets/[id]'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('tickets')
 
   const ticket = await getTicket(user, id)
   if (!ticket) notFound()

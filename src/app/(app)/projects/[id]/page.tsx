@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import ActionForm from '@/components/action-form'
 import { notFound } from 'next/navigation'
-import { requireUser } from '@/lib/auth/session'
+import { requireModuleView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getProject, listTasks } from '@/lib/projects/queries'
 import { getAssignableStaff, getPriorities } from '@/lib/tickets/queries'
@@ -22,7 +22,7 @@ export default async function ProjectDetailPage({
   params,
 }: PageProps<'/projects/[id]'>) {
   const { id } = await params
-  const user = await requireUser()
+  const user = await requireModuleView('projects')
 
   const project = await getProject(id)
   if (!project) notFound()
