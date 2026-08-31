@@ -18,7 +18,7 @@ import {
 } from '@/lib/incidents/model'
 import EmptyState from '@/components/empty-state'
 import ExportMenu from '@/components/export-menu'
-import { formatDateTime } from '@/lib/format'
+import { formatDateTime, todayISO } from '@/lib/format'
 
 export const metadata = { title: 'ເຫດຂັດຂ້ອງລະບົບ' }
 
@@ -26,10 +26,11 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
   const params = await searchParams
   const user = await requireUser()
 
-  const today = new Date()
-  const yearStart = new Date(today.getFullYear(), 0, 1)
-  const from = pick(params.from) || yearStart.toISOString().slice(0, 10)
-  const to = pick(params.to) || today.toISOString().slice(0, 10)
+  // ຄິດເປັນ string ຕາມເວລາລາວ — ຜ່ານ Date ແລ້ວ toISOString ຈະໄດ້ UTC
+  // ເຮັດໃຫ້ຕົ້ນປີກາຍເປັນ 31/12 ຂອງປີກ່ອນ
+  const today = todayISO()
+  const from = pick(params.from) || `${today.slice(0, 4)}-01-01`
+  const to = pick(params.to) || today
   const service = pick(params.service) || 'all'
   const status = pick(params.status) || 'all'
   const q = pick(params.q)

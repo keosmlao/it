@@ -7,6 +7,7 @@ import {
 } from '@/lib/worklogs/queries'
 import { deleteWorkLog } from './actions'
 import WorkLogForm from './work-log-form'
+import { shiftDate, todayISO } from '@/lib/format'
 
 export const metadata = { title: 'ບັນທຶກຊົ່ວໂມງ' }
 
@@ -16,11 +17,10 @@ export default async function WorkLogsPage({
   const params = await searchParams
   const user = await requireUser()
 
-  // ຄ່າເລີ່ມຕົ້ນ: 30 ມື້ຫຼ້າສຸດ
-  const today = new Date()
-  const monthAgo = new Date(today.getTime() - 29 * 86400_000)
-  const from = pick(params.from) || monthAgo.toISOString().slice(0, 10)
-  const to = pick(params.to) || today.toISOString().slice(0, 10)
+  // ຄ່າເລີ່ມຕົ້ນ: 30 ມື້ຫຼ້າສຸດ (ນັບຕາມວັນເວລາລາວ)
+  const today = todayISO()
+  const from = pick(params.from) || shiftDate(today, -29)
+  const to = pick(params.to) || today
 
   const [logs, work, summary] = await Promise.all([
     listWorkLogs(user, { from, to }),

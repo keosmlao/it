@@ -4,6 +4,7 @@ import { useState } from 'react'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { addRepair } from '../actions'
 import { REPAIR_STATUSES, REPAIR_STATUS_LABEL_LO } from '@/lib/assets/model'
+import { todayISO } from '@/lib/format'
 
 const inputClass = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 
@@ -47,7 +48,7 @@ export default function RepairForm({ assetCode }: { assetCode: string }) {
           <input
             type="date"
             name="repair_date"
-            defaultValue={new Date().toISOString().slice(0, 10)}
+            defaultValue={todayISO()}
             className={inputClass}
           />
         </label>

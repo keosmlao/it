@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
+import { todayISO } from '@/lib/format'
 
 export type ActionState = { error?: string; ok?: boolean }
 
@@ -36,7 +37,7 @@ export async function addWorkLog(
        values ($1, $2, $3, $4, $5, $6, $7)`,
       [
         user.employee_id,
-        String(formData.get('log_date') ?? '') || new Date().toISOString().slice(0, 10),
+        String(formData.get('log_date') ?? '') || todayISO(),
         hours,
         ticketId,
         taskId,

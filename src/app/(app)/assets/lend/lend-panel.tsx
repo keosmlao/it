@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { lendAsset } from '../actions'
+import { todayISO } from '@/lib/format'
 
 type Asset = {
   asset_code: string
@@ -199,7 +200,7 @@ export default function LendPanel({
                 <input
                   type="date"
                   name="borrowed_at"
-                  defaultValue={new Date().toISOString().slice(0, 10)}
+                  defaultValue={todayISO()}
                   className={inputClass}
                 />
               </label>

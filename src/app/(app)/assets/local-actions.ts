@@ -15,6 +15,7 @@ import {
   isComputerCategory,
 } from '@/lib/assets/model'
 import type { FormState } from '@/lib/action-state'
+import { todayISO } from '@/lib/format'
 
 /** ຄ່າທີ່ຮັບຈາກຟອມ — ໃຊ້ຮ່ວມກັນທັງລົງທະບຽນ ແລະ ແກ້ໄຂ */
 function readFields(formData: FormData) {
@@ -50,7 +51,7 @@ async function validate(f: Fields): Promise<string | null> {
   if (f.purchase_price && Number.isNaN(Number(f.purchase_price))) {
     return 'ລາຄາຕ້ອງເປັນຕົວເລກ'
   }
-  if (f.purchase_date && f.purchase_date > new Date().toISOString().slice(0, 10)) {
+  if (f.purchase_date && f.purchase_date > todayISO()) {
     return 'ວັນທີຊື້ຢູ່ໃນອະນາຄົດບໍ່ໄດ້'
   }
 

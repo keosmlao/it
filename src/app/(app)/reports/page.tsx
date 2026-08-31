@@ -14,7 +14,7 @@ import {
   getRatingSummary,
   getRecentComments,
 } from '@/lib/tickets/ratings'
-import { formatDuration } from '@/lib/format'
+import { formatDuration, todayISO } from '@/lib/format'
 import { ROLE_LABEL_LO, type Role } from '@/lib/auth/roles'
 import Link from 'next/link'
 import EmptyState from '@/components/empty-state'
@@ -26,10 +26,11 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
   const user = await requireUser()
   if (!can.viewReports(user)) redirect('/')
 
-  const today = new Date()
-  const start = new Date(today.getFullYear(), today.getMonth(), 1)
-  const from = pick(params.from) || start.toISOString().slice(0, 10)
-  const to = pick(params.to) || today.toISOString().slice(0, 10)
+  // ຄິດເປັນ string ຕາມເວລາລາວ — ຜ່ານ Date ແລ້ວ toISOString ຈະໄດ້ UTC
+  // ເຮັດໃຫ້ຕົ້ນເດືອນກາຍເປັນວັນສຸດທ້າຍຂອງເດືອນກ່ອນ
+  const today = todayISO()
+  const from = pick(params.from) || `${today.slice(0, 7)}-01`
+  const to = pick(params.to) || today
 
   const [
     summary,

@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { addWorkLog, type ActionState } from './actions'
 import { WORK_TYPES } from '@/lib/worklogs/model'
+import { todayISO } from '@/lib/format'
 
 type Option = { id: string; label: string }
 
@@ -39,7 +40,7 @@ export default function WorkLogForm({
           <input
             type="date"
             name="log_date"
-            defaultValue={new Date().toISOString().slice(0, 10)}
+            defaultValue={todayISO()}
             className={inputClass}
           />
         </label>

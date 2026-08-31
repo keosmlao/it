@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { lendAsset, returnAsset, transferAsset } from '../actions'
+import { todayISO } from '@/lib/format'
 
 type Employee = {
   employee_id: number
@@ -12,7 +13,7 @@ type Employee = {
 }
 
 const inputClass = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
-const today = () => new Date().toISOString().slice(0, 10)
+const today = () => todayISO()
 
 /** ບັນທຶກການຢືມ — ສະແດງເມື່ອເຄື່ອງຫວ່າງ */
 export function LendForm({

@@ -39,6 +39,7 @@ import {
   type StockState,
   type WriteoffReason,
 } from '@/lib/assets/stock-model'
+import { todayISO } from '@/lib/format'
 
 // ທຸກ query ຂ້າງລຸ່ມນີ້ຈຳກັດໄວ້ `limit 5000` ຕໍ່ໄຟລ໌ ເພື່ອບໍ່ໃຫ້ດຶງທັງຖານຂໍ້ມູນ
 // ອອກມາເທື່ອດຽວ. ຂຽນເປັນຕົວເລກຈິງ ບໍ່ແມ່ນ ${ຕົວແປ} ເພາະ npm run db:check-sql
@@ -112,7 +113,7 @@ export async function buildDataset(
   user: ItStaff,
   params: Params
 ): Promise<Dataset> {
-  const stamp = new Date().toISOString().slice(0, 10)
+  const stamp = todayISO()
   const base = { fileName: `odg-it-${name}-${stamp}`, title: DATASET_LABEL_LO[name] }
 
   switch (name) {

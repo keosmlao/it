@@ -3,6 +3,7 @@ import { can, ROLE_LABEL_LO, type Role } from '@/lib/auth/roles'
 import { ticketSummary, ticketsByCategory, ticketsByStaff } from '@/lib/reports/queries'
 import { summariseHours } from '@/lib/worklogs/queries'
 import { createTextWriter } from '@/lib/export/builders'
+import { todayISO } from '@/lib/format'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,7 +14,7 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url)
   const format = url.searchParams.get('format') ?? 'csv'
-  const today = new Date().toISOString().slice(0, 10)
+  const today = todayISO()
   const from = validDate(url.searchParams.get('from')) ?? today.slice(0, 8) + '01'
   const to = validDate(url.searchParams.get('to')) ?? today
   const [summary, categories, staff, hours] = await Promise.all([
