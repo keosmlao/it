@@ -218,6 +218,17 @@ body {
     padding: 6px 0 8px;
   }
 
+  /* ຄໍລຳທຳອິດຄ້າງໄວ້ຕອນເລື່ອນຂວາງ — ບໍ່ດັ່ງນັ້ນເລື່ອນໄປແລ້ວບໍ່ຮູ້ວ່າ
+     ກຳລັງຕັ້ງແຖວໃດ (ພົບຕອນຕັ້ງສິດ 57 ເມນູ) */
+  .o-sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--surface);
+  }
+  thead .o-sticky-col { background: var(--surface-2); }
+  tr:hover > .o-sticky-col { background: var(--surface-hover); }
+
   /* ລາຍການເຕັມໜ້າ ບໍ່ມີກອບ — ມີແຕ່ເສັ້ນແບ່ງແຖວ */
   .o-list-wrap { background: var(--surface); }
 

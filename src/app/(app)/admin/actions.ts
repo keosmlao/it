@@ -428,12 +428,12 @@ export async function setMenuPermissions(
       for (const action of MENU_ACTIONS) {
         if (!m.actions.includes(action)) continue
 
+        // ຊ່ອງຕິກ: ມີຄ່າສົ່ງມາ = ຕິກໄວ້ · ບໍ່ມີ = ບໍ່ຕິກ
         // ໃຊ້ລຳດັບແທນ href ໃນຊື່ຊ່ອງ ເພາະ href ມີ ? ແລະ & ຢູ່ໃນນັ້ນ
-        const raw = String(formData.get(`m${index}_${action}`) ?? '')
-        if (raw !== 'allow' && raw !== 'deny') continue
+        const allowed = formData.get(`m${index}_${action}`) !== null
 
-        const allowed = raw === 'allow'
-        // ກົງກັບບົດບາດຢູ່ແລ້ວ ບໍ່ຕ້ອງເກັບ — ໃຫ້ຕາມບົດບາດຕໍ່ໄປ
+        // ກົງກັບບົດບາດຢູ່ແລ້ວ ບໍ່ຕ້ອງເກັບ — ໃຫ້ຕາມບົດບາດຕໍ່ໄປ ຖ້າມີການ
+        // ປ່ຽນບົດບາດພາຍຫຼັງ ສິດຈະຍ້າຍຕາມເອງ
         if (allowed === roleAllowsMenu(target.role, m.key, action, roleAllows)) {
           continue
         }

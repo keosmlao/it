@@ -68,9 +68,11 @@ export default async function MenuPermissionPage({
       </div>
 
       <p className="mt-3 text-xs text-muted">
-        ແຖວ = ເມນູທີ່ເຫັນຢູ່ເບື້ອງຊ້າຍ · ຊ່ອງທີ່ປະໄວ້{' '}
-        <span className="text-fg">ຕາມບົດບາດ</span> ຈະປ່ຽນຕາມ
-        {ROLE_LABEL_LO[target.role]}ອັດຕະໂນມັດ. ປິດ &quot;ເບິ່ງ&quot; ຂອງເມນູແມ່
+        ແຖວ = ເມນູທີ່ເຫັນຢູ່ເບື້ອງຊ້າຍ · <span className="text-fg">ຕິກ</span> =
+        ເຮັດໄດ້ · ບໍ່ຕິກ = ເຮັດບໍ່ໄດ້ · &quot;–&quot; = ເມນູນັ້ນບໍ່ມີການກະທຳນີ້.
+        ຄ່າເລີ່ມຕົ້ນມາຈາກ{ROLE_LABEL_LO[target.role]} — ຊ່ອງທີ່ມີ{' '}
+        <span className="inline-block size-1.5 rounded-full bg-brand-orange align-middle" />{' '}
+        ຄືຊ່ອງທີ່ຕັ້ງເອງຕ່າງຈາກບົດບາດ. ບໍ່ຕິກ &quot;ເບິ່ງ&quot; ຂອງເມນູແມ່
         ແລ້ວເມນູຍ່ອຍປິດຕາມ.
       </p>
 
@@ -78,15 +80,17 @@ export default async function MenuPermissionPage({
         <input type="hidden" name="employee_id" value={employeeId} />
 
         <div className="o-list-wrap mt-2 overflow-x-auto">
-          <table className="o-list w-full min-w-[680px] text-[13px]">
+          <table className="o-list w-full min-w-[460px] text-[13px]">
             <thead>
               <tr>
-                <th className="px-3 py-1.5 text-left font-medium">ເມນູ</th>
+                <th className="o-sticky-col px-3 py-1.5 text-left font-medium">
+                  ເມນູ
+                </th>
                 {MENU_ACTIONS.map((a: MenuAction) => (
                   <th
                     key={a}
                     title={MENU_ACTION_HINT_LO[a]}
-                    className="w-[140px] cursor-help px-3 py-1.5 text-left font-medium"
+                    className="w-[86px] cursor-help px-3 py-1.5 text-center font-medium"
                   >
                     {MENU_ACTION_LABEL_LO[a]}
                   </th>
@@ -96,11 +100,12 @@ export default async function MenuPermissionPage({
             <tbody className="divide-y divide-line">
               {MENU_PERMS.map((m, index) => (
                 <tr key={m.key} className="hover-surface transition">
-                  <td className="px-3 py-1.5">
+                  <td className="o-sticky-col px-3 py-1.5">
                     <span className={m.parent ? 'pl-5 text-body' : 'font-medium text-fg'}>
                       {m.parent ? `└ ${m.label}` : m.label}
                     </span>
-                    <span className="ml-1.5 font-mono text-[11px] text-faint">
+                    {/* ເສັ້ນທາງໄວ້ອ້າງອີງ — ເຊື່ອງຢູ່ຈໍແຄບໃຫ້ 4 ຖັນພໍດີ */}
+                    <span className="ml-1.5 hidden font-mono text-[11px] text-faint xl:inline">
                       {m.key}
                     </span>
                   </td>
@@ -116,22 +121,32 @@ export default async function MenuPermissionPage({
 
                     const current = override.get(`${m.key}.${a}`)
                     const byRole = roleAllowsMenu(target.role, m.key, a, roleAllows)
+                    // ຕິກໄວ້ຕາມສິດທີ່ໃຊ້ຢູ່ຈິງ — ຕັ້ງເອງມາກ່ອນ ບໍ່ດັ່ງນັ້ນຕາມບົດບາດ
+                    const on = current ?? byRole
 
                     return (
-                      <td key={a} className="px-3 py-1.5">
-                        <select
-                          name={`m${index}_${a}`}
-                          defaultValue={
-                            current === undefined ? '' : current ? 'allow' : 'deny'
+                      <td key={a} className="px-3 py-1.5 text-center">
+                        <label
+                          title={
+                            current === undefined
+                              ? `ຕາມ${ROLE_LABEL_LO[target.role]} (${byRole ? 'ໄດ້' : 'ບໍ່ໄດ້'})`
+                              : `ຕັ້ງເອງ: ${current ? 'ອະນຸຍາດ' : 'ຫ້າມ'}`
                           }
-                          className="input w-full rounded px-1 py-1 text-xs"
+                          className="inline-flex cursor-pointer items-center justify-center"
                         >
-                          <option value="">
-                            ຕາມບົດບາດ ({byRole ? '✓' : '✗'})
-                          </option>
-                          <option value="allow">✓ ອະນຸຍາດ</option>
-                          <option value="deny">✗ ຫ້າມ</option>
-                        </select>
+                          <input
+                            type="checkbox"
+                            name={`m${index}_${a}`}
+                            defaultChecked={on}
+                            className="size-4 cursor-pointer accent-[var(--primary)]"
+                          />
+                          {current !== undefined && (
+                            <span
+                              aria-hidden
+                              className="ml-1 size-1.5 rounded-full bg-brand-orange"
+                            />
+                          )}
+                        </label>
                       </td>
                     )
                   })}
