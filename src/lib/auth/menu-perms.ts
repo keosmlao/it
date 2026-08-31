@@ -130,8 +130,14 @@ export const MENU_PERMS: MenuPerm[] = [
   { key: '/budget', label: 'ງົບປະມານ', path: '/budget', actions: VCED, base: 'manageSubscriptions', viewBase: 'viewReports' },
   { key: '/reports', label: 'ລາຍງານ', path: '/reports', actions: V, base: 'staff', viewBase: 'viewReports' },
   { key: '/admin', label: 'ຕັ້ງຄ່າລະບົບ', path: '/admin', actions: VE, base: 'administer', viewBase: 'administer' },
-  { key: '/admin/security', label: 'ກວດຄວາມປອດໄພ', parent: '/admin', path: '/admin/security', actions: V, base: 'administer', viewBase: 'administer' },
+  { key: '/admin/sla', label: 'SLA', parent: '/admin', path: '/admin/sla', actions: VE, base: 'administer', viewBase: 'administer' },
+  { key: '/admin/categories', label: 'ປະເພດບັນຫາ', parent: '/admin', path: '/admin/categories', actions: VCE, base: 'administer', viewBase: 'administer' },
+  { key: '/admin/permissions', label: 'ຈັດການສິດ', parent: '/admin', path: '/admin/permissions', actions: VE, base: 'administer', viewBase: 'administer' },
+  { key: '/admin/purchase-steps', label: 'ຂັ້ນຕອນອະນຸມັດ PR', parent: '/admin', path: '/admin/purchase-steps', actions: VCED, base: 'administer', viewBase: 'administer' },
+  { key: '/admin/line', label: 'ແຈ້ງເຕືອນ LINE', parent: '/admin', path: '/admin/line', actions: VE, base: 'administer', viewBase: 'administer' },
   { key: '/admin/emails', label: 'ອີເມວແຈ້ງເຕືອນ', parent: '/admin', path: '/admin/emails', actions: VCED, base: 'administer', viewBase: 'administer' },
+  { key: '/admin/security', label: 'ກວດຄວາມປອດໄພ', parent: '/admin', path: '/admin/security', actions: V, base: 'administer', viewBase: 'administer' },
+  { key: '/admin/audit', label: 'ບັນທຶກການປ່ຽນແປງ', parent: '/admin', path: '/admin/audit', actions: V, base: 'administer', viewBase: 'administer' },
 ]
 
 export const MENU_BY_KEY = new Map(MENU_PERMS.map((m) => [m.key, m]))
