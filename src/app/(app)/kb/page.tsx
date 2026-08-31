@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { listArticles } from '@/lib/kb/queries'
 import { getCategories } from '@/lib/tickets/queries'
 import { formatDateTime } from '@/lib/format'
@@ -8,7 +8,7 @@ export const metadata = { title: 'ຄັງຄວາມຮູ້' }
 
 export default async function KbPage({ searchParams }: PageProps<'/kb'>) {
   const params = await searchParams
-  await requireModuleView('kb')
+  await requireMenuView('/kb')
 
   const category = pick(params.category)
   const q = pick(params.q)

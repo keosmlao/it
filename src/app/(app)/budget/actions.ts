@@ -15,7 +15,7 @@ export async function saveBudgetLine(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'budget', 'edit')) return { error: 'ບໍ່ມີສິດຕັ້ງງົບປະມານ' }
+  if (!can.menu(user, '/budget', 'edit')) return { error: 'ບໍ່ມີສິດຕັ້ງງົບປະມານ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const name = String(formData.get('name') ?? '')
@@ -94,7 +94,7 @@ export async function deleteBudgetLine(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'budget', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
+  if (!can.menu(user, '/budget', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const rows = await query<{ name: string }>(
@@ -114,7 +114,7 @@ export async function addBudgetSpend(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'budget', 'create')) return { error: 'ບໍ່ມີສິດບັນທຶກລາຍຈ່າຍ' }
+  if (!can.menu(user, '/budget', 'create')) return { error: 'ບໍ່ມີສິດບັນທຶກລາຍຈ່າຍ' }
 
   const lineId = String(formData.get('line_id') ?? '').trim()
   const description = String(formData.get('description') ?? '')
@@ -160,7 +160,7 @@ export async function deleteBudgetSpend(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'budget', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
+  if (!can.menu(user, '/budget', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
 
   const spendId = String(formData.get('spend_id') ?? '').trim()
   const rows = await query<{ line_id: string }>(

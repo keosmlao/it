@@ -5,16 +5,16 @@ import { pool, query } from '@/lib/db'
 import { requireUser } from '@/lib/auth/session'
 import {
   can,
-  MODULE_ACTIONS,
-  MODULES,
   PERMISSIONS,
   roleAllows,
-  roleAllowsModule,
-  type ModuleAction,
-  type ModuleCode,
   type Permission,
   type Role,
 } from '@/lib/auth/roles'
+import {
+  MENU_ACTIONS,
+  MENU_PERMS,
+  roleAllowsMenu,
+} from '@/lib/auth/menu-perms'
 import { logAudit } from '@/lib/activity'
 import { invalidate } from '@/lib/cache'
 import type { FormState } from '@/lib/action-state'
@@ -296,11 +296,11 @@ export async function setUserPermissions(
   const client = await pool.connect()
   try {
     await client.query('begin')
-    // ລຶບສະເພາະ 9 ຂໍ້ທົ່ວໄປ — key ທີ່ມີຈຸດ (`assets.create`) ເປັນຂອງ
-    // ໜ້າຕັ້ງລາຍໂມດູນ ຖ້າລຶບນຳ ການບັນທຶກໜ້ານີ້ຈະລ້າງສິດໂມດູນຖິ້ມໝົດ
+    // ລຶບສະເພາະ 9 ຂໍ້ທົ່ວໄປ — key ທີ່ຂຶ້ນຕົ້ນດ້ວຍ '/' (`/assets.create`)
+    // ເປັນຂອງໜ້າຕັ້ງລາຍເມນູ ຖ້າລຶບນຳ ການບັນທຶກໜ້ານີ້ຈະລ້າງມັນຖິ້ມໝົດ
     await client.query(
       `delete from it.user_permissions
-        where employee_id = $1::int and permission not like '%.%'`,
+        where employee_id = $1::int and permission not like '/%'`,
       [employeeId]
     )
 
@@ -391,13 +391,13 @@ export async function setRoleOverride(
 }
 
 /**
- * ຕັ້ງສິດ ເບິ່ງ/ເພີ່ມ/ແກ້ໄຂ/ລົບ ຂອງແຕ່ລະໂມດູນ ໃຫ້ຄົນໜຶ່ງ
+ * ຕັ້ງສິດ ເບິ່ງ/ເພີ່ມ/ແກ້ໄຂ/ລົບ ຂອງແຕ່ລະ **ເມນູ** ໃຫ້ຄົນໜຶ່ງ
  *
  * ແຍກຈາກ `setUserPermissions` ເພາະສອງໜ້ານີ້ບັນທຶກຄົນລະຊຸດ — ຖ້າໃຊ້
  * ຟັງຊັນດຽວກັນ ການບັນທຶກຊຸດໜຶ່ງຈະລຶບອີກຊຸດຖິ້ມ (ລຶບແລ້ວໃສ່ຄືນທັງໝົດ)
  * ຈຶ່ງລຶບສະເພາະ key ທີ່ມີຈຸດ (`assets.create`) ຊຶ່ງເປັນຂອງໂມດູນເທົ່ານັ້ນ
  */
-export async function setModulePermissions(
+export async function setMenuPermissions(
   _prev: FormState,
   formData: FormData
 ): Promise<FormState> {
@@ -419,22 +419,22 @@ export async function setModulePermissions(
     await client.query('begin')
     await client.query(
       `delete from it.user_permissions
-        where employee_id = $1::int and permission like '%.%'`,
+        where employee_id = $1::int and permission like '/%'`,
       [employeeId]
     )
 
     let custom = 0
-    for (const m of MODULES) {
-      for (const action of MODULE_ACTIONS) {
-        const raw = String(formData.get(`m_${m.code}_${action}`) ?? '')
+    for (const [index, m] of MENU_PERMS.entries()) {
+      for (const action of MENU_ACTIONS) {
+        if (!m.actions.includes(action)) continue
+
+        // ໃຊ້ລຳດັບແທນ href ໃນຊື່ຊ່ອງ ເພາະ href ມີ ? ແລະ & ຢູ່ໃນນັ້ນ
+        const raw = String(formData.get(`m${index}_${action}`) ?? '')
         if (raw !== 'allow' && raw !== 'deny') continue
 
         const allowed = raw === 'allow'
         // ກົງກັບບົດບາດຢູ່ແລ້ວ ບໍ່ຕ້ອງເກັບ — ໃຫ້ຕາມບົດບາດຕໍ່ໄປ
-        if (
-          allowed ===
-          roleAllowsModule(target.role, m.code as ModuleCode, action as ModuleAction)
-        ) {
+        if (allowed === roleAllowsMenu(target.role, m.key, action, roleAllows)) {
           continue
         }
 
@@ -444,7 +444,7 @@ export async function setModulePermissions(
            values ($1::int, $2::varchar, $3::boolean, $4::varchar, $5::int)`,
           [
             employeeId,
-            `${m.code}.${action}`,
+            `${m.key}.${action}`,
             allowed,
             String(formData.get('note') ?? '').trim() || null,
             user.employee_id,
@@ -459,7 +459,7 @@ export async function setModulePermissions(
       user.employee_id,
       'permission',
       String(employeeId),
-      'set_modules',
+      'set_menus',
       `${target.fullname_lo} · ຕັ້ງເອງ ${custom} ຂໍ້`
     )
   } catch (err) {

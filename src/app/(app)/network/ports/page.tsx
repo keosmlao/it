@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getSwitchOptions, listSwitchPorts } from '@/lib/network/queries'
 import { getAssetOptions } from '@/lib/maintenance/queries'
@@ -13,7 +13,7 @@ export default async function SwitchPortsPage({
   searchParams,
 }: PageProps<'/network/ports'>) {
   const params = await searchParams
-  const user = await requireModuleView('network')
+  const user = await requireMenuView('/network/ports')
   const editable = can.manageAssets(user)
 
   const switchCode = pick(params.switch) || 'all'

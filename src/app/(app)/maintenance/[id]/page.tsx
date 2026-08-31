@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getMaintenanceLogs, getMaintenancePlan } from '@/lib/maintenance/queries'
 import {
@@ -18,7 +18,7 @@ export default async function MaintenancePlanPage({
   params,
 }: PageProps<'/maintenance/[id]'>) {
   const { id } = await params
-  const user = await requireModuleView('maintenance')
+  const user = await requireMenuView('/maintenance')
 
   const plan = await getMaintenancePlan(id)
   if (!plan) notFound()

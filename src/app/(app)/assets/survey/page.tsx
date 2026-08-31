@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { getSurveyStats, paginateSurvey } from '@/lib/assets/stock'
 import { getLendableLocations } from '@/lib/assets/queries'
 import Pagination from '@/components/pagination'
@@ -12,7 +12,7 @@ export default async function SurveyPage({
   searchParams,
 }: PageProps<'/assets/survey'>) {
   const params = await searchParams
-  await requireModuleView('assets')
+  await requireMenuView('/assets/survey')
 
   const filters = {
     state: pick(params.state) || 'unchecked',

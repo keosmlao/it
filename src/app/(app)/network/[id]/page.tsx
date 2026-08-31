@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getSegment, listIpAssignments } from '@/lib/network/queries'
 import { getLocationOptions } from '@/lib/assets/local'
@@ -12,7 +12,7 @@ import IpRow from './ip-row'
 
 export default async function SegmentPage({ params }: PageProps<'/network/[id]'>) {
   const { id } = await params
-  const user = await requireModuleView('network')
+  const user = await requireMenuView('/network')
 
   const segment = await getSegment(id)
   if (!segment) notFound()

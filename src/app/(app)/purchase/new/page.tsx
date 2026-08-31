@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { getStepsForAmount, getSuppliers } from '@/lib/purchase/queries'
 import PurchaseRequestForm from './pr-form'
 
 export const metadata = { title: 'ສ້າງໃບສະເໜີຊື້' }
 
 export default async function NewPurchasePage() {
-  const user = await requireModuleView('purchase')
+  const user = await requireMenuView('/purchase/new')
   const [steps, suppliers] = await Promise.all([getStepsForAmount(0), getSuppliers()])
 
   return (

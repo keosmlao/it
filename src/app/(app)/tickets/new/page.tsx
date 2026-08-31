@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getAllEmployees,
@@ -12,7 +12,7 @@ import NewTicketForm from './new-ticket-form'
 export const metadata = { title: 'ແຈ້ງບັນຫາໃໝ່' }
 
 export default async function NewTicketPage() {
-  const user = await requireModuleView('tickets')
+  const user = await requireMenuView('/tickets/new')
 
   const [categories, priorities, employees, staff] = await Promise.all([
     getCategories(),

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getMaintenanceStats,
@@ -23,7 +23,7 @@ export default async function MaintenancePage({
   searchParams,
 }: PageProps<'/maintenance'>) {
   const params = await searchParams
-  const user = await requireModuleView('maintenance')
+  const user = await requireMenuView('/maintenance')
 
   const category = pick(params.category) || 'all'
   const due = pick(params.due)

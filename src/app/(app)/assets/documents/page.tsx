@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { paginateDocuments } from '@/lib/assets/queries'
 import Pagination from '@/components/pagination'
 import { pageNumber } from '@/lib/pagination'
@@ -12,7 +12,7 @@ export default async function DocumentsPage({
   searchParams,
 }: PageProps<'/assets/documents'>) {
   const params = await searchParams
-  await requireModuleView('assets')
+  await requireMenuView('/assets/documents')
 
   const kind = pick(params.kind) || 'all'
   const q = pick(params.q)

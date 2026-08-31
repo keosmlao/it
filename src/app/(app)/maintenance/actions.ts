@@ -68,7 +68,7 @@ export async function createMaintenancePlan(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'maintenance', 'create')) return { error: 'ບໍ່ມີສິດຕັ້ງແຜນບຳລຸງຮັກສາ' }
+  if (!can.menu(user, '/maintenance/new', 'create')) return { error: 'ບໍ່ມີສິດຕັ້ງແຜນບຳລຸງຮັກສາ' }
 
   const f = readFields(formData)
   const invalid = validate(f)
@@ -94,7 +94,7 @@ export async function updateMaintenancePlan(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'maintenance', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ແຜນ' }
+  if (!can.menu(user, '/maintenance', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ແຜນ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const f = readFields(formData)
@@ -131,7 +131,7 @@ export async function logMaintenance(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'maintenance', 'edit')) return { error: 'ບໍ່ມີສິດບັນທຶກ' }
+  if (!can.menu(user, '/maintenance', 'edit')) return { error: 'ບໍ່ມີສິດບັນທຶກ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const plan = await getMaintenancePlan(id)
@@ -178,7 +178,7 @@ export async function setMaintenanceActive(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'maintenance', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ແຜນ' }
+  if (!can.menu(user, '/maintenance', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ແຜນ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const active = String(formData.get('is_active') ?? '') === '1'

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getDepartmentOptions,
@@ -15,7 +15,7 @@ export default async function EditSubscriptionPage({
   params,
 }: PageProps<'/subscriptions/[id]/edit'>) {
   const { id } = await params
-  const user = await requireModuleView('subscriptions')
+  const user = await requireMenuView('/subscriptions')
   if (!can.manageSubscriptions(user)) notFound()
 
   const [subscription, owners, departments, vendors] = await Promise.all([

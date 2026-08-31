@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import {
   getMovementDepartments,
   getMovementDivisions,
@@ -19,7 +19,7 @@ export default async function HoldersPage({
   searchParams,
 }: PageProps<'/assets/holders'>) {
   const params = await searchParams
-  await requireModuleView('assets')
+  await requireMenuView('/assets/holders')
 
   const filters = {
     state: pick(params.state) || 'holding',

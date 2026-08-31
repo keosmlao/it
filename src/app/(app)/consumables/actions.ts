@@ -74,7 +74,7 @@ export async function createConsumable(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'consumables', 'create')) return { error: 'ບໍ່ມີສິດເພີ່ມລາຍການ' }
+  if (!can.menu(user, '/consumables/new', 'create')) return { error: 'ບໍ່ມີສິດເພີ່ມລາຍການ' }
 
   const f = readFields(formData)
   const invalid = validate(f)
@@ -107,7 +107,7 @@ export async function updateConsumable(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'consumables', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ລາຍການ' }
+  if (!can.menu(user, '/consumables', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ລາຍການ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const f = readFields(formData)
@@ -148,7 +148,7 @@ export async function moveConsumable(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'consumables', 'edit')) return { error: 'ບໍ່ມີສິດບັນທຶກການເຄື່ອນໄຫວ' }
+  if (!can.menu(user, '/consumables', 'edit')) return { error: 'ບໍ່ມີສິດບັນທຶກການເຄື່ອນໄຫວ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const item = await getConsumable(id)
@@ -206,7 +206,7 @@ export async function deleteConsumableMove(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'consumables', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
+  if (!can.menu(user, '/consumables', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
 
   const moveId = String(formData.get('move_id') ?? '').trim()
   const rows = await query<{ consumable_id: string }>(

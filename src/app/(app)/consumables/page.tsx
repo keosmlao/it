@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getConsumableStats,
@@ -24,7 +24,7 @@ export default async function ConsumablesPage({
   searchParams,
 }: PageProps<'/consumables'>) {
   const params = await searchParams
-  const user = await requireModuleView('consumables')
+  const user = await requireMenuView('/consumables')
 
   const category = pick(params.category) || 'all'
   const state = pick(params.state)

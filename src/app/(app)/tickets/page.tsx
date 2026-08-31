@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import {
   getCategories,
   getPriorities,
@@ -48,7 +48,7 @@ export default async function TicketsPage({
   searchParams,
 }: PageProps<'/tickets'>) {
   const params = await searchParams
-  const user = await requireModuleView('tickets')
+  const user = await requireMenuView('/tickets')
 
   // ກະດານເປັນຄ່າຕັ້ງຕົ້ນ — ຕາຕະລາງໄວ້ຕອນຢາກກວາດຕາເບິ່ງຫຼາຍລາຍການ ຫຼື ດຶງອອກ
   const mode = str(params.view) === 'table' ? 'table' : 'board'

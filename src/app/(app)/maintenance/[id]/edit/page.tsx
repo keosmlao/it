@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getAssetOptions, getMaintenancePlan } from '@/lib/maintenance/queries'
 import { getOwnerOptions } from '@/lib/subscriptions/queries'
@@ -12,7 +12,7 @@ export default async function EditMaintenancePage({
   params,
 }: PageProps<'/maintenance/[id]/edit'>) {
   const { id } = await params
-  const user = await requireModuleView('maintenance')
+  const user = await requireMenuView('/maintenance')
   if (!can.manageAssets(user)) notFound()
 
   const [plan, owners, assets, locations] = await Promise.all([

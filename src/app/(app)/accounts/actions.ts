@@ -17,7 +17,7 @@ export async function saveAccountSystem(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'accounts', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການລະບົບ' }
+  if (!can.menu(user, '/accounts/systems', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການລະບົບ' }
 
   const code = String(formData.get('code') ?? '')
     .trim()
@@ -85,7 +85,7 @@ export async function setSystemActive(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'accounts', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການລະບົບ' }
+  if (!can.menu(user, '/accounts/systems', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການລະບົບ' }
 
   const code = String(formData.get('code') ?? '').trim()
   const active = String(formData.get('is_active') ?? '') === '1'
@@ -109,7 +109,7 @@ export async function createAccount(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'accounts', 'create')) return { error: 'ບໍ່ມີສິດເປີດບັນຊີ' }
+  if (!can.menu(user, '/accounts', 'create')) return { error: 'ບໍ່ມີສິດເປີດບັນຊີ' }
 
   const systemCode = String(formData.get('system_code') ?? '').trim()
   const employeeId = String(formData.get('employee_id') ?? '').trim()
@@ -152,7 +152,7 @@ export async function setAccountStatus(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'accounts', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ບັນຊີ' }
+  if (!can.menu(user, '/accounts', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ບັນຊີ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const status = String(formData.get('status') ?? '').trim()

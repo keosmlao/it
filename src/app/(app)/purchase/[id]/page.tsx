@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ActionForm, { SubmitButton } from '@/components/action-form'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   canDecideStep,
@@ -29,7 +29,7 @@ export default async function PurchaseDetailPage({
   params,
 }: PageProps<'/purchase/[id]'>) {
   const { id } = await params
-  const user = await requireModuleView('purchase')
+  const user = await requireMenuView('/purchase')
 
   const pr = await getPurchaseRequest(id)
   if (!pr) notFound()

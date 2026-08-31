@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { listPurchaseRequests, getPurchaseStats } from '@/lib/purchase/queries'
 import { PR_STATUSES, PR_STATUS_LABEL_LO } from '@/lib/purchase/model'
 import { PrStatusBadge } from '@/components/pr-badge'
@@ -12,7 +12,7 @@ export default async function PurchasePage({
   searchParams,
 }: PageProps<'/purchase'>) {
   const params = await searchParams
-  const user = await requireModuleView('purchase')
+  const user = await requireMenuView('/purchase')
 
   // ບໍ່ໄດ້ລະບຸມາ = ສະເພາະທີ່ລໍອະນຸມັດ; 'all' = ເອົາໝົດ
   const status = params.status === undefined ? 'pending' : pick(params.status) || 'all'

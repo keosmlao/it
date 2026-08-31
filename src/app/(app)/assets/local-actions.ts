@@ -126,7 +126,7 @@ export async function registerLocalAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'create')) return { error: 'ບໍ່ມີສິດລົງທະບຽນຊັບສິນ' }
+  if (!can.menu(user, '/assets/new', 'create')) return { error: 'ບໍ່ມີສິດລົງທະບຽນຊັບສິນ' }
 
   const f = readFields(formData)
   const invalid = await validate(f)
@@ -188,7 +188,7 @@ export async function updateLocalAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນ' }
+  if (!can.menu(user, '/assets', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນ' }
 
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   if (!assetCode) return { error: 'ບໍ່ພົບລະຫັດອຸປະກອນ' }
@@ -258,7 +258,7 @@ export async function setLocalAssetActive(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'delete')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນ' }
+  if (!can.menu(user, '/assets', 'delete')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນ' }
 
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const active = String(formData.get('is_active') ?? '') === '1'

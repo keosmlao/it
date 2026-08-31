@@ -143,10 +143,10 @@ export default function PermissionGrid({
                   </SubmitButton>
                   <Link
                     href={`/admin/permissions/${s.employee_id}`}
-                    title="ຕັ້ງ ເບິ່ງ/ເພີ່ມ/ແກ້ໄຂ/ລົບ ເປັນລາຍໂມດູນ"
+                    title="ຕັ້ງ ເບິ່ງ/ເພີ່ມ/ແກ້ໄຂ/ລົບ ເປັນລາຍເມນູ"
                     className="btn-secondary rounded px-2 py-1.5 text-xs whitespace-nowrap"
                   >
-                    ລາຍໂມດູນ →
+                    ລາຍເມນູ →
                   </Link>
                 </div>
               </div>

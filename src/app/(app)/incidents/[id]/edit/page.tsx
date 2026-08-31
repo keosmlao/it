@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getIncident, getSubscriptionOptions } from '@/lib/incidents/queries'
 import { getAssetOptions } from '@/lib/maintenance/queries'
@@ -11,7 +11,7 @@ export default async function EditIncidentPage({
   params,
 }: PageProps<'/incidents/[id]/edit'>) {
   const { id } = await params
-  const user = await requireModuleView('incidents')
+  const user = await requireMenuView('/incidents')
   if (!can.manageAssets(user)) notFound()
 
   const [incident, subscriptions, assets] = await Promise.all([

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { getRecoveryStats, paginateRecoveries } from '@/lib/assets/stock'
 import Pagination from '@/components/pagination'
 import ExportMenu from '@/components/export-menu'
@@ -13,7 +13,7 @@ export default async function RecoveryPage({
   searchParams,
 }: PageProps<'/assets/recovery'>) {
   const params = await searchParams
-  await requireModuleView('assets')
+  await requireMenuView('/assets/recovery')
 
   const filters = {
     reason: pick(params.reason) || 'all',

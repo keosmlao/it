@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getErpSupplierOptions,
@@ -18,7 +18,7 @@ import VendorActiveToggle from './active-toggle'
 
 export default async function VendorPage({ params }: PageProps<'/vendors/[id]'>) {
   const { id } = await params
-  const user = await requireModuleView('vendors')
+  const user = await requireMenuView('/vendors')
 
   const vendor = await getVendor(id)
   if (!vendor) notFound()

@@ -2,17 +2,19 @@ import { describe, expect, it } from 'vitest'
 import {
   allows,
   can,
-  MODULE_ACTIONS,
-  MODULES,
   PERMISSIONS,
   PERMISSION_LABEL_LO,
   roleAllows,
-  roleAllowsModule,
   type ItStaff,
-  type ModuleAction,
-  type ModuleCode,
   type Role,
 } from './roles'
+import {
+  MENU_ACTIONS,
+  MENU_PERMS,
+  menuForPath,
+  roleAllowsMenu,
+} from './menu-perms'
+import { NAV_GROUPS, type NavItem } from '@/app/(app)/nav-config'
 
 function user(
   role: Role,
@@ -102,70 +104,97 @@ describe('ສິດລາຍຄົນ (per-user overrides)', () => {
 })
 
 /**
- * ສິດລາຍໂມດູນ — ຄ່າຕັ້ງຕົ້ນຕ້ອງເທົ່າກັບສິດເກົ່າ ຈຶ່ງບໍ່ມີໃຜເສຍ ຫຼື
+ * ສິດລາຍເມນູ — ຄ່າຕັ້ງຕົ້ນຕ້ອງເທົ່າກັບສິດເກົ່າ ຈຶ່ງບໍ່ມີໃຜເສຍ ຫຼື
  * ໄດ້ສິດເພີ່ມໃນມື້ທີ່ເປີດໃຊ້ — ຢືນຢັນດ້ວຍ test ບໍ່ແມ່ນດ້ວຍຄວາມຫວັງ
  */
-describe('ສິດລາຍໂມດູນ', () => {
-  it('ຄ່າຕັ້ງຕົ້ນຄືສິດເກົ່າ: support ຈັດການອຸປະກອນໄດ້ ແຕ່ຄ່າເຊົ່າບໍ່ໄດ້', () => {
+describe('ສິດລາຍເມນູ', () => {
+  it('ຄ່າຕັ້ງຕົ້ນຄືສິດເກົ່າ: support ຢືມ–ຄືນໄດ້ ແຕ່ລົງທະບຽນການເຊົ່າບໍ່ໄດ້', () => {
     const support = user('support')
-    expect(can.module(support, 'assets', 'create')).toBe(true)
-    expect(can.module(support, 'assets', 'edit')).toBe(true)
-    expect(can.module(support, 'subscriptions', 'create')).toBe(false)
-    expect(can.module(support, 'subscriptions', 'edit')).toBe(false)
+    expect(can.menu(support, '/assets/lend', 'create')).toBe(true)
+    expect(can.menu(support, '/assets', 'edit')).toBe(true)
+    expect(can.menu(support, '/subscriptions/new', 'create')).toBe(false)
+    expect(can.menu(support, '/subscriptions', 'edit')).toBe(false)
   })
 
-  it('ຜູ້ຈັດການ ແລະ ຫົວໜ້າ ຈັດການຄ່າເຊົ່າໄດ້', () => {
+  it('ຜູ້ຈັດການ ແລະ ຫົວໜ້າ ລົງທະບຽນການເຊົ່າໄດ້', () => {
     for (const role of ['manager', 'head'] as Role[]) {
-      expect(can.module(user(role), 'subscriptions', 'create')).toBe(true)
+      expect(can.menu(user(role), '/subscriptions/new', 'create')).toBe(true)
     }
   })
 
-  it('ເປີດໃຫ້ເປັນລາຍຄົນໄດ້ ໂດຍບໍ່ຕ້ອງເລື່ອນບົດບາດ', () => {
-    const support = user('support', '8010', { 'subscriptions.create': true })
-    expect(can.module(support, 'subscriptions', 'create')).toBe(true)
-    // ບໍ່ຮົ່ວໄປຂໍ້ອື່ນ
-    expect(can.module(support, 'subscriptions', 'delete')).toBe(false)
+  it('ເປີດເມນູດຽວໃຫ້ລາຍຄົນໄດ້ ໂດຍບໍ່ຮົ່ວໄປເມນູອື່ນ', () => {
+    const support = user('support', '8010', { '/subscriptions/new.create': true })
+    expect(can.menu(support, '/subscriptions/new', 'create')).toBe(true)
+    expect(can.menu(support, '/subscriptions', 'edit')).toBe(false)
+    expect(can.menu(support, '/subscriptions', 'delete')).toBe(false)
     expect(can.manageSubscriptions(support)).toBe(false)
   })
 
   it('ຫ້າມລາຍຄົນໄດ້ ເຖິງແມ່ນບົດບາດຈະເປີດໃຫ້', () => {
-    const head = user('head', '8010', { 'subscriptions.delete': false })
-    expect(can.module(head, 'subscriptions', 'edit')).toBe(true)
-    expect(can.module(head, 'subscriptions', 'delete')).toBe(false)
+    const head = user('head', '8010', { '/subscriptions.delete': false })
+    expect(can.menu(head, '/subscriptions', 'edit')).toBe(true)
+    expect(can.menu(head, '/subscriptions', 'delete')).toBe(false)
   })
 
-  it('ປິດ "ເບິ່ງ" ແລ້ວເຮັດຫຍັງໃນໂມດູນນັ້ນບໍ່ໄດ້ເລີຍ', () => {
+  it('ປິດ "ເບິ່ງ" ແລ້ວເຮັດຫຍັງຈາກເມນູນັ້ນບໍ່ໄດ້ເລີຍ', () => {
     const support = user('support', '8010', {
-      'assets.view': false,
-      'assets.create': true,
+      '/assets.view': false,
+      '/assets.edit': true,
     })
-    expect(can.viewModule(support, 'assets')).toBe(false)
-    expect(can.module(support, 'assets', 'create')).toBe(false)
+    expect(can.viewMenu(support, '/assets')).toBe(false)
+    expect(can.menu(support, '/assets', 'edit')).toBe(false)
+  })
+
+  it('ປິດເມນູແມ່ ລູກປິດນຳ', () => {
+    const support = user('support', '8010', { '/assets/lend.view': false })
+    expect(can.viewMenu(support, '/assets/holders')).toBe(false)
+    expect(can.viewMenu(support, '/assets/documents')).toBe(false)
+    // ເມນູຄົນລະສາຍຍັງເປີດຢູ່
+    expect(can.viewMenu(support, '/assets')).toBe(true)
   })
 
   it('ຜູ້ແຈ້ງບັນຫາບໍ່ໄດ້ຫຍັງເລີຍ ເຖິງແມ່ນຈະຕັ້ງເປີດໃຫ້', () => {
-    const outsider = user('requester', null, { 'assets.view': true })
-    for (const m of MODULES) {
-      for (const a of MODULE_ACTIONS) {
-        expect(can.module(outsider, m.code as ModuleCode, a as ModuleAction)).toBe(false)
+    const outsider = user('requester', null, { '/assets.view': true })
+    for (const m of MENU_PERMS) {
+      for (const a of MENU_ACTIONS) {
+        expect(can.menu(outsider, m.key, a)).toBe(false)
       }
     }
   })
 
   it('ລຶບ ticket ໄດ້ສະເພາະຜູ້ຈັດການ ຄືກົດເກົ່າ', () => {
-    expect(roleAllowsModule('manager', 'tickets', 'delete')).toBe(true)
+    expect(roleAllowsMenu('manager', '/tickets', 'delete', roleAllows)).toBe(true)
     for (const role of ['head', 'support', 'staff'] as Role[]) {
-      expect(roleAllowsModule(role, 'tickets', 'delete')).toBe(false)
-      expect(roleAllowsModule(role, 'tickets', 'edit')).toBe(true)
+      expect(roleAllowsMenu(role, '/tickets', 'delete', roleAllows)).toBe(false)
+      expect(roleAllowsMenu(role, '/tickets', 'edit', roleAllows)).toBe(true)
     }
   })
 
-  it('ທຸກໂມດູນມີຊື່ ແລະ ເສັ້ນທາງບໍ່ຊ້ຳກັນ', () => {
-    const codes = MODULES.map((m) => m.code)
-    expect(new Set(codes).size).toBe(codes.length)
-    for (const m of MODULES) {
-      expect(m.label.length).toBeGreaterThan(0)
-      expect(m.path.startsWith('/')).toBe(true)
+  it('ຊ່ອງທີ່ເມນູນັ້ນບໍ່ມີ ຈະບໍ່ເປີດໃຫ້ໃຜ', () => {
+    // "ຜູ້ຖືຄອງອຸປະກອນ" ເປັນໜ້າເບິ່ງຢ່າງດຽວ
+    expect(roleAllowsMenu('manager', '/assets/holders', 'delete', roleAllows)).toBe(false)
+    expect(roleAllowsMenu('manager', '/assets/holders', 'view', roleAllows)).toBe(true)
+  })
+
+  it('ຫາເມນູທີ່ຄຸມແຕ່ລະໜ້າໄດ້ຖືກ', () => {
+    expect(menuForPath('/assets/holders/18019')?.key).toBe('/assets/holders')
+    expect(menuForPath('/assets/200-00000436')?.key).toBe('/assets')
+    expect(menuForPath('/subscriptions/12/edit')?.key).toBe('/subscriptions')
+    expect(menuForPath('/')?.key).toBe('/')
+  })
+
+  it('ລາຍການສິດກົງກັບເມນູຈິງໃນ sidebar', () => {
+    const hrefs: string[] = []
+    const walk = (items: NavItem[]) => {
+      for (const item of items) {
+        hrefs.push(item.href)
+        if (item.children) walk(item.children)
+      }
     }
+    for (const group of NAV_GROUPS) walk(group.items)
+
+    const keys = new Set(MENU_PERMS.map((m) => m.key))
+    for (const href of hrefs) expect(keys.has(href)).toBe(true)
+    for (const key of keys) expect(hrefs).toContain(key)
   })
 })

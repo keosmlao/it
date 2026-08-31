@@ -24,7 +24,7 @@ export async function lendAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
+  if (!can.menu(user, '/assets/lend', 'create')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const empCode = String(formData.get('emp_code') ?? '').trim()
 
@@ -89,7 +89,7 @@ export async function returnAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
+  if (!can.menu(user, '/assets/lend', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const returnedAt = String(formData.get('returned_at') ?? '') || null
   const condition = String(formData.get('return_condition') ?? 'good')
@@ -143,7 +143,7 @@ export async function transferAsset(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
+  if (!can.menu(user, '/assets/lend', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const toEmpCode = String(formData.get('to_emp_code') ?? '').trim()
   const at = String(formData.get('transferred_at') ?? '') || null
@@ -382,7 +382,7 @@ export async function saveAssetSpec(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
+  if (!can.menu(user, '/assets', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   if (!assetCode) return { error: 'ບໍ່ພົບລະຫັດອຸປະກອນ' }
 
@@ -459,7 +459,7 @@ export async function addRepair(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'create')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
+  if (!can.menu(user, '/assets', 'edit')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const assetCode = String(formData.get('asset_code') ?? '').trim()
   const issue = String(formData.get('issue') ?? '').trim()
 
@@ -497,7 +497,7 @@ export async function deleteRepair(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'assets', 'delete')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
+  if (!can.menu(user, '/assets', 'delete')) return { error: 'ບໍ່ມີສິດຈັດການອຸປະກອນ' }
   const id = String(formData.get('repair_id'))
   const assetCode = String(formData.get('asset_code') ?? '')
 

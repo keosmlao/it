@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getEmployeeOptions, listAccountSystems } from '@/lib/accounts/queries'
 import AccountForm from './account-form'
@@ -7,7 +7,7 @@ import AccountForm from './account-form'
 export const metadata = { title: 'ເປີດບັນຊີຜູ້ໃຊ້' }
 
 export default async function NewAccountPage() {
-  const user = await requireModuleView('accounts')
+  const user = await requireMenuView('/accounts')
   if (!can.manageAccounts(user)) notFound()
 
   const [systems, employees] = await Promise.all([

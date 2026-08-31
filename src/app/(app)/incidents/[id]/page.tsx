@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getIncident } from '@/lib/incidents/queries'
 import {
@@ -19,7 +19,7 @@ import ResolvePanel from './resolve-panel'
 
 export default async function IncidentPage({ params }: PageProps<'/incidents/[id]'>) {
   const { id } = await params
-  const user = await requireModuleView('incidents')
+  const user = await requireMenuView('/incidents')
 
   const incident = await getIncident(id)
   if (!incident) notFound()

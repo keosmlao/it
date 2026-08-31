@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { getHolder, getHolderHistory } from '@/lib/assets/queries'
 import { safeDate } from '@/lib/assets/model'
 
@@ -8,7 +8,7 @@ export default async function HolderHistoryPage({
   params,
 }: PageProps<'/assets/holders/[code]'>) {
   const { code } = await params
-  await requireModuleView('assets')
+  await requireMenuView('/assets/holders')
 
   const empCode = decodeURIComponent(code)
   const [holder, history] = await Promise.all([

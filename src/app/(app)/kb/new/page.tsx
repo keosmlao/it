@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { getCategories } from '@/lib/tickets/queries'
 import ArticleForm from '../article-form'
 
 export const metadata = { title: 'ຂຽນບົດຄວາມ' }
 
 export default async function NewArticlePage() {
-  await requireModuleView('kb')
+  await requireMenuView('/kb')
   const categories = await getCategories()
 
   return (

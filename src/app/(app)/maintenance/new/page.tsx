@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getAssetOptions } from '@/lib/maintenance/queries'
 import { getOwnerOptions } from '@/lib/subscriptions/queries'
@@ -9,7 +9,7 @@ import PlanForm from '../plan-form'
 export const metadata = { title: 'ຕັ້ງແຜນບຳລຸງຮັກສາ' }
 
 export default async function NewMaintenancePage() {
-  const user = await requireModuleView('maintenance')
+  const user = await requireMenuView('/maintenance/new')
   if (!can.manageAssets(user)) notFound()
 
   const [owners, assets, locations] = await Promise.all([

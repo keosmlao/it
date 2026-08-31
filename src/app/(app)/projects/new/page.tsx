@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getAllEmployees, getAssignableStaff, getPriorities } from '@/lib/tickets/queries'
 import NewProjectForm from './new-project-form'
@@ -8,7 +8,7 @@ import NewProjectForm from './new-project-form'
 export const metadata = { title: 'ສ້າງໂປຣເຈັກ' }
 
 export default async function NewProjectPage() {
-  const user = await requireModuleView('projects')
+  const user = await requireMenuView('/projects/new')
   if (!can.assignWork(user)) redirect('/projects')
 
   const [priorities, staff, employees] = await Promise.all([

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getVendorOptions } from '@/lib/vendors/queries'
 import ConsumableForm from '../consumable-form'
@@ -7,7 +7,7 @@ import ConsumableForm from '../consumable-form'
 export const metadata = { title: 'ເພີ່ມອຸປະກອນສິ້ນເປືອງ' }
 
 export default async function NewConsumablePage() {
-  const user = await requireModuleView('consumables')
+  const user = await requireMenuView('/consumables/new')
   if (!can.manageAssets(user)) notFound()
 
   const vendors = await getVendorOptions()

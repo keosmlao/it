@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { listAccountSystems } from '@/lib/accounts/queries'
 import { getSubscriptionOptions } from '@/lib/incidents/queries'
@@ -12,7 +12,7 @@ import SystemRow from './system-row'
 export const metadata = { title: 'ລະບົບທີ່ມີບັນຊີ' }
 
 export default async function AccountSystemsPage() {
-  const user = await requireModuleView('accounts')
+  const user = await requireMenuView('/accounts/systems')
   if (!can.manageAccounts(user)) notFound()
 
   const [systems, subscriptions, owners] = await Promise.all([

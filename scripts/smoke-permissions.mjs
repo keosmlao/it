@@ -101,59 +101,59 @@ try {
     'view ແນບຊື່ຜູ້ໃຊ້ ແລະ ຜູ້ຕັ້ງ',
     Boolean(named?.employee_name && named?.updated_by_name)
   )
-  // ---- ສິດລາຍໂມດູນ (ເບິ່ງ/ເພີ່ມ/ແກ້ໄຂ/ລົບ) ----
-  // key ຮູບແບບ `<ໂມດູນ>.<ການກະທຳ>` ໃຊ້ຕາຕະລາງດຽວກັນ ຈຶ່ງຕ້ອງບໍ່ຕີກັນ
+  // ---- ສິດລາຍເມນູ (ເບິ່ງ/ເພີ່ມ/ແກ້ໄຂ/ລົບ) ----
+  // key ຮູບແບບ `<href ເມນູ>.<ການກະທຳ>` ໃຊ້ຕາຕະລາງດຽວກັນ ຈຶ່ງຕ້ອງບໍ່ຕີກັນ
   // ກັບ 9 ຂໍ້ທົ່ວໄປ — ໜ້າຕັ້ງຄ່າແຕ່ລະໜ້າລຶບສະເພາະຊຸດຂອງຕົນເອງ
   await client.query(
     `insert into it.user_permissions (employee_id, permission, allowed, updated_by)
-     values ($1::int, 'subscriptions.create', true, $2::int),
-            ($1::int, 'assets.view', false, $2::int)`,
+     values ($1::int, '/subscriptions/new.create', true, $2::int),
+            ($1::int, '/assets.view', false, $2::int)`,
     [support.employee_id, manager.employee_id]
   )
 
   const mods = (
     await client.query(
       `select permission, allowed from it.user_permissions
-        where employee_id = $1::int and permission like '%.%'
+        where employee_id = $1::int and permission like '/%'
         order by permission`,
       [support.employee_id]
     )
   ).rows
-  check('ເກັບສິດລາຍໂມດູນໄດ້', mods.length === 2, JSON.stringify(mods))
+  check('ເກັບສິດລາຍເມນູໄດ້', mods.length === 2, JSON.stringify(mods))
 
-  // ບັນທຶກ 9 ຂໍ້ທົ່ວໄປ (ລຶບສະເພາະ key ບໍ່ມີຈຸດ) ຕ້ອງບໍ່ລ້າງສິດໂມດູນຖິ້ມ
+  // ບັນທຶກ 9 ຂໍ້ທົ່ວໄປ ຕ້ອງບໍ່ລ້າງສິດລາຍເມນູຖິ້ມ
   await client.query(
     `delete from it.user_permissions
-      where employee_id = $1::int and permission not like '%.%'`,
+      where employee_id = $1::int and permission not like '/%'`,
     [support.employee_id]
   )
   const stillThere = Number(
     (
       await client.query(
         `select count(*) as n from it.user_permissions
-          where employee_id = $1::int and permission like '%.%'`,
+          where employee_id = $1::int and permission like '/%'`,
         [support.employee_id]
       )
     ).rows[0].n
   )
-  check('ບັນທຶກສິດທົ່ວໄປແລ້ວ ສິດລາຍໂມດູນຍັງຢູ່', stillThere === 2, `${stillThere} ຂໍ້`)
+  check('ບັນທຶກສິດທົ່ວໄປແລ້ວ ສິດລາຍເມນູຍັງຢູ່', stillThere === 2, `${stillThere} ຂໍ້`)
 
   // ແລະ ກັບກັນ
   await client.query(
     `delete from it.user_permissions
-      where employee_id = $1::int and permission like '%.%'`,
+      where employee_id = $1::int and permission like '/%'`,
     [support.employee_id]
   )
   const globals = Number(
     (
       await client.query(
         `select count(*) as n from it.user_permissions
-          where employee_id = $1::int and permission not like '%.%'`,
+          where employee_id = $1::int and permission not like '/%'`,
         [support.employee_id]
       )
     ).rows[0].n
   )
-  check('ບັນທຶກສິດລາຍໂມດູນແລ້ວ ບໍ່ແຕະສິດທົ່ວໄປ', globals === 0, `${globals} ຂໍ້`)
+  check('ບັນທຶກສິດລາຍເມນູແລ້ວ ບໍ່ແຕະສິດທົ່ວໄປ', globals === 0, `${globals} ຂໍ້`)
 } finally {
   await client.query('rollback')
   await client.end()

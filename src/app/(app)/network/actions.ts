@@ -16,7 +16,7 @@ export async function saveSegment(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'network', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນເຄືອຂ່າຍ' }
+  if (!can.menu(user, '/network', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຂໍ້ມູນເຄືອຂ່າຍ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const name = String(formData.get('name') ?? '')
@@ -95,7 +95,7 @@ export async function saveIpAssignment(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'network', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ທະບຽນ IP' }
+  if (!can.menu(user, '/network', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ທະບຽນ IP' }
 
   const id = String(formData.get('id') ?? '').trim()
   const segmentId = String(formData.get('segment_id') ?? '').trim()
@@ -166,7 +166,7 @@ export async function deleteIpAssignment(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'network', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
+  if (!can.menu(user, '/network', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const rows = await query<{ segment_id: string }>(
@@ -188,7 +188,7 @@ export async function saveSwitchPort(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'network', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຜັງພອດ' }
+  if (!can.menu(user, '/network/ports', 'edit')) return { error: 'ບໍ່ມີສິດແກ້ຜັງພອດ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const switchCode = String(formData.get('switch_asset_code') ?? '')
@@ -260,7 +260,7 @@ export async function deleteSwitchPort(
   formData: FormData
 ): Promise<FormState> {
   const user = await requireUser()
-  if (!can.module(user, 'network', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
+  if (!can.menu(user, '/network/ports', 'delete')) return { error: 'ບໍ່ມີສິດລຶບ' }
 
   const id = String(formData.get('id') ?? '').trim()
   const rows = await query<{ id: string }>(

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import {
   getAccountStats,
@@ -19,7 +19,7 @@ export const metadata = { title: 'ບັນຊີຜູ້ໃຊ້' }
 
 export default async function AccountsPage({ searchParams }: PageProps<'/accounts'>) {
   const params = await searchParams
-  const user = await requireModuleView('accounts')
+  const user = await requireMenuView('/accounts')
 
   const system = pick(params.system) || 'all'
   const status = pick(params.status)

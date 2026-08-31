@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { can } from '@/lib/auth/roles'
 import { getErpSupplierOptions } from '@/lib/vendors/queries'
 import VendorForm from '../vendor-form'
@@ -7,7 +7,7 @@ import VendorForm from '../vendor-form'
 export const metadata = { title: 'ເພີ່ມຜູ້ຂາຍ' }
 
 export default async function NewVendorPage() {
-  const user = await requireModuleView('vendors')
+  const user = await requireMenuView('/vendors')
   if (!can.manageSubscriptions(user)) notFound()
 
   const suppliers = await getErpSupplierOptions()

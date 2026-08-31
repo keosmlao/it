@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import { getArticle, recordView } from '@/lib/kb/queries'
 import { formatDateTime } from '@/lib/format'
 import { deleteArticle } from '../actions'
 
 export default async function ArticlePage({ params }: PageProps<'/kb/[id]'>) {
   const { id } = await params
-  const user = await requireModuleView('kb')
+  const user = await requireMenuView('/kb')
 
   const article = await getArticle(id)
   if (!article) notFound()

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { requireModuleView } from '@/lib/auth/session'
+import { requireMenuView } from '@/lib/auth/session'
 import {
   REQUEST_STATUSES,
   REQUEST_STATUS_LABEL_LO,
@@ -14,7 +14,7 @@ export default async function RequestsPage({
   searchParams,
 }: PageProps<'/requests'>) {
   const params = await searchParams
-  const user = await requireModuleView('requests')
+  const user = await requireMenuView('/requests')
 
   // ບໍ່ໄດ້ລະບຸມາ = ສະເພາະທີ່ລໍອະນຸມັດ; 'all' = ເອົາໝົດ
   const status =
