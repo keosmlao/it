@@ -38,7 +38,7 @@ export default function ExportMenu({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="btn-secondary rounded-lg px-4 py-2 text-sm"
+        className="btn-secondary rounded px-3 py-1.5 text-[13px]"
       >
         ↓ {label}
       </button>

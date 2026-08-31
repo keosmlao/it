@@ -54,7 +54,7 @@ export default async function PurchaseDetailPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <Link
           href="/purchase"
           className="text-sm text-muted underline-offset-2 hover:underline"
@@ -63,7 +63,7 @@ export default async function PurchaseDetailPage({
         </Link>
         <Link
           href={`/purchase/${pr.id}/print`}
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           🖶 ພິມຟອມ
         </Link>
@@ -235,16 +235,16 @@ export default async function PurchaseDetailPage({
               <input
                 name="item_name"
                 required
-                className="input w-60 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-60 rounded px-2 py-1 text-[13px]"
               />
             </label>
             <label className="flex flex-col gap-1 text-xs text-muted">
               ສະເປັກ
-              <input name="spec" className="input w-52 rounded-lg px-3 py-1.5 text-sm" />
+              <input name="spec" className="input w-52 rounded px-2 py-1 text-[13px]" />
             </label>
             <label className="flex flex-col gap-1 text-xs text-muted">
               ຫົວໜ່ວຍ
-              <input name="unit" className="input w-24 rounded-lg px-3 py-1.5 text-sm" />
+              <input name="unit" className="input w-24 rounded px-2 py-1 text-[13px]" />
             </label>
             <label className="flex flex-col gap-1 text-xs text-muted">
               ຈຳນວນ *
@@ -255,7 +255,7 @@ export default async function PurchaseDetailPage({
                 step="0.01"
                 defaultValue={1}
                 required
-                className="input w-24 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-24 rounded px-2 py-1 text-[13px]"
               />
             </label>
             <label className="flex flex-col gap-1 text-xs text-muted">
@@ -263,10 +263,10 @@ export default async function PurchaseDetailPage({
               <input
                 name="est_price"
                 inputMode="numeric"
-                className="input w-36 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-36 rounded px-2 py-1 text-[13px]"
               />
             </label>
-            <SubmitButton className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+            <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
               + ເພີ່ມ
             </SubmitButton>
           </ActionForm>
@@ -355,7 +355,7 @@ export default async function PurchaseDetailPage({
               name="note"
               rows={3}
               placeholder="ຄຳເຫັນ (ບັງຄັບເມື່ອບໍ່ອະນຸມັດ)"
-              className="input w-full rounded-lg px-3 py-2 text-sm"
+              className="input w-full rounded px-2 py-1 text-[13px]"
             />
             <div className="flex gap-2">
               <SubmitButton
@@ -368,7 +368,7 @@ export default async function PurchaseDetailPage({
               <SubmitButton
                 name="decision"
                 value="rejected"
-                className="btn-danger rounded-lg px-4 py-2 text-sm font-medium"
+                className="btn-danger rounded px-3 py-1.5 text-[13px] font-medium"
               >
                 ບໍ່ອະນຸມັດ
               </SubmitButton>
@@ -390,10 +390,10 @@ export default async function PurchaseDetailPage({
               <input
                 name="po_no"
                 required
-                className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-56 rounded px-2 py-1 text-[13px]"
               />
             </label>
-            <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               ບັນທຶກ
             </SubmitButton>
           </ActionForm>
@@ -404,7 +404,7 @@ export default async function PurchaseDetailPage({
         {submittable && (
           <ActionForm action={submitPurchaseRequest}>
             <input type="hidden" name="pr_id" value={pr.id} />
-            <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               ສົ່ງອະນຸມັດ
             </SubmitButton>
           </ActionForm>
@@ -413,7 +413,7 @@ export default async function PurchaseDetailPage({
         {receivable && (
           <ActionForm action={markPurchaseReceived}>
             <input type="hidden" name="pr_id" value={pr.id} />
-            <SubmitButton className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
               ຮັບເຄື່ອງແລ້ວ
             </SubmitButton>
           </ActionForm>
@@ -422,7 +422,7 @@ export default async function PurchaseDetailPage({
         {cancellable && (
           <ActionForm action={cancelPurchaseRequest}>
             <input type="hidden" name="pr_id" value={pr.id} />
-            <SubmitButton className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
               ຍົກເລີກໃບນີ້
             </SubmitButton>
           </ActionForm>

@@ -61,7 +61,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ອຸປະກອນໄອທີ {stats?.total ?? 0} ເຄື່ອງ · ກະຈາຍຢູ່ {stats?.departments ?? 0} ພະແນກ
           {' · '}ມີ spec {stats?.with_spec ?? 0}
@@ -75,25 +75,25 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
         <div className="flex flex-wrap gap-2">
           <Link
             href="/assets/lend"
-            className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+            className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
           >
             + ອອກໃບຢືມ
           </Link>
           <Link
             href="/assets/new"
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             + ລົງທະບຽນຊັບສິນ
           </Link>
           <Link
             href="/assets/holders"
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ຜູ້ຖືຄອງ →
           </Link>
           <Link
             href="/assets/movements"
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ປະຫວັດຢືມ–ຄືນ →
           </Link>
@@ -135,7 +135,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
             name="q"
             defaultValue={filters.q}
             placeholder="ລະຫັດ, ຊື່, S/N, ລຸ້ນ, ຜູ້ຖື"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -143,7 +143,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
           <select
             name="category"
             defaultValue={filters.category}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ທັງໝົດ</option>
             {categories.map((c) => (
@@ -158,7 +158,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
           <select
             name="brand"
             defaultValue={filters.brand}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ທັງໝົດ</option>
             {brands.map((b) => (
@@ -168,7 +168,7 @@ export default async function AssetsPage({ searchParams }: PageProps<'/assets'>)
             ))}
           </select>
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

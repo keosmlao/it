@@ -21,7 +21,7 @@ export default async function NetworkPage() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           {stats?.segments ?? 0} ວົງເນັດ · {stats?.ips ?? 0} IP ໃນທະບຽນ ·{' '}
           {stats?.ports ?? 0} ພອດສະວິດ
@@ -29,7 +29,7 @@ export default async function NetworkPage() {
         <div className="flex flex-wrap gap-2">
           <Link
             href="/network/ports"
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ຜັງພອດສະວິດ
           </Link>

@@ -28,13 +28,13 @@ export default async function SurveyPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ກວດແລ້ວ {stats?.checked ?? 0} / {stats?.total ?? 0} ເຄື່ອງ · ຢູ່ໃນສາງ{' '}
           {stats?.in_stock ?? 0} · ຢູ່ກັບຜູ້ໃຊ້ {stats?.with_user ?? 0} · ຫາບໍ່ພົບ{' '}
           <span className="text-red-600 dark:text-red-400">{stats?.missing ?? 0}</span>
         </p>
-        <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+        <Link href="/assets" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ← ທະບຽນອຸປະກອນ
         </Link>
       </div>
@@ -104,7 +104,7 @@ export default async function SurveyPage({
             name="q"
             defaultValue={filters.q}
             placeholder="ລະຫັດ, ຊື່, S/N"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -112,7 +112,7 @@ export default async function SurveyPage({
           <select
             name="location"
             defaultValue={filters.location}
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           >
             <option value="">ທຸກສະຖານທີ່</option>
             {locations.map((l) => (
@@ -122,7 +122,7 @@ export default async function SurveyPage({
             ))}
           </select>
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

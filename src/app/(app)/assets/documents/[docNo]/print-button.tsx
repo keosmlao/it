@@ -6,7 +6,7 @@ export default function PrintButton() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="btn-secondary flex items-center gap-2 rounded-lg px-4 py-2 text-sm"
+      className="btn-secondary flex items-center gap-2 rounded px-3 py-1.5 text-[13px]"
     >
       <svg
         viewBox="0 0 24 24"

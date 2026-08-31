@@ -34,7 +34,7 @@ export default async function DocumentPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
+      <div className="o-page-actions print:hidden">
         <Link
           href="/assets/documents"
           className="text-sm text-muted underline-offset-2 hover:underline"

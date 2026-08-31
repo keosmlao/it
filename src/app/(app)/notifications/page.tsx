@@ -13,7 +13,7 @@ export default async function NotificationsPage() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div>
           <p className="mt-1 text-sm text-muted">
             ຍັງບໍ່ໄດ້ອ່ານ {unread} ລາຍການ
@@ -24,7 +24,7 @@ export default async function NotificationsPage() {
           <form action={markAllRead}>
             <button
               type="submit"
-              className="btn-secondary rounded-lg px-4 py-2 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
             >
               ໝາຍວ່າອ່ານແລ້ວທັງໝົດ
             </button>

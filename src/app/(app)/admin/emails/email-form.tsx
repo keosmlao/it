@@ -49,7 +49,7 @@ function TestButton() {
     <button
       type="submit"
       disabled={pending}
-      className="btn-secondary mt-3 rounded-lg px-5 py-2 text-sm disabled:opacity-60"
+      className="btn-secondary mt-3 rounded px-3 py-1.5 text-[13px] disabled:opacity-60"
     >
       {pending ? 'ກຳລັງທົດສອບ…' : 'ທົດສອບການເຊື່ອມຕໍ່'}
     </button>

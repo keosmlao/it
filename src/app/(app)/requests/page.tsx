@@ -24,7 +24,7 @@ export default async function RequestsPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div>
           <p className="mt-1 text-sm text-muted">
             {requests.length} ລາຍການ
@@ -33,7 +33,7 @@ export default async function RequestsPage({
 
         <Link
           href="/requests/new"
-          className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+          className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
         >
           + ສ້າງຄຳຮ້ອງ
         </Link>
@@ -45,7 +45,7 @@ export default async function RequestsPage({
           <select
             name="status"
             defaultValue={status}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="pending">ລໍອະນຸມັດ</option>
             <option value="all">ທັງໝົດ</option>
@@ -68,7 +68,7 @@ export default async function RequestsPage({
         </label>
         <button
           type="submit"
-          className="btn-secondary rounded-lg px-4 py-1.5 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ກັ່ນຕອງ
         </button>

@@ -42,7 +42,7 @@ export default async function BudgetPage({ searchParams }: PageProps<'/budget'>)
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ປີ {year} · {lines.length} ເສັ້ນງົບປະມານ · ຍອດໃຊ້ຈິງອ່ານຈາກລະບົບເອງ
           ບໍ່ຕ້ອງປ້ອນຊໍ້າ
@@ -51,7 +51,7 @@ export default async function BudgetPage({ searchParams }: PageProps<'/budget'>)
           <select
             name="year"
             defaultValue={String(year)}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             {yearChoices.map((y) => (
               <option key={y} value={y}>
@@ -59,7 +59,7 @@ export default async function BudgetPage({ searchParams }: PageProps<'/budget'>)
               </option>
             ))}
           </select>
-          <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+          <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ເບິ່ງ
           </button>
         </form>

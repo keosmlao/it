@@ -10,7 +10,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
       <h2 className="mt-4 text-xl font-bold text-fg">ບໍ່ສາມາດໂຫຼດໜ້ານີ້ໄດ້</h2>
       <p className="mt-2 text-sm text-muted">ກະລຸນາລອງໃໝ່. ຖ້າຍັງມີບັນຫາ ໃຫ້ແຈ້ງທີມ IT.</p>
       {error.digest && <p className="mt-2 font-mono text-xs text-faint">Ref: {error.digest}</p>}
-      <button type="button" onClick={reset} className="btn-primary mt-5 rounded-lg px-5 py-2 text-sm">ລອງໃໝ່</button>
+      <button type="button" onClick={reset} className="btn-primary mt-5 rounded px-3 py-1.5 text-[13px]">ລອງໃໝ່</button>
     </section>
   )
 }

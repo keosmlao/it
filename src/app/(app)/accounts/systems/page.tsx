@@ -23,12 +23,12 @@ export default async function AccountSystemsPage() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ລະບົບທີ່ພະນັກງານມີບັນຊີຢູ່ — ຜູກກັບສັນຍາເຊົ່າແລ້ວຈະທຽບໄດ້ວ່າຈ່າຍໄປຈັກ seat
           ແລະ ໃຊ້ຈິງຈັກຄົນ
         </p>
-        <Link href="/accounts" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+        <Link href="/accounts" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ← ບັນຊີຜູ້ໃຊ້
         </Link>
       </div>

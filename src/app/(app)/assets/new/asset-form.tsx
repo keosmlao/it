@@ -14,7 +14,7 @@ import { registerLocalAsset, updateLocalAsset } from '../local-actions'
 
 type Option = { code: string; name: string }
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const label = 'block text-xs text-muted'
 
 const REQUIRED = new Set<string>(REQUIRED_SPEC_FIELDS)
@@ -250,7 +250,7 @@ export default function AssetForm({
       )}
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <SubmitButton className="btn-primary rounded-lg px-5 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           {editing ? 'ບັນທຶກການແກ້ໄຂ' : 'ລົງທະບຽນ'}
         </SubmitButton>
 
@@ -258,7 +258,7 @@ export default function AssetForm({
           <button
             type="button"
             onClick={() => setOpenSpec(true)}
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             + ເພີ່ມສະເປັກເຄື່ອງ
           </button>

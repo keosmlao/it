@@ -71,7 +71,7 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
             type="date"
             name="from"
             defaultValue={from}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -80,19 +80,19 @@ export default async function ReportsPage({ searchParams }: PageProps<'/reports'
             type="date"
             name="to"
             defaultValue={to}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           />
         </label>
         <button
           type="submit"
-          className="btn-secondary rounded-lg px-4 py-1.5 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ອອກລາຍງານ
         </button>
         <div className="ml-auto flex flex-wrap gap-2">
           {['csv', 'xlsx', 'pdf'].map((format) => (
             <Link key={format} href={`/api/reports/export?format=${format}&from=${from}&to=${to}`}
-              className="btn-secondary rounded-lg px-3 py-1.5 text-xs font-semibold uppercase">
+              className="btn-secondary rounded px-3 py-1.5 text-xs font-semibold uppercase">
               {format === 'xlsx' ? 'Excel' : format}
             </Link>
           ))}

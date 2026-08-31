@@ -19,7 +19,7 @@ export default async function VendorsPage({ searchParams }: PageProps<'/vendors'
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           {vendors.length} ລາຍ · ເບີແຈ້ງບັນຫາ ແລະ ເງື່ອນໄຂການຮັບປະກັນຢູ່ບ່ອນດຽວ
           ຈຶ່ງບໍ່ຕ້ອງຫາຕອນລະບົບລົ້ມ
@@ -28,7 +28,7 @@ export default async function VendorsPage({ searchParams }: PageProps<'/vendors'
           {editable && (
             <Link
               href="/vendors/new"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               + ເພີ່ມຜູ້ຂາຍ
             </Link>
@@ -44,7 +44,7 @@ export default async function VendorsPage({ searchParams }: PageProps<'/vendors'
             name="q"
             defaultValue={q}
             placeholder="ຊື່, ຜູ້ຕິດຕໍ່, ເບີໂທ, ອີເມວ"
-            className="input w-64 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-64 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex items-center gap-2 pb-1.5 text-sm text-body">
@@ -57,7 +57,7 @@ export default async function VendorsPage({ searchParams }: PageProps<'/vendors'
           />
           ລວມທີ່ປິດໃຊ້ງານ
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

@@ -37,12 +37,12 @@ export default async function SecurityPage() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ໜ້ານີ້<strong>ອ່ານຢ່າງດຽວ</strong> — ບໍ່ໄດ້ແກ້ຫຍັງໃນທະບຽນ HR
           ເອົາໄວ້ເປັນຫຼັກຖານໄປລົມກັບເຈົ້າຂອງລະບົບ
         </p>
-        <Link href="/admin" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+        <Link href="/admin" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ← ຕັ້ງຄ່າລະບົບ
         </Link>
       </div>

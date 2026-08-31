@@ -23,9 +23,9 @@ export default async function PortalKbPage({ searchParams }: PageProps<'/my/kb'>
           name="q"
           defaultValue={q}
           placeholder="ຄົ້ນຫາ ເຊັ່ນ ເຄື່ອງພິມ, ເນັດ, ລະຫັດຜ່ານ"
-          className="input min-w-56 flex-1 rounded-lg px-3 py-2 text-sm"
+          className="input min-w-56 flex-1 rounded px-2 py-1 text-[13px]"
         />
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ຄົ້ນຫາ
         </button>
       </form>

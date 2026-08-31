@@ -49,7 +49,7 @@ export default async function WorkLogsPage({
             type="date"
             name="from"
             defaultValue={from}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -58,12 +58,12 @@ export default async function WorkLogsPage({
             type="date"
             name="to"
             defaultValue={to}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           />
         </label>
         <button
           type="submit"
-          className="btn-secondary rounded-lg px-4 py-1.5 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ເບິ່ງ
         </button>

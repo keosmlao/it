@@ -30,10 +30,10 @@ export default async function SearchPage({ searchParams }: PageProps<'/search'>)
             defaultValue={q}
             autoFocus
             placeholder="ຊື່ຄົນ, ລະຫັດເຄື່ອງ, S/N, IP, ຊື່ບໍລິການ, ບົດຄວາມ…"
-            className="input w-full rounded-lg px-3 py-2 text-sm"
+            className="input w-full rounded px-2 py-1 text-[13px]"
           />
         </label>
-        <button type="submit" className="btn-primary rounded-lg px-5 py-2 text-sm">
+        <button type="submit" className="btn-primary rounded px-3 py-1.5 text-[13px]">
           ຄົ້ນຫາ
         </button>
       </form>

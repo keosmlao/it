@@ -41,11 +41,11 @@ export default async function TeamPlansPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div className="flex items-center gap-2">
           <Link
             href={`/plans/team?date=${shiftDate(date, -1)}`}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ←
           </Link>
@@ -58,7 +58,7 @@ export default async function TeamPlansPage({
           </div>
           <Link
             href={`/plans/team?date=${shiftDate(date, 1)}`}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             →
           </Link>
@@ -67,7 +67,7 @@ export default async function TeamPlansPage({
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/plans?date=${date}`}
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ແຜນຂອງຂ້ອຍ →
           </Link>

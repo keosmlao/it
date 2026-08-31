@@ -53,7 +53,7 @@ export type ConditionProps = {
   locations: { code: string; name: string }[]
 }
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 
 /**
  * ກ່ອງ "ສະພາບເຄື່ອງ" ຢູ່ໜ້າລາຍລະອຽດ — ບ່ອນດຽວທີ່ໝາຍໄດ້ວ່າ
@@ -137,7 +137,7 @@ export default function ConditionPanel(props: ConditionProps) {
           <button
             type="button"
             onClick={() => toggle('state')}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             {broken ? 'ປ່ຽນສະຖານະ' : '⚠ ໝາຍວ່າເພ / ຫາຍ'}
           </button>
@@ -147,7 +147,7 @@ export default function ConditionPanel(props: ConditionProps) {
           <button
             type="button"
             onClick={() => toggle('deploy')}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             📍 ຕິດຕັ້ງໃຊ້ສ່ວນກາງ
           </button>
@@ -157,7 +157,7 @@ export default function ConditionPanel(props: ConditionProps) {
           <button
             type="button"
             onClick={() => toggle('undeploy')}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ຖອດອອກ
           </button>
@@ -167,7 +167,7 @@ export default function ConditionPanel(props: ConditionProps) {
           <button
             type="button"
             onClick={() => toggle('writeoff')}
-            className="btn-danger rounded-lg px-3 py-1.5 text-sm"
+            className="btn-danger rounded px-3 py-1.5 text-[13px]"
           >
             ຕັດຈຳໜ່າຍ
           </button>
@@ -177,7 +177,7 @@ export default function ConditionPanel(props: ConditionProps) {
           <button
             type="button"
             onClick={() => toggle('cancel')}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ຍົກເລີກການຕັດຈຳໜ່າຍ
           </button>
@@ -232,7 +232,7 @@ export default function ConditionPanel(props: ConditionProps) {
           </label>
 
           <div className="mt-3 flex gap-2">
-            <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               ບັນທຶກ
             </SubmitButton>
             <Cancel onClick={() => setPanel('none')} />
@@ -290,7 +290,7 @@ export default function ConditionPanel(props: ConditionProps) {
           <div className="mt-3 flex gap-2">
             <SubmitButton
               pendingLabel="ກຳລັງບັນທຶກ…"
-              className="btn-danger rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-danger rounded px-3 py-1.5 text-[13px] font-medium"
             >
               ຢືນຢັນຕັດຈຳໜ່າຍ
             </SubmitButton>
@@ -312,7 +312,7 @@ export default function ConditionPanel(props: ConditionProps) {
             />
           </label>
           <div className="mt-3 flex gap-2">
-            <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               ຍົກເລີກ ແລະ ກັບເຂົ້າສາງ
             </SubmitButton>
             <Cancel onClick={() => setPanel('none')} />
@@ -375,7 +375,7 @@ export default function ConditionPanel(props: ConditionProps) {
           </label>
 
           <div className="mt-3 flex gap-2">
-            <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               ບັນທຶກການຕິດຕັ້ງ
             </SubmitButton>
             <Cancel onClick={() => setPanel('none')} />
@@ -402,7 +402,7 @@ export default function ConditionPanel(props: ConditionProps) {
             </label>
           </div>
           <div className="mt-3 flex gap-2">
-            <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               ຢືນຢັນຖອດອອກ
             </SubmitButton>
             <Cancel onClick={() => setPanel('none')} />
@@ -427,7 +427,7 @@ function Cancel({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="btn-secondary rounded-lg px-4 py-2 text-sm"
+      className="btn-secondary rounded px-3 py-1.5 text-[13px]"
     >
       ຍົກເລີກ
     </button>

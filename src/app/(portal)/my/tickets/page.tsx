@@ -21,7 +21,7 @@ export default async function MyTicketsPage({
         <h1 className="text-lg font-semibold text-fg">ເລື່ອງທີ່ທ່ານແຈ້ງໄວ້</h1>
         <Link
           href="/my/tickets/new"
-          className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+          className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
         >
           + ແຈ້ງບັນຫາ
         </Link>

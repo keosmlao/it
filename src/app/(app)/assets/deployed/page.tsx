@@ -46,7 +46,7 @@ export default async function DeployedPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ຕິດຕັ້ງໃຊ້ງານຢູ່ <span className="font-medium text-fg">{stats?.active ?? 0}</span>{' '}
           ເຄື່ອງ ໃນ {stats?.places ?? 0} ບ່ອນ · ມູນຄ່າ{' '}
@@ -58,7 +58,7 @@ export default async function DeployedPage({
           )}
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <Link href="/assets" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ← ທະບຽນອຸປະກອນ
           </Link>
           <ExportMenu dataset="deployed" label="ດຶງລາຍການ" />
@@ -113,7 +113,7 @@ export default async function DeployedPage({
           <select
             name="place"
             defaultValue={filters.place}
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           >
             <option value="">ທຸກບ່ອນ</option>
             {places.map((p) => (
@@ -129,10 +129,10 @@ export default async function DeployedPage({
             name="q"
             defaultValue={filters.q}
             placeholder="ລະຫັດ, ຊື່, ບ່ອນ, ຜູ້ຮັບຜິດຊອບ"
-            className="input w-64 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-64 rounded px-2 py-1 text-[13px]"
           />
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

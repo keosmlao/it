@@ -24,7 +24,7 @@ export default async function ProjectsPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div>
           <p className="mt-1 text-sm text-muted">
             ພົບ {projectPage.total} ໂປຣເຈັກ
@@ -34,7 +34,7 @@ export default async function ProjectsPage({
         {can.assignWork(user) && (
           <Link
             href="/projects/new"
-            className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+            className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
           >
             + ສ້າງໂປຣເຈັກ
           </Link>
@@ -48,7 +48,7 @@ export default async function ProjectsPage({
             name="q"
             defaultValue={q}
             placeholder="ຊື່ ຫຼື ເລກໂປຣເຈັກ"
-            className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-52 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -56,7 +56,7 @@ export default async function ProjectsPage({
           <select
             name="status"
             defaultValue={status}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="open">ຍັງບໍ່ຈົບ</option>
             <option value="all">ທັງໝົດ</option>
@@ -69,7 +69,7 @@ export default async function ProjectsPage({
         </label>
         <button
           type="submit"
-          className="btn-secondary rounded-lg px-4 py-1.5 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ກັ່ນຕອງ
         </button>

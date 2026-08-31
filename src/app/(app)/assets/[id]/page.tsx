@@ -363,7 +363,7 @@ export default async function AssetDetailPage({ params }: PageProps<'/assets/[id
               </p>
               <Link
                 href="/assets/movements"
-                className="btn-secondary mt-3 inline-block rounded-lg px-4 py-2 text-sm"
+                className="btn-secondary mt-3 inline-block rounded px-3 py-1.5 text-[13px]"
               >
                 ເບິ່ງປະຫວັດຂອງເຄື່ອງອື່ນ →
               </Link>

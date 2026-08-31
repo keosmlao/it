@@ -40,7 +40,7 @@ export default async function MaintenancePage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ແຜນທີ່ເປີດຢູ່ {stats?.active ?? 0} · ເລີຍກຳນົດ{' '}
           <span className="font-medium text-red-600 dark:text-red-400">
@@ -54,7 +54,7 @@ export default async function MaintenancePage({
           {editable && (
             <Link
               href="/maintenance/new"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               + ຕັ້ງແຜນ
             </Link>
@@ -69,7 +69,7 @@ export default async function MaintenancePage({
           <select
             name="category"
             defaultValue={category}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             {PM_CATEGORIES.map((c) => (
@@ -84,7 +84,7 @@ export default async function MaintenancePage({
           <select
             name="due"
             defaultValue={due}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ບໍ່ກັ່ນຕອງ</option>
             <option value="soon">ຮອດກຳນົດ ຫຼື ເລີຍແລ້ວ</option>
@@ -97,7 +97,7 @@ export default async function MaintenancePage({
             name="q"
             defaultValue={q}
             placeholder="ຊື່ວຽກ, ລະຫັດ, ອຸປະກອນ"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex items-center gap-2 pb-1.5 text-sm text-body">
@@ -110,7 +110,7 @@ export default async function MaintenancePage({
           />
           ລວມທີ່ປິດໄວ້
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

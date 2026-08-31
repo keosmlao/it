@@ -66,10 +66,10 @@ export default function RatingForm({
           maxLength={300}
           defaultValue={current?.comment ?? ''}
           placeholder="ຢາກບອກຫຍັງເພີ່ມບໍ (ບໍ່ບັງຄັບ)"
-          className="input mt-3 w-full rounded-lg px-3 py-2 text-sm"
+          className="input mt-3 w-full rounded px-2 py-1 text-[13px]"
         />
 
-        <SubmitButton className="btn-primary mt-3 rounded-lg px-4 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary mt-3 rounded px-3 py-1.5 text-[13px] font-medium">
           {current ? 'ແກ້ຄະແນນ' : 'ສົ່ງຄະແນນ'}
         </SubmitButton>
       </ActionForm>

@@ -30,7 +30,7 @@ export default async function SubscriptionCostPage() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ຄິດຈາກສັນຍາທີ່ໃຊ້ງານຢູ່ · ແຍກຕາມສະກຸນເງິນ ບໍ່ໄດ້ແປງເປັນກີບ
           ເພາະອັດຕາແລກປ່ຽນປ່ຽນທຸກມື້
@@ -38,7 +38,7 @@ export default async function SubscriptionCostPage() {
         <div className="flex gap-2">
           <Link
             href="/subscriptions"
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ← ລາຍການສັນຍາ
           </Link>

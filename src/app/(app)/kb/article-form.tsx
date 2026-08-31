@@ -115,7 +115,7 @@ function Submit({ isEdit }: { isEdit: boolean }) {
     <button
       type="submit"
       disabled={pending}
-      className="mt-6 btn-primary rounded-lg px-5 py-2.5 font-medium"
+      className="mt-6 btn-primary rounded px-3 py-1.5 font-medium"
     >
       {pending ? 'ກຳລັງບັນທຶກ…' : isEdit ? 'ບັນທຶກການແກ້ໄຂ' : 'ເຜີຍແຜ່ບົດຄວາມ'}
     </button>

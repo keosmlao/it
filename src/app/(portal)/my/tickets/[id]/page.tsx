@@ -126,9 +126,9 @@ export default async function MyTicketPage({ params }: PageProps<'/my/tickets/[i
                 rows={3}
                 required
                 placeholder="ຕື່ມຂໍ້ມູນ ຫຼື ຖາມຄວາມຄືບໜ້າ…"
-                className="input w-full rounded-lg px-3 py-2 text-sm"
+                className="input w-full rounded px-2 py-1 text-[13px]"
               />
-              <SubmitButton className="btn-primary mt-2 rounded-lg px-4 py-2 text-sm font-medium">
+              <SubmitButton className="btn-primary mt-2 rounded px-3 py-1.5 text-[13px] font-medium">
                 ສົ່ງຂໍ້ຄວາມ
               </SubmitButton>
             </ActionForm>

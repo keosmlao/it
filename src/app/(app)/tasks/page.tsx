@@ -25,7 +25,7 @@ export default async function TasksPage({ searchParams }: PageProps<'/tasks'>) {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div>
           <h1 className="text-2xl font-semibold text-fg">
             {scope === 'mine' ? 'ວຽກຂອງຂ້ອຍ' : 'ວຽກທັງໝົດ'}

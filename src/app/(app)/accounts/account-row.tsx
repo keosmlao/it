@@ -58,7 +58,7 @@ export default function AccountRow({
               <input type="hidden" name="id" value={a.id} />
               <input type="hidden" name="status" value="suspended" />
               <SubmitButton
-                className="btn-secondary rounded-lg px-3 py-1 text-xs"
+                className="btn-secondary rounded px-2.5 py-1 text-xs"
                 pendingLabel="…"
               >
                 ພັກໄວ້

@@ -11,7 +11,7 @@ import {
   type AssetRow,
 } from '@/lib/assets/model'
 
-const inputClass = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const inputClass = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 
 /**
  * ຟອມ spec + ວັນທີຊື້ + ປະກັນ.
@@ -25,7 +25,7 @@ export default function SpecForm({ asset }: { asset: AssetRow }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-secondary mt-3 rounded-lg px-4 py-2 text-sm"
+        className="btn-secondary mt-3 rounded px-3 py-1.5 text-[13px]"
       >
         {asset.has_spec ? 'ແກ້ໄຂ spec ແລະ ປະກັນ' : '+ ເພີ່ມ spec ແລະ ປະກັນ'}
       </button>
@@ -107,13 +107,13 @@ export default function SpecForm({ asset }: { asset: AssetRow }) {
       </div>
 
       <div className="mt-4 flex gap-2">
-        <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກ
         </SubmitButton>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ຍົກເລີກ
         </button>

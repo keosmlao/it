@@ -40,10 +40,10 @@ export default function EmailRow({ target }: { target: Target }) {
           type="email"
           defaultValue={t.email_target ?? ''}
           placeholder="ຍັງບໍ່ມີອີເມວ"
-          className="input w-60 rounded-lg px-3 py-1.5 text-sm"
+          className="input w-60 rounded px-2 py-1 text-[13px]"
         />
         <SubmitButton
-          className="btn-secondary rounded-lg px-3 py-1.5 text-xs"
+          className="btn-secondary rounded px-3 py-1.5 text-xs"
           pendingLabel="…"
         >
           ບັນທຶກ

@@ -46,16 +46,16 @@ export default async function MovementsPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">ພົບ {movementPage.total} ລາຍການ</p>
         <div className="flex flex-wrap gap-2">
           <Link
             href="/assets/lend"
-            className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+            className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
           >
             + ອອກໃບຢືມ–ຄືນ
           </Link>
-          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <Link href="/assets" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ← ລາຍການອຸປະກອນ
           </Link>
           <ExportMenu dataset="movements" query={{ state }} />
@@ -87,7 +87,7 @@ export default async function MovementsPage({
             name="q"
             defaultValue={q}
             placeholder="ລະຫັດ, ອຸປະກອນ, ຜູ້ຢືມ, ເລກໃບຢືມ"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
 
@@ -99,7 +99,7 @@ export default async function MovementsPage({
           countBy="items"
         />
 
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

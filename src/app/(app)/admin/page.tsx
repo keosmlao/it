@@ -131,7 +131,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
                   name="respond_minutes"
                   min="1"
                   defaultValue={p.respond_minutes}
-                  className="input w-32 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-32 rounded px-2 py-1 text-[13px]"
                 />
               </label>
               <label className="flex flex-col gap-1 text-xs text-muted">
@@ -141,7 +141,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
                   name="resolve_minutes"
                   min="1"
                   defaultValue={p.resolve_minutes}
-                  className="input w-32 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-32 rounded px-2 py-1 text-[13px]"
                 />
               </label>
               <span className="pb-2 text-xs text-faint">
@@ -149,7 +149,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
               </span>
               <button
                 type="submit"
-                className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+                className="btn-secondary rounded px-3 py-1.5 text-[13px]"
               >
                 ບັນທຶກ
               </button>
@@ -217,7 +217,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
               required
               maxLength={20}
               placeholder="BACKUP"
-              className="input w-32 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-32 rounded px-2 py-1 text-[13px]"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-muted">
@@ -226,7 +226,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
               name="name_lo"
               required
               maxLength={100}
-              className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-52 rounded px-2 py-1 text-[13px]"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-muted">
@@ -234,7 +234,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
             <select
               name="unit_code"
               defaultValue=""
-              className="input rounded-lg px-3 py-1.5 text-sm"
+              className="input rounded px-2 py-1 text-[13px]"
             >
               <option value="">— ບໍ່ລະບຸ —</option>
               <option value="8010">Support</option>
@@ -247,12 +247,12 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
               type="number"
               name="sort_order"
               defaultValue={50}
-              className="input w-20 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-20 rounded px-2 py-1 text-[13px]"
             />
           </label>
           <button
             type="submit"
-            className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium"
+            className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
           >
             ເພີ່ມ / ອັບເດດ
           </button>
@@ -290,7 +290,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
                 <select
                   name="role"
                   defaultValue={override?.role ?? ''}
-                  className="input rounded-lg px-3 py-1.5 text-sm"
+                  className="input rounded px-2 py-1 text-[13px]"
                 >
                   <option value="">ຕາມ HR ({ROLE_LABEL_LO[s.role]})</option>
                   {ROLES.map((r) => (
@@ -303,11 +303,11 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
                   name="note"
                   defaultValue={override?.note ?? ''}
                   placeholder="ເຫດຜົນ"
-                  className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-52 rounded px-2 py-1 text-[13px]"
                 />
                 <button
                   type="submit"
-                  className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+                  className="btn-secondary rounded px-3 py-1.5 text-[13px]"
                 >
                   ບັນທຶກ
                 </button>
@@ -404,7 +404,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
               min="1"
               required
               defaultValue={prSteps.length + 1}
-              className="input w-20 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-20 rounded px-2 py-1 text-[13px]"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-muted">
@@ -413,7 +413,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
               name="name_lo"
               required
               placeholder="ຫົວໜ້າພະແນກບັນຊີ"
-              className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-52 rounded px-2 py-1 text-[13px]"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-muted">
@@ -421,7 +421,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
             <select
               name="approver_role"
               defaultValue="head"
-              className="input w-40 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-40 rounded px-2 py-1 text-[13px]"
             >
               <option value="head">ຫົວໜ້າໜ່ວຍງານ</option>
               <option value="manager">ຜູ້ຈັດການ</option>
@@ -432,7 +432,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
             <select
               name="approver_employee_id"
               defaultValue=""
-              className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-52 rounded px-2 py-1 text-[13px]"
             >
               <option value="">— ໃຊ້ບົດບາດ —</option>
               {staff.map((s) => (
@@ -448,10 +448,10 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
               name="min_amount"
               inputMode="numeric"
               defaultValue="0"
-              className="input w-36 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-36 rounded px-2 py-1 text-[13px]"
             />
           </label>
-          <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+          <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
             ບັນທຶກຂັ້ນ
           </SubmitButton>
         </ActionForm>
@@ -476,14 +476,14 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
           <ActionForm action={sendQueuedNotifications}>
             <SubmitButton
               pendingLabel="ກຳລັງສົ່ງ…"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               ສົ່ງຂໍ້ຄວາມທີ່ຄ້າງ
             </SubmitButton>
           </ActionForm>
 
           <ActionForm action={retryNotifications}>
-            <SubmitButton className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
               ລອງສົ່ງອັນທີ່ລົ້ມເຫຼວໃໝ່
             </SubmitButton>
           </ActionForm>
@@ -491,7 +491,7 @@ export default async function AdminPage({ searchParams }: PageProps<'/admin'>) {
           <ActionForm action={sendTestNotification}>
             <SubmitButton
               pendingLabel="ກຳລັງສົ່ງ…"
-              className="btn-secondary rounded-lg px-4 py-2 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
             >
               ສົ່ງທົດສອບຫາຕົນເອງ
             </SubmitButton>

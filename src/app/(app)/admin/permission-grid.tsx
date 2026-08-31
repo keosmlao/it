@@ -137,7 +137,7 @@ export default function PermissionGrid({
                 })}
 
                 <div className="text-right">
-                  <SubmitButton className="btn-secondary rounded-lg px-3 py-1.5 text-xs">
+                  <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-xs">
                     ບັນທຶກ
                   </SubmitButton>
                 </div>

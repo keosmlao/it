@@ -26,7 +26,7 @@ export default async function PurchasePage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ປີນີ້ {stats?.total ?? 0} ໃບ · ລໍອະນຸມັດ{' '}
           <span className="font-medium text-brand-orange">{stats?.pending ?? 0}</span> ໃບ
@@ -37,7 +37,7 @@ export default async function PurchasePage({
         <div className="flex flex-wrap gap-2">
           <Link
             href="/purchase/new"
-            className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+            className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
           >
             + ສ້າງໃບສະເໜີຊື້
           </Link>
@@ -51,7 +51,7 @@ export default async function PurchasePage({
           <select
             name="status"
             defaultValue={status}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="pending">ລໍອະນຸມັດ</option>
             <option value="all">ທັງໝົດ</option>
@@ -68,7 +68,7 @@ export default async function PurchasePage({
             name="q"
             defaultValue={q}
             placeholder="ເລກໃບ, ຫົວຂໍ້, ຜູ້ສະເໜີ"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex items-center gap-2 pb-1.5 text-sm text-body">
@@ -81,7 +81,7 @@ export default async function PurchasePage({
           />
           ຂອງຂ້ອຍ
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

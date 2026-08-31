@@ -24,7 +24,7 @@ type Employee = {
   department_name_lo: string | null
 }
 
-const inputClass = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const inputClass = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 
 /**
  * ອອກໃບຢືມ: ເລືອກເຄື່ອງ → ເລືອກຜູ້ຢືມ → ບັນທຶກ
@@ -84,7 +84,7 @@ export default function LendPanel({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="ຄົ້ນຫາ ລະຫັດ, ຊື່, ຍີ່ຫໍ້, S/N, ປະເພດ"
-          className="input mt-3 w-full rounded-lg px-3 py-2 text-sm"
+          className="input mt-3 w-full rounded px-2 py-1 text-[13px]"
         />
 
         <div className="mt-3 flex flex-wrap items-end gap-3">
@@ -93,7 +93,7 @@ export default function LendPanel({
             <select
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+              className="input w-56 rounded px-2 py-1 text-[13px]"
             >
               <option value="">ທຸກສະຖານທີ່</option>
               {locations.map((l) => (
@@ -218,7 +218,7 @@ export default function LendPanel({
               />
             </label>
 
-            <SubmitButton className="btn-primary mt-4 w-full rounded-lg px-4 py-2.5 text-sm font-medium">
+            <SubmitButton className="btn-primary mt-4 w-full rounded-lg px-4 py-2.5 text-[13px] font-medium">
               ອອກໃບຢືມ
             </SubmitButton>
           </ActionForm>

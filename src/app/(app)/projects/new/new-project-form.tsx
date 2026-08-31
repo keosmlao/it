@@ -145,7 +145,7 @@ function Submit() {
     <button
       type="submit"
       disabled={pending}
-      className="mt-6 btn-primary rounded-lg px-5 py-2.5 font-medium"
+      className="mt-6 btn-primary rounded px-3 py-1.5 font-medium"
     >
       {pending ? 'ກຳລັງບັນທຶກ…' : 'ສ້າງໂປຣເຈັກ'}
     </button>

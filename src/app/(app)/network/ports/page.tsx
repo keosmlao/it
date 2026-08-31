@@ -27,11 +27,11 @@ export default async function SwitchPortsPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ສາຍໃດໄປຫ້ອງໃດ — ບັນທຶກໄວ້ແລ້ວບໍ່ຕ້ອງໄລ່ສາຍຕອນມີບັນຫາ
         </p>
-        <Link href="/network" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+        <Link href="/network" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ← ວົງເນັດ & IP
         </Link>
       </div>
@@ -42,7 +42,7 @@ export default async function SwitchPortsPage({
           <select
             name="switch"
             defaultValue={switchCode}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             {switches.map((s) => (
@@ -58,10 +58,10 @@ export default async function SwitchPortsPage({
             name="q"
             defaultValue={q}
             placeholder="ເລກພອດ, ຫ້ອງ, patch panel"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

@@ -4,7 +4,7 @@ import ActionForm, { SubmitButton } from '@/components/action-form'
 import type { VendorRow } from '@/lib/vendors/model'
 import { createVendor, updateVendor } from './actions'
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const label = 'block text-xs text-muted'
 
 /** ຟອມເພີ່ມ / ແກ້ຜູ້ຂາຍ — ຊ່ອງດຽວກັນທັງສອງໜ້າວຽກ */
@@ -176,7 +176,7 @@ export default function VendorForm({
         </label>
       </div>
 
-      <SubmitButton className="btn-primary mt-4 rounded-lg px-5 py-2 text-sm font-medium">
+      <SubmitButton className="btn-primary mt-4 rounded px-3 py-1.5 text-[13px] font-medium">
         {editing ? 'ບັນທຶກການແກ້ໄຂ' : 'ເພີ່ມຜູ້ຂາຍ'}
       </SubmitButton>
     </ActionForm>

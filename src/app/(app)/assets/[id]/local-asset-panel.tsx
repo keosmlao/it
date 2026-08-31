@@ -55,7 +55,7 @@ export default function LocalAssetPanel({
               <button
                 type="button"
                 onClick={() => setEditing((v) => !v)}
-                className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+                className="btn-secondary rounded px-3 py-1.5 text-[13px]"
               >
                 {editing ? 'ຍົກເລີກ' : 'ແກ້ຂໍ້ມູນ'}
               </button>
@@ -67,7 +67,7 @@ export default function LocalAssetPanel({
                   name="is_active"
                   value={asset.is_active ? '0' : '1'}
                 />
-                <SubmitButton className="btn-secondary rounded-lg px-3 py-1.5 text-sm">
+                <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
                   {asset.is_active ? 'ປິດການໃຊ້ງານ' : 'ເປີດໃຊ້ຄືນ'}
                 </SubmitButton>
               </ActionForm>

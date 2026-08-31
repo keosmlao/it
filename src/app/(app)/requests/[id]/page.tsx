@@ -106,7 +106,7 @@ export default async function RequestDetailPage({
                 type="submit"
                 name="decision"
                 value="rejected"
-                className="btn-danger rounded-lg px-4 py-2 text-sm font-medium"
+                className="btn-danger rounded px-3 py-1.5 text-[13px] font-medium"
               >
                 ບໍ່ອະນຸມັດ
               </button>
@@ -121,7 +121,7 @@ export default async function RequestDetailPage({
             <input type="hidden" name="request_id" value={request.id} />
             <button
               type="submit"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               ເປີດເປັນໂປຣເຈັກພັດທະນາ
             </button>
@@ -131,7 +131,7 @@ export default async function RequestDetailPage({
         {request.linked_project_id && (
           <Link
             href={`/projects/${request.linked_project_id}`}
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ເບິ່ງໂປຣເຈັກທີ່ເປີດແລ້ວ →
           </Link>
@@ -142,7 +142,7 @@ export default async function RequestDetailPage({
             <input type="hidden" name="request_id" value={request.id} />
             <button
               type="submit"
-              className="btn-secondary rounded-lg px-4 py-2 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
             >
               ຍົກເລີກຄຳຮ້ອງ
             </button>

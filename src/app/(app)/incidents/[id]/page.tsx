@@ -49,7 +49,7 @@ export default async function IncidentPage({ params }: PageProps<'/incidents/[id
         {editable && (
           <Link
             href={`/incidents/${incident.id}/edit`}
-            className="btn-secondary ml-auto rounded-lg px-4 py-1.5 text-sm"
+            className="btn-secondary ml-auto rounded px-3 py-1.5 text-[13px]"
           >
             ແກ້ໄຂ
           </Link>

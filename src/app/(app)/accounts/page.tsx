@@ -37,7 +37,7 @@ export default async function AccountsPage({ searchParams }: PageProps<'/account
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           {stats?.systems ?? 0} ລະບົບ · ບັນຊີທີ່ໃຊ້ງານຢູ່ {stats?.active ?? 0} ·{' '}
           <span className="font-medium text-red-600 dark:text-red-400">
@@ -49,14 +49,14 @@ export default async function AccountsPage({ searchParams }: PageProps<'/account
           {editable && (
             <Link
               href="/accounts/new"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               + ເປີດບັນຊີ
             </Link>
           )}
           <Link
             href="/accounts/systems"
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ຈັດການລະບົບ
           </Link>
@@ -80,7 +80,7 @@ export default async function AccountsPage({ searchParams }: PageProps<'/account
           <select
             name="system"
             defaultValue={system}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             {systems.map((s) => (
@@ -95,7 +95,7 @@ export default async function AccountsPage({ searchParams }: PageProps<'/account
           <select
             name="status"
             defaultValue={status}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ທີ່ຍັງບໍ່ປິດ</option>
             <option value="all">ທັງໝົດ</option>
@@ -111,7 +111,7 @@ export default async function AccountsPage({ searchParams }: PageProps<'/account
           <select
             name="state"
             defaultValue={state}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ບໍ່ກັ່ນຕອງ</option>
             <option value="closable">ສະເພາະທີ່ຄວນປິດ</option>
@@ -123,10 +123,10 @@ export default async function AccountsPage({ searchParams }: PageProps<'/account
             name="q"
             defaultValue={q}
             placeholder="ຊື່ບັນຊີ, ຊື່ຄົນ, ລະຫັດ"
-            className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-52 rounded px-2 py-1 text-[13px]"
           />
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

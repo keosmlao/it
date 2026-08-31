@@ -11,7 +11,7 @@ type Employee = {
   department_name_lo: string | null
 }
 
-const inputClass = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const inputClass = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const today = () => new Date().toISOString().slice(0, 10)
 
 /** ບັນທຶກການຢືມ — ສະແດງເມື່ອເຄື່ອງຫວ່າງ */
@@ -40,7 +40,7 @@ export function LendForm({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-primary mt-3 w-full rounded-lg px-4 py-2 text-sm font-medium"
+        className="btn-primary mt-3 w-full rounded px-3 py-1.5 text-[13px] font-medium"
       >
         + ບັນທຶກການຢືມ
       </button>
@@ -95,13 +95,13 @@ export function LendForm({
       </label>
 
       <div className="mt-3 flex gap-2">
-        <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກການຢືມ
         </SubmitButton>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ຍົກເລີກ
         </button>
@@ -141,7 +141,7 @@ export function TransferForm({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-secondary mt-2 w-full rounded-lg px-4 py-2 text-sm"
+        className="btn-secondary mt-2 w-full rounded px-3 py-1.5 text-[13px]"
       >
         ⇄ ໂອນໃຫ້ຄົນອື່ນ
       </button>
@@ -207,13 +207,13 @@ export function TransferForm({
       </p>
 
       <div className="mt-3 flex gap-2">
-        <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           ຢືນຢັນການໂອນ
         </SubmitButton>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ຍົກເລີກ
         </button>
@@ -231,7 +231,7 @@ export function ReturnForm({ assetCode }: { assetCode: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-primary mt-3 w-full rounded-lg px-4 py-2 text-sm font-medium"
+        className="btn-primary mt-3 w-full rounded px-3 py-1.5 text-[13px] font-medium"
       >
         ↩ ບັນທຶກການຄືນ
       </button>
@@ -268,13 +268,13 @@ export function ReturnForm({ assetCode }: { assetCode: string }) {
       </label>
 
       <div className="mt-3 flex gap-2">
-        <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກການຄືນ
         </SubmitButton>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ຍົກເລີກ
         </button>

@@ -44,7 +44,7 @@ export default function StatusForm({
         name="status"
         value={next}
         onChange={(e) => setNext(e.target.value as TicketStatus)}
-        className="input w-full rounded-lg px-3 py-1.5 text-sm"
+        className="input w-full rounded px-2 py-1 text-[13px]"
       >
         {transitions.map((s) => (
           <option key={s} value={s}>
@@ -65,7 +65,7 @@ export default function StatusForm({
               ? 'ວິທີແກ້ໄຂ (ຕ້ອງໃສ່)'
               : 'ວິທີແກ້ໄຂ (ບໍ່ບັງຄັບ)'
         }
-        className="input w-full rounded-lg px-3 py-1.5 text-sm"
+        className="input w-full rounded px-2 py-1 text-[13px]"
       />
 
       {(resolving || unrepairable) && (
@@ -95,7 +95,7 @@ export default function StatusForm({
 
       <SubmitButton
         pendingLabel="ກຳລັງອັບໂຫລດ…"
-        className="btn-primary w-full rounded-lg px-4 py-1.5 text-sm font-medium"
+        className="btn-primary w-full rounded px-3 py-1.5 text-[13px] font-medium"
       >
         ບັນທຶກ
       </SubmitButton>

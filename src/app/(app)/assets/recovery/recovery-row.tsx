@@ -93,7 +93,7 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-xs"
+            className="btn-secondary rounded px-3 py-1.5 text-xs"
           >
             {open ? 'ຍົກເລີກ' : 'ບັນທຶກການທວງ'}
           </button>
@@ -115,7 +115,7 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
                 <select
                   name="status"
                   defaultValue={status}
-                  className="input w-44 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-44 rounded px-2 py-1 text-[13px]"
                 >
                   {RECOVERY_STATES.map((s) => (
                     <option key={s} value={s}>
@@ -131,7 +131,7 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
                   type="date"
                   name="promised_date"
                   defaultValue={isoDate(target.promised_date)}
-                  className="input w-40 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-40 rounded px-2 py-1 text-[13px]"
                 />
               </label>
 
@@ -141,11 +141,11 @@ export default function RecoveryRow({ target }: { target: RecoveryTarget }) {
                   name="note"
                   defaultValue={target.recovery_note ?? ''}
                   placeholder="ຕິດຕໍ່ທາງໃດ, ຜົນເປັນແນວໃດ"
-                  className="input w-72 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-72 rounded px-2 py-1 text-[13px]"
                 />
               </label>
 
-              <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+              <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
                 ບັນທຶກ
               </SubmitButton>
             </ActionForm>

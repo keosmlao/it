@@ -69,7 +69,7 @@ export default async function ProjectDetailPage({
             <select
               name="status"
               defaultValue={project.status}
-              className="input rounded-lg px-3 py-1.5 text-sm"
+              className="input rounded px-2 py-1 text-[13px]"
             >
               {PROJECT_STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -79,7 +79,7 @@ export default async function ProjectDetailPage({
             </select>
             <button
               type="submit"
-              className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
             >
               ປ່ຽນສະຖານະ
             </button>

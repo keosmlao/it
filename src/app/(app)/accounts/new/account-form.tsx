@@ -4,7 +4,7 @@ import ActionForm, { SubmitButton } from '@/components/action-form'
 import type { AccountSystem } from '@/lib/accounts/model'
 import { createAccount } from '../actions'
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const label = 'block text-xs text-muted'
 
 type Employee = {
@@ -85,7 +85,7 @@ export default function AccountForm({
         ⚠️ ຢ່າປ້ອນລະຫັດຜ່ານ — ໃຫ້ເກັບໄວ້ໃນຕົວຈັດການລະຫັດຜ່ານແທນ
       </p>
 
-      <SubmitButton className="btn-primary mt-4 rounded-lg px-5 py-2 text-sm font-medium">
+      <SubmitButton className="btn-primary mt-4 rounded px-3 py-1.5 text-[13px] font-medium">
         ບັນທຶກບັນຊີ
       </SubmitButton>
     </ActionForm>

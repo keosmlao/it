@@ -60,7 +60,7 @@ export default function MobileNav({
           <section className="glass-heavy w-full rounded-2xl p-3" onClick={(e) => e.stopPropagation()} aria-label="ເມນູເພີ່ມເຕີມ">
             <div className="mb-2 flex items-center justify-between px-2 py-1">
               <div><p className="font-semibold text-fg">ເມນູເພີ່ມເຕີມ</p><p className="text-xs text-muted">{user.fullname_lo}</p></div>
-              <button type="button" onClick={() => setMoreOpen(false)} className="btn-secondary rounded-full px-3 py-1 text-sm">ປິດ</button>
+              <button type="button" onClick={() => setMoreOpen(false)} className="btn-secondary rounded-full px-3 py-1 text-[13px]">ປິດ</button>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {[
@@ -74,7 +74,7 @@ export default function MobileNav({
                 { href: '/reports', label: 'ລາຍງານ', icon: ICON.chart, show: can.viewReports(user) },
                 { href: '/admin', label: 'ຕັ້ງຄ່າ', icon: ICON.settings, show: can.administer(user) },
               ].filter((x) => x.show).map((item) => (
-                <Link key={item.href} href={item.href} onClick={() => setMoreOpen(false)} className="btn-secondary flex items-center gap-3 rounded-xl p-3 text-sm">
+                <Link key={item.href} href={item.href} onClick={() => setMoreOpen(false)} className="btn-secondary flex items-center gap-3 rounded-xl p-3 text-[13px]">
                   <Icon d={item.icon} />
                   <span className="min-w-0 flex-1 truncate">{item.label}</span>
                   {'badge' in item && Number(item.badge) > 0 && (
@@ -85,7 +85,7 @@ export default function MobileNav({
                 </Link>
               ))}
             </div>
-            <form action={logout} className="mt-2"><button type="submit" className="btn-danger flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm"><Icon d={ICON.logout} />ອອກຈາກລະບົບ</button></form>
+            <form action={logout} className="mt-2"><button type="submit" className="btn-danger flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13px]"><Icon d={ICON.logout} />ອອກຈາກລະບົບ</button></form>
           </section>
         </div>
       )}

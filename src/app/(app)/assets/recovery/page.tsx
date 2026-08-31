@@ -28,7 +28,7 @@ export default async function RecoveryPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ຕ້ອງທວງຄືນ {stats?.total ?? 0} ເຄື່ອງ · ຍັງບໍ່ໄດ້ຕິດຕໍ່{' '}
           <span className="font-medium text-red-600 dark:text-red-400">
@@ -37,7 +37,7 @@ export default async function RecoveryPage({
           · ກຳລັງຕິດຕາມ {stats?.in_progress ?? 0}
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <Link href="/assets" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ← ທະບຽນອຸປະກອນ
           </Link>
           <ExportMenu dataset="recovery" label="ດຶງລາຍການທວງ" />
@@ -124,10 +124,10 @@ export default async function RecoveryPage({
             name="q"
             defaultValue={filters.q}
             placeholder="ຊື່ຄົນ, ອຸປະກອນ, ພະແນກ"
-            className="input w-64 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-64 rounded px-2 py-1 text-[13px]"
           />
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ຄົ້ນຫາ
         </button>
       </form>

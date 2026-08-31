@@ -107,7 +107,7 @@ export default function DamageRow({
               <button
                 type="button"
                 onClick={() => setPanel(panel === 'state' ? 'none' : 'state')}
-                className="btn-secondary rounded-lg px-3 py-1.5 text-xs"
+                className="btn-secondary rounded px-3 py-1.5 text-xs"
               >
                 ປ່ຽນສະຖານະ
               </button>
@@ -116,7 +116,7 @@ export default function DamageRow({
               <button
                 type="button"
                 onClick={() => setPanel(panel === 'writeoff' ? 'none' : 'writeoff')}
-                className="btn-danger rounded-lg px-3 py-1.5 text-xs"
+                className="btn-danger rounded px-3 py-1.5 text-xs"
               >
                 ຕັດຈຳໜ່າຍ
               </button>
@@ -125,7 +125,7 @@ export default function DamageRow({
               <button
                 type="button"
                 onClick={() => setPanel(panel === 'cancel' ? 'none' : 'cancel')}
-                className="btn-secondary rounded-lg px-3 py-1.5 text-xs"
+                className="btn-secondary rounded px-3 py-1.5 text-xs"
               >
                 ຍົກເລີກການຕັດຈຳໜ່າຍ
               </button>
@@ -145,7 +145,7 @@ export default function DamageRow({
                   <select
                     name="stock_state"
                     defaultValue={row.stock_state}
-                    className="input w-44 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-44 rounded px-2 py-1 text-[13px]"
                   >
                     <option value="damaged">ເພ (ຍັງສ້ອມໄດ້)</option>
                     <option value="repair">ສົ່ງສ້ອມຢູ່</option>
@@ -159,7 +159,7 @@ export default function DamageRow({
                     name="damage_detail"
                     defaultValue={row.damage_detail ?? ''}
                     placeholder="ຈໍແຕກ, ເປີດບໍ່ຕິດ, ແປ້ນພິມເສຍ"
-                    className="input w-72 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-72 rounded px-2 py-1 text-[13px]"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-xs text-muted">
@@ -168,10 +168,10 @@ export default function DamageRow({
                     type="date"
                     name="damaged_at"
                     defaultValue={todayISO()}
-                    className="input w-40 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-40 rounded px-2 py-1 text-[13px]"
                   />
                 </label>
-                <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+                <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
                   ບັນທຶກ
                 </SubmitButton>
               </ActionForm>
@@ -185,7 +185,7 @@ export default function DamageRow({
                   <select
                     name="reason"
                     defaultValue="beyond_repair"
-                    className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-52 rounded px-2 py-1 text-[13px]"
                   >
                     {WRITEOFF_REASONS.map((r) => (
                       <option key={r} value={r}>
@@ -201,7 +201,7 @@ export default function DamageRow({
                     required
                     defaultValue={row.damage_detail ?? ''}
                     placeholder="ສ້ອມ 3 ຄັ້ງແລ້ວຍັງເສຍ ອາໄຫຼ່ບໍ່ມີຂາຍແລ້ວ"
-                    className="input w-80 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-80 rounded px-2 py-1 text-[13px]"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-xs text-muted">
@@ -210,7 +210,7 @@ export default function DamageRow({
                     type="date"
                     name="written_off_at"
                     defaultValue={todayISO()}
-                    className="input w-40 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-40 rounded px-2 py-1 text-[13px]"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-xs text-muted">
@@ -219,12 +219,12 @@ export default function DamageRow({
                     name="book_value"
                     inputMode="numeric"
                     placeholder="0"
-                    className="input w-32 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-32 rounded px-2 py-1 text-[13px]"
                   />
                 </label>
                 <SubmitButton
                   pendingLabel="ກຳລັງບັນທຶກ…"
-                  className="btn-danger rounded-lg px-4 py-1.5 text-sm font-medium"
+                  className="btn-danger rounded px-3 py-1.5 text-[13px] font-medium"
                 >
                   ຢືນຢັນຕັດຈຳໜ່າຍ
                 </SubmitButton>
@@ -244,10 +244,10 @@ export default function DamageRow({
                     name="cancel_note"
                     required
                     placeholder="ພົບເຄື່ອງຄືນ / ຕັດສິນຜິດ"
-                    className="input w-80 rounded-lg px-3 py-1.5 text-sm"
+                    className="input w-80 rounded px-2 py-1 text-[13px]"
                   />
                 </label>
-                <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+                <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
                   ຍົກເລີກ ແລະ ກັບເຂົ້າສາງ
                 </SubmitButton>
               </ActionForm>

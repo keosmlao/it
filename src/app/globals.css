@@ -187,6 +187,26 @@ body {
     border-bottom: 1px solid var(--line);
   }
 
+  /* ແຖວປຸ່ມຂອງແຕ່ລະໜ້າ — ເປັນແຖວທີສອງຂອງແຖບຄວບຄຸມ (o_control_panel)
+     ດຶງດ້ວຍ margin ລົບໃຫ້ເຕັມຄວາມກວ້າງ ຈຶ່ງເບິ່ງຄືແຖບດຽວກັນກັບເທິງ */
+  .o-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 10px;
+    margin: -12px -12px 0;
+    padding: 6px 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 640px) {
+    .o-page-actions {
+      margin: -16px -16px 0;
+      padding: 6px 16px;
+    }
+  }
+
   /* ແຖບຕົວກັ່ນຕອງ — ເປັນເຄື່ອງມືແຄບໆ ບໍ່ແມ່ນກາດໃຫຍ່ຄືເກົ່າ */
   .o-filter-bar {
     display: flex;

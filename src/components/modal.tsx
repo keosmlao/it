@@ -31,7 +31,7 @@ export function useModalClose() {
  */
 export default function Modal({
   trigger,
-  triggerClassName = 'btn-primary rounded-lg px-4 py-2 text-sm font-medium',
+  triggerClassName = 'btn-primary rounded px-3 py-1.5 text-[13px] font-medium',
   title,
   children,
   open: openProp,

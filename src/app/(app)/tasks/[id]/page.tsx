@@ -106,7 +106,7 @@ export default async function TaskDetailPage({ params }: PageProps<'/tasks/[id]'
               />
               <button
                 type="submit"
-                className="mt-2 btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+                className="mt-2 btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
               >
                 ບັນທຶກ
               </button>
@@ -138,7 +138,7 @@ export default async function TaskDetailPage({ params }: PageProps<'/tasks/[id]'
                 <select
                   name="status"
                   defaultValue={task.status}
-                  className="input w-full rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-full rounded px-2 py-1 text-[13px]"
                 >
                   {BOARD_COLUMNS.map((s) => (
                     <option key={s} value={s}>
@@ -149,7 +149,7 @@ export default async function TaskDetailPage({ params }: PageProps<'/tasks/[id]'
                 </select>
                 <button
                   type="submit"
-                  className="btn-primary w-full rounded-lg px-4 py-1.5 text-sm font-medium"
+                  className="btn-primary w-full rounded px-3 py-1.5 text-[13px] font-medium"
                 >
                   ບັນທຶກ
                 </button>
@@ -164,7 +164,7 @@ export default async function TaskDetailPage({ params }: PageProps<'/tasks/[id]'
                 <select
                   name="assignee_employee_id"
                   defaultValue={task.assignee_employee_id ?? ''}
-                  className="input w-full rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-full rounded px-2 py-1 text-[13px]"
                 >
                   <option value="">— ຍັງບໍ່ມອບໝາຍ —</option>
                   {staff.map((s) => (
@@ -176,7 +176,7 @@ export default async function TaskDetailPage({ params }: PageProps<'/tasks/[id]'
                 </select>
                 <button
                   type="submit"
-                  className="btn-secondary w-full rounded-lg px-4 py-1.5 text-sm"
+                  className="btn-secondary w-full rounded px-3 py-1.5 text-[13px]"
                 >
                   ບັນທຶກ
                 </button>

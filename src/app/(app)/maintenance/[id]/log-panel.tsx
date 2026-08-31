@@ -8,7 +8,7 @@ import {
 } from '@/lib/maintenance/model'
 import { logMaintenance, setMaintenanceActive } from '../actions'
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const label = 'block text-xs text-muted'
 
 /** ບັນທຶກວ່າເຮັດແລ້ວ — ບັນທຶກເທື່ອດຽວ ກຳນົດຄັ້ງຕໍ່ໄປເລື່ອນເອງ */
@@ -75,7 +75,7 @@ export default function LogPanel({
           </label>
         </div>
 
-        <SubmitButton className="btn-primary mt-3 rounded-lg px-5 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary mt-3 rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກວ່າເຮັດແລ້ວ
         </SubmitButton>
       </ActionForm>

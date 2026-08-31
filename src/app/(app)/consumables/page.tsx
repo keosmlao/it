@@ -42,7 +42,7 @@ export default async function ConsumablesPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           {stats?.total ?? 0} ລາຍການ · ໃກ້ໝົດ{' '}
           <span className="font-medium text-brand-orange">{stats?.low ?? 0}</span> ·
@@ -56,7 +56,7 @@ export default async function ConsumablesPage({
           {editable && (
             <Link
               href="/consumables/new"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               + ເພີ່ມລາຍການ
             </Link>
@@ -80,7 +80,7 @@ export default async function ConsumablesPage({
           <select
             name="category"
             defaultValue={category}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             {CONSUMABLE_CATEGORIES.map((c) => (
@@ -95,7 +95,7 @@ export default async function ConsumablesPage({
           <select
             name="state"
             defaultValue={state}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ບໍ່ກັ່ນຕອງ</option>
             <option value="low">ສະເພາະທີ່ໃກ້ໝົດ / ໝົດ</option>
@@ -107,7 +107,7 @@ export default async function ConsumablesPage({
             name="q"
             defaultValue={q}
             placeholder="ຊື່, ລະຫັດ, ບ່ອນເກັບ"
-            className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-52 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex items-center gap-2 pb-1.5 text-sm text-body">
@@ -120,7 +120,7 @@ export default async function ConsumablesPage({
           />
           ລວມທີ່ບໍ່ໃຊ້ແລ້ວ
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

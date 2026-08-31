@@ -32,14 +32,14 @@ export default async function LendPage({ searchParams }: PageProps<'/assets/lend
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ອຸປະກອນທີ່ຢືມໄດ້ {assets.length} ເຄື່ອງ · ໃບຢືມຄ້າງທັງໝົດ{' '}
           {loanStats?.total ?? 0} ໃບ (ຈາກ ERP {loanStats?.erp ?? 0} · ຈາກລະບົບນີ້{' '}
           {loanStats?.it ?? 0})
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <Link href="/assets" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ← ທະບຽນອຸປະກອນ
           </Link>
           <ExportMenu dataset="loans" label="ດຶງໃບຢືມຄ້າງ" />
@@ -91,7 +91,7 @@ export default async function LendPage({ searchParams }: PageProps<'/assets/lend
               <select
                 name="source"
                 defaultValue={source}
-                className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-52 rounded px-2 py-1 text-[13px]"
               >
                 <option value="">ທັງໝົດ ({loanStats?.total ?? 0})</option>
                 <option value="erp">ຈາກ ERP ({loanStats?.erp ?? 0})</option>
@@ -104,12 +104,12 @@ export default async function LendPage({ searchParams }: PageProps<'/assets/lend
                 name="q"
                 defaultValue={q}
                 placeholder="ເລກໃບ, ອຸປະກອນ, ຊື່ຜູ້ຢືມ"
-                className="input w-64 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-64 rounded px-2 py-1 text-[13px]"
               />
             </label>
             <button
               type="submit"
-              className="btn-secondary rounded-lg px-4 py-1.5 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
             >
               ກັ່ນຕອງ
             </button>

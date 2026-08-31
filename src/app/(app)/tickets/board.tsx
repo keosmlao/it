@@ -255,7 +255,7 @@ function FinishForm({ ticket, to }: { ticket: TicketRow; to: TicketStatus }) {
               ? 'ເຊັ່ນ ອາໄຫຼ່ບໍ່ມີແລ້ວ, ຄ່າສ້ອມແພງກວ່າຊື້ໃໝ່'
               : 'ແກ້ດ້ວຍວິທີໃດ'
           }
-          className="input mt-1 w-full rounded-lg px-3 py-2 text-sm"
+          className="input mt-1 w-full rounded px-2 py-1 text-[13px]"
         />
       </label>
 
@@ -281,7 +281,7 @@ function FinishForm({ ticket, to }: { ticket: TicketRow; to: TicketStatus }) {
       <div className="flex justify-end">
         <SubmitButton
           pendingLabel="ກຳລັງບັນທຶກ…"
-          className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+          className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
         >
           ບັນທຶກ
         </SubmitButton>

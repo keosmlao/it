@@ -35,7 +35,7 @@ export default async function ReportIssuePage() {
             name="title"
             required
             placeholder="ເຄື່ອງພິມຫ້ອງບັນຊີພິມບໍ່ອອກ"
-            className="input mt-1 w-full rounded-lg px-3 py-2 text-sm"
+            className="input mt-1 w-full rounded px-2 py-1 text-[13px]"
           />
         </label>
 
@@ -45,7 +45,7 @@ export default async function ReportIssuePage() {
             <select
               name="category_code"
               required
-              className="input mt-1 w-full rounded-lg px-3 py-2 text-sm"
+              className="input mt-1 w-full rounded px-2 py-1 text-[13px]"
             >
               <option value="">— ເລືອກ —</option>
               {categories.map((c) => (
@@ -61,7 +61,7 @@ export default async function ReportIssuePage() {
             <select
               name="priority"
               defaultValue={priorities[1]?.priority ?? priorities[0]?.priority}
-              className="input mt-1 w-full rounded-lg px-3 py-2 text-sm"
+              className="input mt-1 w-full rounded px-2 py-1 text-[13px]"
             >
               {priorities.map((p) => (
                 <option key={p.priority} value={p.priority}>
@@ -78,7 +78,7 @@ export default async function ReportIssuePage() {
             name="description"
             rows={4}
             placeholder="ເກີດຫຍັງຂຶ້ນ, ເລີ່ມເມື່ອໃດ, ມີຂໍ້ຄວາມຜິດພາດຫຍັງຂຶ້ນບໍ"
-            className="input mt-1 w-full rounded-lg px-3 py-2 text-sm"
+            className="input mt-1 w-full rounded px-2 py-1 text-[13px]"
           />
         </label>
 
@@ -89,14 +89,14 @@ export default async function ReportIssuePage() {
             name="images"
             multiple
             accept="image/*"
-            className="input mt-1 w-full rounded-lg px-3 py-2 text-sm"
+            className="input mt-1 w-full rounded px-2 py-1 text-[13px]"
           />
           <span className="mt-1 block text-xs text-faint">
             ຮູບຊ່ວຍໃຫ້ທີມໄອທີເຂົ້າໃຈບັນຫາໄວຂຶ້ນຫຼາຍ
           </span>
         </label>
 
-        <SubmitButton className="btn-primary rounded-lg px-5 py-2.5 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           ສົ່ງແຈ້ງບັນຫາ
         </SubmitButton>
       </ActionForm>

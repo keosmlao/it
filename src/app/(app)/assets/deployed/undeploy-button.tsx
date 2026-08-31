@@ -20,7 +20,7 @@ export default function UndeployButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-secondary rounded-lg px-3 py-1.5 text-xs"
+        className="btn-secondary rounded px-3 py-1.5 text-xs"
       >
         ຖອດອອກ
       </button>
@@ -49,7 +49,7 @@ export default function UndeployButton({
       </label>
       <SubmitButton
         pendingLabel="…"
-        className="btn-primary rounded-lg px-3 py-1.5 text-xs font-medium"
+        className="btn-primary rounded px-3 py-1.5 text-xs font-medium"
       >
         ຢືນຢັນ
       </SubmitButton>

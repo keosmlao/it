@@ -29,7 +29,7 @@ export default async function BudgetLinePage({ params }: PageProps<'/budget/[id]
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div>
           <h1 className="text-xl font-semibold text-fg">{line.name}</h1>
           <p className="mt-0.5 text-sm text-muted">
@@ -37,7 +37,7 @@ export default async function BudgetLinePage({ params }: PageProps<'/budget/[id]
             {line.currency}
           </p>
         </div>
-        <Link href="/budget" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+        <Link href="/budget" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ← ງົບປະມານທັງໝົດ
         </Link>
       </div>

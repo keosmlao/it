@@ -34,7 +34,7 @@ export default function OrgFilter({
           <select
             name={level.name}
             defaultValue={selected[level.name]}
-            className="input w-48 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-48 rounded px-2 py-1 text-[13px]"
           >
             <option value="">{level.all}</option>
             {level.options.map((option) => (

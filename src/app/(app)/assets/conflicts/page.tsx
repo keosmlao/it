@@ -29,7 +29,7 @@ export default async function ConflictsPage() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           <span className="font-medium text-red-600 dark:text-red-400">
             {stats?.assets ?? 0} ເຄື່ອງ
@@ -38,7 +38,7 @@ export default async function ConflictsPage() {
           ຫຼາຍສຸດ {stats?.worst ?? 0} ໃບຕໍ່ເຄື່ອງ
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <Link href="/assets" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ← ທະບຽນອຸປະກອນ
           </Link>
           <ExportMenu dataset="conflicts" label="ດຶງລາຍການ" />

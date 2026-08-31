@@ -47,11 +47,11 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
   return (
     <div className="w-full">
       {/* ---------- ແຖບເລືອກວັນ ---------- */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div className="flex items-center gap-2">
           <Link
             href={`/plans?date=${shiftDate(date, -1)}`}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ←
           </Link>
@@ -64,7 +64,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
           </div>
           <Link
             href={`/plans?date=${shiftDate(date, 1)}`}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             →
           </Link>
@@ -78,7 +78,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
         {can.viewReports(user) && (
           <Link
             href={`/plans/team?date=${date}`}
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ເບິ່ງແຜນທັງທີມ →
           </Link>
@@ -120,16 +120,16 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
               name="focus"
               defaultValue={plan?.focus ?? ''}
               placeholder="ມື້ນີ້ຈະໃຫ້ສຳເລັດຫຍັງເປັນຫຼັກ"
-              className="input w-full rounded-lg px-3 py-2 text-sm"
+              className="input w-full rounded px-2 py-1 text-[13px]"
             />
             <textarea
               name="blocker"
               rows={2}
               defaultValue={plan?.blocker ?? ''}
               placeholder="ຕິດຂັດຫຍັງ ຕ້ອງການຄວາມຊ່ວຍເຫຼືອຫຍັງ"
-              className="input w-full rounded-lg px-3 py-2 text-sm"
+              className="input w-full rounded px-2 py-1 text-[13px]"
             />
-            <SubmitButton className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+            <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
               ບັນທຶກ
             </SubmitButton>
           </ActionForm>
@@ -186,7 +186,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
               {previous && (
                 <ActionForm action={copyPreviousPlan}>
                   <input type="hidden" name="plan_date" value={date} />
-                  <SubmitButton className="btn-secondary rounded-lg px-3 py-1.5 text-sm">
+                  <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
                     ⧉ ກັອບປີ້ແຜນ {isoDate(previous.plan_date)} ({previous.item_count}{' '}
                     ວຽກ)
                   </SubmitButton>
@@ -199,7 +199,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
                   <input type="hidden" name="link" value={`ticket:${t.id}`} />
                   <SubmitButton
                     pendingLabel="…"
-                    className="btn-secondary max-w-xs truncate rounded-lg px-3 py-1.5 text-sm"
+                    className="btn-secondary max-w-xs truncate rounded px-3 py-1.5 text-[13px]"
                   >
                     + {t.ticket_no} · {t.title}
                   </SubmitButton>
@@ -212,7 +212,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
                   <input type="hidden" name="link" value={`task:${t.id}`} />
                   <SubmitButton
                     pendingLabel="…"
-                    className="btn-secondary max-w-xs truncate rounded-lg px-3 py-1.5 text-sm"
+                    className="btn-secondary max-w-xs truncate rounded px-3 py-1.5 text-[13px]"
                   >
                     + {t.title}
                     {t.project_name && ` (${t.project_name})`}
@@ -236,7 +236,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
                 name="title"
                 required
                 placeholder="ແກ້ບັນຫາ printer ຫ້ອງບັນຊີ"
-                className="input w-72 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-72 rounded px-2 py-1 text-[13px]"
               />
             </label>
 
@@ -249,13 +249,13 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
                 max="24"
                 step="0.25"
                 defaultValue={1}
-                className="input w-24 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-24 rounded px-2 py-1 text-[13px]"
               />
             </label>
 
             <label className="flex flex-col gap-1 text-xs text-muted">
               ຜູກກັບວຽກທີ່ມີຢູ່
-              <select name="link" className="input w-72 rounded-lg px-3 py-1.5 text-sm">
+              <select name="link" className="input w-72 rounded px-2 py-1 text-[13px]">
                 <option value="">— ບໍ່ຜູກ —</option>
                 {sources.tickets.length > 0 && (
                   <optgroup label="Ticket ທີ່ຍັງເປີດຢູ່">
@@ -283,11 +283,11 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
               ລາຍລະອຽດ
               <input
                 name="detail"
-                className="input w-64 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-64 rounded px-2 py-1 text-[13px]"
               />
             </label>
 
-            <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               + ເພີ່ມ
             </SubmitButton>
           </ActionForm>
@@ -300,7 +300,7 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
           {plan.status === 'draft' && (
             <ActionForm action={submitPlan}>
               <input type="hidden" name="plan_id" value={plan.id} />
-              <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+              <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
                 ສົ່ງແຜນໃຫ້ຫົວໜ້າ
               </SubmitButton>
             </ActionForm>
@@ -309,14 +309,14 @@ export default async function PlansPage({ searchParams }: PageProps<'/plans'>) {
           <ActionForm action={closePlan}>
             <input type="hidden" name="plan_id" value={plan.id} />
             <input type="hidden" name="carry" value="1" />
-            <SubmitButton className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
               ສະຫຼຸບທ້າຍມື້ (ຍົກວຽກຄ້າງໄປມື້ຕໍ່ໄປ)
             </SubmitButton>
           </ActionForm>
 
           <ActionForm action={closePlan}>
             <input type="hidden" name="plan_id" value={plan.id} />
-            <SubmitButton className="btn-secondary rounded-lg px-4 py-2 text-sm">
+            <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
               ສະຫຼຸບເສີຍໆ
             </SubmitButton>
           </ActionForm>

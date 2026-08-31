@@ -9,7 +9,7 @@ import {
 } from '@/lib/consumables/model'
 import { moveConsumable } from '../actions'
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const label = 'block text-xs text-muted'
 
 type Employee = { employee_id: number; fullname_lo: string }
@@ -90,7 +90,7 @@ export default function MovePanel({
           </label>
         </div>
 
-        <SubmitButton className="btn-primary mt-3 rounded-lg px-5 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary mt-3 rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກ
         </SubmitButton>
       </ActionForm>

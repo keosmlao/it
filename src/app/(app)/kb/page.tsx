@@ -20,7 +20,7 @@ export default async function KbPage({ searchParams }: PageProps<'/kb'>) {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div>
           <p className="mt-1 text-sm text-muted">
             ວິທີແກ້ບັນຫາທີ່ພົບເລື້ອຍ · {articles.length} ບົດ
@@ -29,7 +29,7 @@ export default async function KbPage({ searchParams }: PageProps<'/kb'>) {
 
         <Link
           href="/kb/new"
-          className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+          className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
         >
           + ຂຽນບົດຄວາມ
         </Link>
@@ -42,7 +42,7 @@ export default async function KbPage({ searchParams }: PageProps<'/kb'>) {
             name="q"
             defaultValue={q}
             placeholder="ຫົວຂໍ້ ຫຼື ເນື້ອຫາ"
-            className="input w-64 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-64 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -50,7 +50,7 @@ export default async function KbPage({ searchParams }: PageProps<'/kb'>) {
           <select
             name="category"
             defaultValue={category}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ທັງໝົດ</option>
             {categories.map((c) => (
@@ -62,7 +62,7 @@ export default async function KbPage({ searchParams }: PageProps<'/kb'>) {
         </label>
         <button
           type="submit"
-          className="btn-secondary rounded-lg px-4 py-1.5 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ຄົ້ນຫາ
         </button>

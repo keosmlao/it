@@ -5,7 +5,7 @@ import ActionForm, { SubmitButton } from '@/components/action-form'
 import { addRepair } from '../actions'
 import { REPAIR_STATUSES, REPAIR_STATUS_LABEL_LO } from '@/lib/assets/model'
 
-const inputClass = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const inputClass = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 
 export default function RepairForm({ assetCode }: { assetCode: string }) {
   const [open, setOpen] = useState(false)
@@ -15,7 +15,7 @@ export default function RepairForm({ assetCode }: { assetCode: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-secondary mt-3 rounded-lg px-4 py-2 text-sm"
+        className="btn-secondary mt-3 rounded px-3 py-1.5 text-[13px]"
       >
         + ບັນທຶກການສ້ອມ
       </button>
@@ -75,13 +75,13 @@ export default function RepairForm({ assetCode }: { assetCode: string }) {
       </div>
 
       <div className="mt-4 flex gap-2">
-        <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກ
         </SubmitButton>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ຍົກເລີກ
         </button>

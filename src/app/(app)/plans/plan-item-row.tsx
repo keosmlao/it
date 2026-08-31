@@ -77,7 +77,7 @@ export default function PlanItemRow({
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-xs"
+            className="btn-secondary rounded px-3 py-1.5 text-xs"
           >
             {open ? 'ຍົກເລີກ' : 'ອັບເດດ'}
           </button>
@@ -98,7 +98,7 @@ export default function PlanItemRow({
               <select
                 name="status"
                 defaultValue={item.status}
-                className="input w-36 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-36 rounded px-2 py-1 text-[13px]"
               >
                 {PLAN_ITEM_STATUSES.map((s) => (
                   <option key={s} value={s}>
@@ -117,7 +117,7 @@ export default function PlanItemRow({
                 max="24"
                 step="0.25"
                 defaultValue={item.actual_hours ?? ''}
-                className="input w-28 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-28 rounded px-2 py-1 text-[13px]"
               />
             </label>
 
@@ -126,11 +126,11 @@ export default function PlanItemRow({
               <input
                 name="result_note"
                 defaultValue={item.result_note ?? ''}
-                className="input w-72 rounded-lg px-3 py-1.5 text-sm"
+                className="input w-72 rounded px-2 py-1 text-[13px]"
               />
             </label>
 
-            <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+            <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
               ບັນທຶກ
             </SubmitButton>
           </ActionForm>

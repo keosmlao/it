@@ -82,7 +82,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-xs"
+            className="btn-secondary rounded px-3 py-1.5 text-xs"
           >
             {open ? 'ຍົກເລີກ' : '↩ ບັນທຶກການຄືນ'}
           </button>
@@ -104,7 +104,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
                   type="date"
                   name="returned_at"
                   defaultValue={todayISO()}
-                  className="input w-40 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-40 rounded px-2 py-1 text-[13px]"
                 />
               </label>
 
@@ -113,7 +113,7 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
                 <select
                   name="return_condition"
                   defaultValue="good"
-                  className="input w-36 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-36 rounded px-2 py-1 text-[13px]"
                 >
                   <option value="good">ປົກກະຕິ</option>
                   <option value="damaged">ເສຍຫາຍ</option>
@@ -125,11 +125,11 @@ export default function ReturnRow({ loan }: { loan: Loan }) {
                 ໝາຍເຫດ
                 <input
                   name="return_note"
-                  className="input w-64 rounded-lg px-3 py-1.5 text-sm"
+                  className="input w-64 rounded px-2 py-1 text-[13px]"
                 />
               </label>
 
-              <SubmitButton className="btn-primary rounded-lg px-4 py-1.5 text-sm font-medium">
+              <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
                 ບັນທຶກການຄືນ
               </SubmitButton>
             </ActionForm>

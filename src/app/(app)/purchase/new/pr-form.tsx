@@ -45,7 +45,7 @@ const num = (v: string) => Number(String(v).replace(/,/g, '')) || 0
 const money = (n: number) => n.toLocaleString('lo-LA', { maximumFractionDigits: 2 })
 
 const cell = 'input w-full rounded-md px-2 py-1.5 text-sm'
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 
 /**
  * ໃບສະເໜີຂໍຊື້ — ຈັດວາງແບບເອກະສານຂອງ SML:
@@ -214,7 +214,7 @@ export default function PurchaseRequestForm({
           <button
             type="button"
             onClick={addLine}
-            className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             + ເພີ່ມແຖວ
           </button>
@@ -439,7 +439,7 @@ function SaveButton({ disabled }: { disabled: boolean }) {
     <button
       type="submit"
       disabled={pending || disabled}
-      className="btn-primary rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-50"
+      className="btn-primary rounded-lg px-6 py-2.5 text-[13px] font-medium disabled:opacity-50"
     >
       {pending ? 'ກຳລັງບັນທຶກ…' : 'ບັນທຶກເປັນຮ່າງ'}
     </button>

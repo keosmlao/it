@@ -8,7 +8,7 @@ import { WORK_TYPES } from '@/lib/worklogs/model'
 type Option = { id: string; label: string }
 
 const inputClass =
-  'input w-full rounded-lg px-3 py-2 text-sm'
+  'input w-full rounded px-2 py-1 text-[13px]'
 
 export default function WorkLogForm({
   tickets,
@@ -129,7 +129,7 @@ function Submit() {
     <button
       type="submit"
       disabled={pending}
-      className="mt-4 btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+      className="mt-4 btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
     >
       {pending ? 'ກຳລັງບັນທຶກ…' : '+ ບັນທຶກຊົ່ວໂມງ'}
     </button>

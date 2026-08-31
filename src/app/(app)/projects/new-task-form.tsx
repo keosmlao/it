@@ -10,7 +10,7 @@ type Staff = { employee_id: number; fullname_lo: string; nickname: string | null
 type Priority = { priority: string; name_lo: string }
 
 const inputClass =
-  'input w-full rounded-lg px-3 py-2 text-sm'
+  'input w-full rounded px-2 py-1 text-[13px]'
 
 /** ຢູ່ຊັ້ນ module ຈຶ່ງຄົງ identity — ໃຊ້ຈຳແນກ "ຍັງບໍ່ທັນສົ່ງ" ຈາກ "ສົ່ງແລ້ວ" */
 const NOT_SUBMITTED: ActionState = {}
@@ -145,7 +145,7 @@ function Submit() {
     <button
       type="submit"
       disabled={pending}
-      className="mt-4 btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+      className="mt-4 btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
     >
       {pending ? 'ກຳລັງເພີ່ມ…' : '+ ເພີ່ມວຽກ'}
     </button>

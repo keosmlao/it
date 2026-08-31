@@ -38,7 +38,7 @@ export default async function ReplacementPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ເຂົ້າເງື່ອນໄຂທັງໝົດ {summary?.total ?? 0} ເຄື່ອງ · ດ່ວນ{' '}
           <span className="font-medium text-red-600 dark:text-red-400">
@@ -49,7 +49,7 @@ export default async function ReplacementPage({
           ເຝົ້າເບິ່ງ {summary?.low ?? 0}
         </p>
         <div className="flex flex-wrap gap-2">
-          <Link href="/budget" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <Link href="/budget" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ໄປຕັ້ງງົບປະມານ →
           </Link>
           <ExportMenu dataset="replacement" query={{ q }} />
@@ -94,7 +94,7 @@ export default async function ReplacementPage({
           <select
             name="priority"
             defaultValue={priority}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="plan">ດ່ວນ + ຄວນວາງແຜນ</option>
             <option value="high">ດ່ວນເທົ່ານັ້ນ</option>
@@ -112,7 +112,7 @@ export default async function ReplacementPage({
             max={20}
             step={1}
             defaultValue={minAge || ''}
-            className="input w-28 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-28 rounded px-2 py-1 text-[13px]"
           />
         </label>
 
@@ -121,7 +121,7 @@ export default async function ReplacementPage({
           <select
             name="category"
             defaultValue={category}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             {categories.map((c) => (
@@ -138,11 +138,11 @@ export default async function ReplacementPage({
             name="q"
             defaultValue={q}
             placeholder="ລະຫັດ, ຊື່, ຜູ້ຖືຄອງ"
-            className="input w-52 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-52 rounded px-2 py-1 text-[13px]"
           />
         </label>
 
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

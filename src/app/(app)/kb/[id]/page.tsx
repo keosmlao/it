@@ -42,7 +42,7 @@ export default async function ArticlePage({ params }: PageProps<'/kb/[id]'>) {
           <div className="flex gap-2">
             <Link
               href={`/kb/${article.id}/edit`}
-              className="btn-secondary rounded-lg px-3 py-1.5 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
             >
               ແກ້ໄຂ
             </Link>
@@ -50,7 +50,7 @@ export default async function ArticlePage({ params }: PageProps<'/kb/[id]'>) {
               <input type="hidden" name="id" value={article.id} />
               <button
                 type="submit"
-                className="btn-danger rounded-lg px-3 py-1.5 text-sm"
+                className="btn-danger rounded px-3 py-1.5 text-[13px]"
               >
                 ລຶບ
               </button>

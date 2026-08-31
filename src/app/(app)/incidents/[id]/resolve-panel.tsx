@@ -3,7 +3,7 @@
 import ActionForm, { SubmitButton } from '@/components/action-form'
 import { resolveIncident } from '../actions'
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const label = 'block text-xs text-muted'
 
 /** ປຸ່ມດ່ວນຕອນລະບົບກັບມາໃຊ້ໄດ້ — ສາເຫດຕື່ມພາຍຫຼັງໄດ້ */
@@ -41,7 +41,7 @@ export default function ResolvePanel({ id, now }: { id: string; now: string }) {
           </label>
         </div>
 
-        <SubmitButton className="btn-primary mt-3 rounded-lg px-5 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary mt-3 rounded px-3 py-1.5 text-[13px] font-medium">
           ປິດເຫດຂັດຂ້ອງ
         </SubmitButton>
       </ActionForm>

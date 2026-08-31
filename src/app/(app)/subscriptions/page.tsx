@@ -43,7 +43,7 @@ export default async function SubscriptionsPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ໃຊ້ງານຢູ່ {stats?.active ?? 0} ສັນຍາ · ເລີຍກຳນົດ{' '}
           <span className="font-medium text-red-600 dark:text-red-400">
@@ -58,14 +58,14 @@ export default async function SubscriptionsPage({
           {editable && (
             <Link
               href="/subscriptions/new"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               + ລົງທະບຽນການເຊົ່າ
             </Link>
           )}
           <Link
             href="/subscriptions/cost"
-            className="btn-secondary rounded-lg px-4 py-2 text-sm"
+            className="btn-secondary rounded px-3 py-1.5 text-[13px]"
           >
             ຄ່າໃຊ້ຈ່າຍ
           </Link>
@@ -95,7 +95,7 @@ export default async function SubscriptionsPage({
           <select
             name="category"
             defaultValue={category}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             {SUB_CATEGORIES.map((c) => (
@@ -111,7 +111,7 @@ export default async function SubscriptionsPage({
           <select
             name="status"
             defaultValue={status}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ໃຊ້ງານຢູ່</option>
             <option value="all">ທັງໝົດ</option>
@@ -128,7 +128,7 @@ export default async function SubscriptionsPage({
           <select
             name="due"
             defaultValue={due}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="">ບໍ່ກັ່ນຕອງ</option>
             <option value="soon">ໃກ້ຮອດ ຫຼື ເລີຍກຳນົດ</option>
@@ -142,11 +142,11 @@ export default async function SubscriptionsPage({
             name="q"
             defaultValue={q}
             placeholder="ຊື່ບໍລິການ, ຜູ້ຂາຍ, ເລກບັນຊີ"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
 
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

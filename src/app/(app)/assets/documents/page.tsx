@@ -20,16 +20,16 @@ export default async function DocumentsPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">ພົບ {docPage.total} ໃບ</p>
         <div className="flex flex-wrap gap-2">
           <Link
             href="/assets/lend"
-            className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+            className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
           >
             + ອອກໃບຢືມ
           </Link>
-          <Link href="/assets" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <Link href="/assets" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ← ທະບຽນອຸປະກອນ
           </Link>
         </div>
@@ -72,10 +72,10 @@ export default async function DocumentsPage({
             name="q"
             defaultValue={q}
             placeholder="ເລກໃບ, ຊື່ຜູ້ຢືມ, ພະແນກ, ເຫດຜົນ, ໝາຍເຫດ"
-            className="input w-72 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-72 rounded px-2 py-1 text-[13px]"
           />
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ຄົ້ນຫາ
         </button>
       </form>

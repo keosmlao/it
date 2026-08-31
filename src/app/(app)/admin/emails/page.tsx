@@ -56,7 +56,7 @@ export default async function NotifyEmailsPage({
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           ພະນັກງານທີ່ໃຊ້ງານຢູ່ {stats?.total ?? 0} ຄົນ · ມີອີເມວແລ້ວ{' '}
           {stats?.with_email ?? 0} ·{' '}
@@ -64,7 +64,7 @@ export default async function NotifyEmailsPage({
             ບໍ່ມີຊ່ອງທາງໃດເລີຍ {stats?.no_channel ?? 0}
           </span>
         </p>
-        <Link href="/admin" className="btn-secondary rounded-lg px-4 py-2 text-sm">
+        <Link href="/admin" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ← ຕັ້ງຄ່າລະບົບ
         </Link>
       </div>
@@ -88,7 +88,7 @@ export default async function NotifyEmailsPage({
             name="q"
             defaultValue={q}
             placeholder="ຊື່, ລະຫັດ, ອີເມວ"
-            className="input w-56 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-56 rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex items-center gap-2 pb-1.5 text-sm text-body">
@@ -101,7 +101,7 @@ export default async function NotifyEmailsPage({
           />
           ສະເພາະຄົນທີ່ບໍ່ມີຊ່ອງທາງໃດເລີຍ
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

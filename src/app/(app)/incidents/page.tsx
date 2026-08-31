@@ -44,7 +44,7 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <p className="text-sm text-muted">
           {from} ຫາ {to} · {stats?.total ?? 0} ຄັ້ງ · ຍັງບໍ່ຈົບ{' '}
           <span className="font-medium text-red-600 dark:text-red-400">
@@ -59,7 +59,7 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
           {editable && (
             <Link
               href="/incidents/new"
-              className="btn-primary rounded-lg px-4 py-2 text-sm font-medium"
+              className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium"
             >
               + ບັນທຶກເຫດຂັດຂ້ອງ
             </Link>
@@ -93,7 +93,7 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
             type="date"
             name="from"
             defaultValue={from}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -102,7 +102,7 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
             type="date"
             name="to"
             defaultValue={to}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-muted">
@@ -110,7 +110,7 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
           <select
             name="service"
             defaultValue={service}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             {INCIDENT_SERVICES.map((s) => (
@@ -125,7 +125,7 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
           <select
             name="status"
             defaultValue={status}
-            className="input rounded-lg px-3 py-1.5 text-sm"
+            className="input rounded px-2 py-1 text-[13px]"
           >
             <option value="all">ທັງໝົດ</option>
             <option value="open">ຍັງບໍ່ຈົບ</option>
@@ -138,10 +138,10 @@ export default async function IncidentsPage({ searchParams }: PageProps<'/incide
             name="q"
             defaultValue={q}
             placeholder="ຫົວຂໍ້, ສາເຫດ"
-            className="input w-48 rounded-lg px-3 py-1.5 text-sm"
+            className="input w-48 rounded px-2 py-1 text-[13px]"
           />
         </label>
-        <button type="submit" className="btn-secondary rounded-lg px-4 py-1.5 text-sm">
+        <button type="submit" className="btn-secondary rounded px-3 py-1.5 text-[13px]">
           ກັ່ນຕອງ
         </button>
       </form>

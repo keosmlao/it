@@ -18,7 +18,7 @@ type Employee = {
   department_name_lo: string | null
 }
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 
 /** ຟອມຕິດຕັ້ງອຸປະກອນສ່ວນກາງ — ເປີດເມື່ອກົດປຸ່ມ */
 export default function DeployPanel({
@@ -50,7 +50,7 @@ export default function DeployPanel({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-primary mt-4 rounded-lg px-4 py-2 text-sm font-medium"
+        className="btn-primary mt-4 rounded px-3 py-1.5 text-[13px] font-medium"
       >
         + ຕິດຕັ້ງອຸປະກອນສ່ວນກາງ
       </button>
@@ -150,13 +150,13 @@ export default function DeployPanel({
       </div>
 
       <div className="mt-4 flex gap-2">
-        <SubmitButton className="btn-primary rounded-lg px-5 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກການຕິດຕັ້ງ
         </SubmitButton>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ຍົກເລີກ
         </button>

@@ -25,7 +25,7 @@ export default async function NewAssetPage() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="o-page-actions">
         <div>
           <h1 className="text-lg font-semibold text-fg">ລົງທະບຽນຊັບສິນ</h1>
           <p className="mt-0.5 text-sm text-muted">
@@ -35,7 +35,7 @@ export default async function NewAssetPage() {
         </div>
         <Link
           href="/assets?source=local"
-          className="btn-secondary rounded-lg px-4 py-2 text-sm"
+          className="btn-secondary rounded px-3 py-1.5 text-[13px]"
         >
           ທະບຽນຂອງລະບົບນີ້ ({counts?.total ?? 0}) →
         </Link>

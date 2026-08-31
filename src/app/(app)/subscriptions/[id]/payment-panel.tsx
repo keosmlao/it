@@ -11,7 +11,7 @@ import {
 } from '@/lib/subscriptions/model'
 import { cancelSubscription, recordPeriod, renewSubscription, reopenSubscription } from '../actions'
 
-const field = 'input mt-1 w-full rounded-lg px-3 py-2 text-sm'
+const field = 'input mt-1 w-full rounded px-2 py-1 text-[13px]'
 const label = 'block text-xs text-muted'
 
 /**
@@ -39,7 +39,7 @@ export default function PaymentPanel({
         )}
         <ActionForm action={reopenSubscription} className="mt-3">
           <input type="hidden" name="id" value={s.id} />
-          <SubmitButton className="btn-secondary rounded-lg px-4 py-2 text-sm">
+          <SubmitButton className="btn-secondary rounded px-3 py-1.5 text-[13px]">
             ເປີດໃຊ້ຄືນ
           </SubmitButton>
         </ActionForm>
@@ -122,7 +122,7 @@ export default function PaymentPanel({
           </label>
         </div>
 
-        <SubmitButton className="btn-primary mt-3 rounded-lg px-5 py-2 text-sm font-medium">
+        <SubmitButton className="btn-primary mt-3 rounded px-3 py-1.5 text-[13px] font-medium">
           ບັນທຶກງວດ
         </SubmitButton>
       </ActionForm>
@@ -132,7 +132,7 @@ export default function PaymentPanel({
           <ActionForm action={renewSubscription}>
             <input type="hidden" name="id" value={s.id} />
             <SubmitButton
-              className="btn-secondary rounded-lg px-4 py-2 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
               pendingLabel="ກຳລັງເລື່ອນ…"
             >
               ຕໍ່ອາຍຸ 1 ງວດ (ບໍ່ມີໃບບິນ)
@@ -144,7 +144,7 @@ export default function PaymentPanel({
           <button
             type="button"
             onClick={() => setShowCancel(true)}
-            className="btn-danger rounded-lg px-4 py-2 text-sm"
+            className="btn-danger rounded px-3 py-1.5 text-[13px]"
           >
             ຍົກເລີກສັນຍາ
           </button>
@@ -162,13 +162,13 @@ export default function PaymentPanel({
                 className={`${field} w-64`}
               />
             </label>
-            <SubmitButton className="btn-danger rounded-lg px-4 py-2 text-sm">
+            <SubmitButton className="btn-danger rounded px-3 py-1.5 text-[13px]">
               ຢືນຢັນຍົກເລີກ
             </SubmitButton>
             <button
               type="button"
               onClick={() => setShowCancel(false)}
-              className="btn-secondary rounded-lg px-4 py-2 text-sm"
+              className="btn-secondary rounded px-3 py-1.5 text-[13px]"
             >
               ບໍ່ຍົກເລີກ
             </button>

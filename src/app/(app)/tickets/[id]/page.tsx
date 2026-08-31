@@ -107,7 +107,7 @@ export default async function TicketDetailPage({
               <ImagePicker label="ເພີ່ມຮູບບັນຫາ" />
               <SubmitButton
                 pendingLabel="ກຳລັງອັບໂຫລດ…"
-                className="btn-secondary mt-3 rounded-lg px-4 py-2 text-sm"
+                className="btn-secondary mt-3 rounded px-3 py-1.5 text-[13px]"
               >
                 ອັບໂຫລດ
               </SubmitButton>
@@ -200,7 +200,7 @@ export default async function TicketDetailPage({
                   <input type="checkbox" name="is_internal" className="size-4" />
                   ບັນທຶກພາຍໃນ
                 </label>
-                <SubmitButton className="btn-primary rounded-lg px-4 py-2 text-sm font-medium">
+                <SubmitButton className="btn-primary rounded px-3 py-1.5 text-[13px] font-medium">
                   ບັນທຶກ
                 </SubmitButton>
               </div>
@@ -345,7 +345,7 @@ function AssignForm({
       <select
         name="assignee_employee_id"
         defaultValue={current ?? ''}
-        className="input w-full rounded-lg px-3 py-1.5 text-sm"
+        className="input w-full rounded px-2 py-1 text-[13px]"
       >
         <option value="">— ຍັງບໍ່ມອບໝາຍ —</option>
         {staff.map((s) => (
@@ -355,7 +355,7 @@ function AssignForm({
           </option>
         ))}
       </select>
-      <SubmitButton className="btn-secondary w-full rounded-lg px-4 py-1.5 text-sm">
+      <SubmitButton className="btn-secondary w-full rounded px-3 py-1.5 text-[13px]">
         {label}
       </SubmitButton>
     </ActionForm>
@@ -373,7 +373,7 @@ function ClaimForm({
     <ActionForm action={assignTicket} className="mt-2">
       <input type="hidden" name="ticket_id" value={ticketId} />
       <input type="hidden" name="assignee_employee_id" value={employeeId} />
-      <SubmitButton className="btn-secondary w-full rounded-lg px-4 py-2 text-sm font-medium">
+      <SubmitButton className="btn-secondary w-full rounded px-3 py-1.5 text-[13px] font-medium">
         ຮັບວຽກນີ້ມາເຮັດ
       </SubmitButton>
     </ActionForm>
